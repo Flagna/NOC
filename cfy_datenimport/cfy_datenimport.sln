@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cfy_datenimport", "cfy_datenimport.csproj", "{36F340DB-537B-447A-8BDD-BB1C48FCFDA5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cfy_datenimport", "cfy_datenimport.csproj", "{1A964204-0A5D-4A9D-A6A5-E660B6817462}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,9 +9,9 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{36F340DB-537B-447A-8BDD-BB1C48FCFDA5}.Debug|x86.ActiveCfg = Debug|x86
-		{36F340DB-537B-447A-8BDD-BB1C48FCFDA5}.Debug|x86.Build.0 = Debug|x86
-		{36F340DB-537B-447A-8BDD-BB1C48FCFDA5}.Release|x86.ActiveCfg = Release|x86
-		{36F340DB-537B-447A-8BDD-BB1C48FCFDA5}.Release|x86.Build.0 = Release|x86
+		{1A964204-0A5D-4A9D-A6A5-E660B6817462}.Debug|x86.ActiveCfg = Debug|x86
+		{1A964204-0A5D-4A9D-A6A5-E660B6817462}.Debug|x86.Build.0 = Debug|x86
+		{1A964204-0A5D-4A9D-A6A5-E660B6817462}.Release|x86.ActiveCfg = Release|x86
+		{1A964204-0A5D-4A9D-A6A5-E660B6817462}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 EndGlobal

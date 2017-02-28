@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{36F340DB-537B-447A-8BDD-BB1C48FCFDA5}</ProjectGuid>
+    <ProjectGuid>{1A964204-0A5D-4A9D-A6A5-E660B6817462}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>cfy_datenimport</RootNamespace>
     <AssemblyName>cfy_datenimport</AssemblyName>
@@ -33,8 +33,11 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="LoadMySQLData.cs" />
+    <Compile Include="MySQLGetData.cs" />
+    <Compile Include="MySQLQueries.cs" />
+    <Compile Include="Program.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
