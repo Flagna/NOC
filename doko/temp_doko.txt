@@ -23,15 +23,15 @@ In Make Datei muss bei UltraStudio abgeändert werden um die DLL einzubinden:
 Erstellen->Befehl Ausführen->Schow Mak File:
 
 
-//     /reference:..\NOC\modul\dll\mysql\MySql.Web.dll /reference:..\NOC\modul\dll\mysql\MySql.Fabric.Plugin.dll /reference:..\NOC\modul\dll\mysql\MySql.Data.dll /reference:..\NOC\modul\dll\mysql\MySql.Data.Entity.dll /reference:..\NOC\modul\dll\mysql\MySql.Data.Entity.EF6.dll
+//     /reference:..\git_projekt\NOC\modul\dll\mysql\MySql.Web.dll /reference:..\git_projekt\NOC\modul\dll\mysql\MySql.Fabric.Plugin.dll /reference:..\git_projekt\NOC\modul\dll\mysql\MySql.Data.dll /reference:..\git_projekt\NOC\modul\dll\mysql\MySql.Data.Entity.dll /reference:..\git_projekt\NOC\modul\dll\mysql\MySql.Data.Entity.EF6.dll
 
 ##### BUILD ####################################################################
 
 ALL: $(FG05)
-	csc /reference:..\NOC\modul\dll\mysql\MySql.Web.dll /reference:..\NOC\modul\dll\mysql\MySql.Fabric.Plugin.dll /reference:..\NOC\modul\dll\mysql\MySql.Data.dll /reference:..\NOC\modul\dll\mysql\MySql.Data.Entity.dll /reference:..\NOC\modul\dll\mysql\MySql.Data.Entity.EF6.dll /nologo /out:test.EXE /t:exe /debug+ /debug:full /optimize- /d:TRACE /unsafe- /checked- $(FG00)
+	csc /reference:..\git_projekt\NOC\modul\dll\mysql\MySql.Web.dll /reference:..\git_projekt\NOC\modul\dll\mysql\MySql.Fabric.Plugin.dll /reference:..\git_projekt\NOC\modul\dll\mysql\MySql.Data.dll /reference:..\git_projekt\NOC\modul\dll\mysql\MySql.Data.Entity.dll /reference:..\git_projekt\NOC\modul\dll\mysql\MySql.Data.Entity.EF6.dll /nologo /out:test.EXE /t:exe /debug+ /debug:full /optimize- /d:TRACE /unsafe- /checked- $(FG00)
 
 test.EXE: $(FG05)
-	csc /reference:..\NOC\modul\dll\mysql\MySql.Web.dll /reference:..\NOC\modul\dll\mysql\MySql.Fabric.Plugin.dll /reference:..\NOC\modul\dll\mysql\MySql.Data.dll /reference:..\NOC\modul\dll\mysql\MySql.Data.Entity.dll /reference:..\NOC\modul\dll\mysql\MySql.Data.Entity.EF6.dll /nologo /out:test.EXE /t:exe /debug+ /debug:full /optimize- /d:TRACE /unsafe- /checked- $(FG00)
+	csc /reference:..\git_projekt\NOC\modul\dll\mysql\MySql.Web.dll /reference:..\git_projekt\NOC\modul\dll\mysql\MySql.Fabric.Plugin.dll /reference:..\git_projekt\NOC\modul\dll\mysql\MySql.Data.dll /reference:..\git_projekt\NOC\modul\dll\mysql\MySql.Data.Entity.dll /reference:..\git_projekt\NOC\modul\dll\mysql\MySql.Data.Entity.EF6.dll /nologo /out:test.EXE /t:exe /debug+ /debug:full /optimize- /d:TRACE /unsafe- /checked- $(FG00)
 
 
 ##### COMMANDS #################################################################
