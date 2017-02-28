@@ -36,9 +36,23 @@ test.EXE: $(FG05)
 
 ##### COMMANDS #################################################################
 
+run:  test.EXE
+	test.EXE
+
+debug:  test.EXE
+	 test.EXE
+
+disasm:  test.EXE
+	ILDASM test.EXE
+
+makef: 
+	uestudio test.EXE
 
 
+##### CLEAN ####################################################################
 
+CLEAN:
+	-@erase "test.EXE"
 
 
 
