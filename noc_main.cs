@@ -25,7 +25,7 @@ namespace NOCPortal
         	  Console.WriteLine( "----------------------------------------------------- \n"); 	
         	  Console.WriteLine( "--------Willkommen im NOC Portal Backend  ----------- \n"); 
         	  Console.WriteLine( "----------------------------------------------------- \n\n"); 	
-        	  Console.WriteLine( " Bitte drücken Sie eine Taste um das NOC Portal Backend zu starten. Hallo \n\n"); 	
+        	  Console.WriteLine( " Bitte drücken Sie eine Taste um das NOC Portal Backend zu starten. \n\n"); 	
         	  Console.ReadKey();
         	  
         	  main_run();
