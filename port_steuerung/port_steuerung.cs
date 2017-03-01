@@ -17,6 +17,7 @@
    /                    - "PortListener" Klasse stellt eine Verbindung zum Port mir IpAdresse her              /
    /                    - "Client_Instanz" Klasse werden alle Anfragen Verarbeitet die an den jeweiligen       /
    /                       Port gestellt werden                                                                /
+   /                    - "PortZahler" Klasse Überwacht den Port auf maximale Verbindungen                     /
    /                                                                                                           /
    *************************************************************************************************************  
 */
@@ -35,6 +36,67 @@ using MEClary;
 
 namespace MEPort
 {
+	   public class PortZahler
+	   {
+	   	    public class Zahlwerk_List
+	   	    {
+	   	    	  public int port;
+	   	    	  public int laufend;
+	   	    	  
+	   	    	  public Zahlwerk_List(){}
+	   	    	  
+	   	    	  public Zahlwerk_List( int port , int laufend )
+	   	    	  {
+	   	    	  	 this.port = port;
+	   	    	  	 this.laufend = laufend;
+	   	    	  }
+	   	    	
+	   	    }
+	   	
+	   	    public static  List<Zahlwerk_List> zahlwerk = new List<Zahlwerk_List>();
+	   	    
+	   	    
+	   	    public bool kontrolle(int max_verbindung , int port , bool plus_minus )
+	   	    {
+	   	    	  bool status_vorhanden = false;
+	   	    	  bool status_frei      = false;
+	   	    	       
+	   	    	  /* Prüfen ob Port noch Verbindungen entgegen nehmen kann oder nicht */
+              foreach (Zahlwerk_List zahl in zahlwerk)
+              {
+              	   if(zahl.port == port) /* wenn Port gefunden wurde hier rein gehen */
+              	   {   
+              	   	  
+              	   	   if(plus_minus == true ) /* Es soll eine neue Verbindungen aufgebaut werden */
+              	   	   {   
+              	   	   	     if(zahl.laufend == max_verbindung )
+              	   	         {}  /* Es ist die Maximale Verbindung auf diesem Port Vorhanden false zurückgeben */
+              	   	         else
+              	   	         {  status_frei = true;  zahl.laufend++; }  /*  Es sind noch Verbindung übrig zähler hochsetzten und true zurückgeben  */ 
+              	   	   }
+              	   	   else 
+              	   	  	 if(zahl.laufend > 0)zahl.laufend--; else {}  /* Die Verbindung auf dem Port wurde geändert Zähler reduzoeren und Verbindungen wieder Frei geben */
+              	   	   
+              	   	   
+              	   	   
+              	   	   status_vorhanden = true; /* Status auf True setzen da Port schon in liste ist */ 
+              	   	   break;
+              	   }
+                   else {}
+              }
+              
+              /* Es wurde noch kein eintrag für Port gemacht neuen hinzufügen mit Zählwerk */
+	   	    	  if(status_vorhanden == false)
+	   	    	  {
+	   	    	  	  zahlwerk.Add( new Zahlwerk_List( port , 1 ) ); /* Zählwerk Inizialiesiern mit 1 ( 1 verbindung ) */
+	   	    	  	  status_frei = true;
+	   	    	  }else{}
+	   	    	   
+	   	    	  return status_frei;
+	   	    }
+	   	
+	   }
+	
 
      public class PortListener
      {
@@ -42,24 +104,19 @@ namespace MEPort
 	  	    private volatile bool status = true;
 	  	    private volatile string ip_adresse;
 	  	    private volatile int port;
-	  	    
+	  	    private volatile int max_verbindung;
 	  	    private volatile string port_bezeichnung;
-	  	   
 	  	    private volatile TcpListener listener;
 	  	    private volatile IPAddress localAddr;
-	  	    
-	  	    
 	  	    public  string  proto_woher = "Portsteuerung";
 	  	    public  string  proto_datei = "port_steuerung.cs";
 	  	    public volatile string proto_gruppe;
 	  	    private Protokol  protokol = new Protokol();
-	  	    
 	  	    private static ArrayList clientThread = new ArrayList();  /* Die Liste der laufenden Server-Threads */
-  
-	  	    
+    
 	  	    public void rennen( )
 	  	    {    
-	  	    	 proto_gruppe = ip_adresse + ":" + port + "|" + port_bezeichnung;
+	  	    	 proto_gruppe = ip_adresse + ":" + port + "|" + port_bezeichnung;  /* Gruppe für durchlauf defienieren für Protokoll */
 	  	    	 
 	  	    	 try
 	  	       {
@@ -71,27 +128,26 @@ namespace MEPort
 	  	    	   protokol.erstellen( proto_woher , proto_gruppe , "PortListener wurde gestartet." , proto_datei ,"PortListener","rennen()" , false );
 	  	  	     while(status)
 	  	  	     {
-	  	  	     	 try
-	  	  	     	 {
+	  	  	     	   try
+	  	  	     	   {
 	  	  	     	       protokol.erstellen( proto_woher , proto_gruppe , "Warte auf Eingehende Verbindung." , proto_datei ,"PortListener","rennen()" , false );
 	  	  	     	  
-	  	  	  	         /* Auf Verbindung Lauschen ob Jemand was möchte - System wartet hier bis sich jemand meldet */   
+	  	  	     	       /* Auf Verbindung Lauschen ob Jemand was möchte - System wartet hier bis sich jemand meldet */   
 	  	  	  	         TcpClient client = listener.AcceptTcpClient();    
                        
-                       clientThread.Add( new Client_Instanz( client , proto_woher , proto_gruppe , proto_datei , port_bezeichnung ) ); /* übergebe Verbindung um eigenen Thread zu erstellen für Verbindung */
-	  	  	  	   
-	  	  	  	   }
-	  	  	  	   catch (System.IO.IOException)
-                 {
-                     protokol.erstellen( proto_woher , proto_gruppe , "Client hat Verbindung beendet.", proto_datei ,"PortListener","rennen()" , true );
-                 }
-                 catch (SocketException e)
-                 {
-                     string fehlermeldung = String.Format("SocketException: {0}", e.Message);
-                     protokol.erstellen( proto_woher , proto_gruppe , "SocketException wurde gewurfen Verbindung wurde getrennt. Fehler: " + fehlermeldung , proto_datei ,"PortListener","rennen()" , true );
-                 }
+                       clientThread.Add( new Client_Instanz( client , proto_woher , proto_gruppe , proto_datei , port_bezeichnung , max_verbindung , port ) ); /* übergebe Verbindung um eigenen Thread zu erstellen für Verbindung */
+	  	  	  	     }
+	  	  	  	     catch (System.IO.IOException)
+                   {
+                        protokol.erstellen( proto_woher , proto_gruppe , "Client hat Verbindung beendet.", proto_datei ,"PortListener","rennen()" , true );
+                   }
+                   catch (SocketException e)
+                   {
+                        string fehlermeldung = String.Format("SocketException: {0}", e.Message);
+                        protokol.erstellen( proto_woher , proto_gruppe , "SocketException wurde gewurfen Verbindung wurde getrennt. Fehler: " + fehlermeldung , proto_datei ,"PortListener","rennen()" , true );
+                   }
 	  	  	  	    
-	  	  	  	   Thread.Sleep(2000); /* 2 Secunden Warden bis Überwachung erneut gestartet wird */
+	  	  	  	     Thread.Sleep(2000); /* 2 Secunden Warden bis Überwachung erneut gestartet wird */
 	  	  	     }
 	  	  	     
 	  	  	     protokol.erstellen( proto_woher , proto_gruppe , "PortListener wurde beendet.", proto_datei ,"PortListener","rennen()" , false );
@@ -111,11 +167,12 @@ namespace MEPort
               status = false;
           }
           
-          public void ipport(string adresse,int port_liste, string port_bezeichnung_liste)
+          public void ipport(string adresse,int port_liste, string port_bezeichnung_liste , int max_verbindung_liste )
           {
               ip_adresse       = adresse;
               port             = port_liste;
               port_bezeichnung = port_bezeichnung_liste;
+              max_verbindung   = max_verbindung_liste;
           }
           
          
@@ -134,6 +191,8 @@ namespace MEPort
 	  	    private  string anmeldung;
 	  	    private  string benutzername;
 	  	    private  string puffer_string;     /* wird verwendet um den String zu speichern was von der Umwandlung aus Byte zu string kommt */
+	  	    private  int max_verbindung;
+	  	    private  int port;
 	  	         
 	  	    private byte[] client_antwort;    /* strem was zum Clienten gesendet wird */
 	  	    private byte[] client_eingang;    /* Stream vom Clienten Datenstrom */
@@ -143,13 +202,15 @@ namespace MEPort
 	  	    	   
 	  	    private List<PortPuffer> port_stream; /* In diesem List werden die Byte Blöcke gespeichert */
 	  	    	   
-	  	    public Client_Instanz( TcpClient client  ,string proto_woher , string proto_gruppe ,string proto_datei ,string  port_bezeichnung )
+	  	    public Client_Instanz( TcpClient client  ,string proto_woher , string proto_gruppe ,string proto_datei ,string  port_bezeichnung  , int max_verbindung , int port )
 	  	    {    
 	  	    	      this.clientInstanz = client;
 	  	    	      this.proto_woher   = proto_woher;
 	  	    	      this.proto_datei   = proto_datei;
 	  	    	      this.proto_gruppe  = proto_gruppe;
 	  	    	      this.port_bezeichnung = port_bezeichnung;
+	  	    	      this.max_verbindung   = max_verbindung;
+	  	    	      this.port             = port;
 	  	    	      
 	  	    	  	  new Thread( new ThreadStart( rennen_client ) ).Start();
 	  	    }
@@ -158,20 +219,27 @@ namespace MEPort
 	  	    /*  Der eigentliche Thread */
           public void rennen_client()
           {       
-          	
-          	          Console.WriteLine ( "- EIGENE Thread wurde gestartet -- ");
-          	          
-              	      Benutzer benutzer = new Benutzer();
-	  	    	          Text     text     = new Text();
-	  	    	          AsciiPic asciipic = new AsciiPic();
-	  	    	         
+          	  PortZahler portzahler = new PortZahler();
+          	  bool verbindung_zulassen = portzahler.kontrolle( max_verbindung , port , true );
+          	    
+              Text     text     = new Text();
+        	    AsciiPic asciipic = new AsciiPic();
+          	  
+          	  /* Speziele regelung bei CFY Rohdaten empfang */
+          	  if(this.port_bezeichnung == "cfy_rohdaten" &&  Clary.cfy_port_status != "leer" ) /* Datensatz wird gerade noch bearbeitet Verbindung sollange sperren bis dieser abgearbeitet wurde */
+          	    verbindung_zulassen = false;
+          	  else {} 
+          	   
+              if(verbindung_zulassen == true)
+       	      {
+          	       try
+          	       {    
+          	          Benutzer benutzer = new Benutzer();
 	  	    	          port_stream = new List<PortPuffer>();
 	  	    	   
 	  	    	          client_eingang = new Byte[256]; /* Länge vom Stream defienieren ( 256 byte lang )  */
-               
-	  	    	         
-              	      
-              	      protokol.erstellen( this.proto_woher , this.proto_gruppe , "Verbindung wurde Hergestellt." , this.proto_datei ,"PortListener","rennen()" , false );
+                
+                      protokol.erstellen( this.proto_woher , this.proto_gruppe , "Verbindung wurde Hergestellt." , this.proto_datei ,"PortListener","rennen_client()" , false );
               	     
                   
 	  	  	  	        /* Daten für nächsten durchlauf wieder leeren */
@@ -194,7 +262,7 @@ namespace MEPort
                       
                          if( text.klein(puffer_string) == "exit" )
                          {
-                           	 protokol.erstellen( this.proto_woher , this.proto_gruppe , "Verbindung wurde beendet. ( exit wurde empfangen )" , this.proto_datei ,"PortListener","rennen()" , false );
+                           	 protokol.erstellen( this.proto_woher , this.proto_gruppe , "Verbindung wurde beendet. ( exit wurde empfangen )" , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
                             	client_antwort = text.byte_stream("Die Verbindung wurde beendet. Have a Nice Day :-) \n"); 
                       	     /* Info an Client senden */ 
                              stream.Write(client_antwort, 0, client_antwort.Length);
@@ -202,7 +270,7 @@ namespace MEPort
                          }
                          else if( text.klein(puffer_string) == "hallo" && anmeldung != "ok")  /* Verbindung wird mit "hallo" inisialiesiert  Vorher reagiert Port auf Datenstrom nicht */
                          {
-                      	     protokol.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer wird aufgefordert Name einzugeben." ,  this.proto_datei ,"PortListener","rennen()" , false );
+                      	     protokol.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer wird aufgefordert Name einzugeben." ,  this.proto_datei ,"Client_Instanz","rennen_client()" , false );
                       	     client_antwort = text.byte_stream("Hallo Benutzer Bitte gebe deinen Namen ein.\n");
                       	     anmeldung = "name";
                       	     /* Info an Client senden */ 
@@ -214,12 +282,12 @@ namespace MEPort
                       	     if( benutzer.liste( text.klein( puffer_string ) , "" , "name" ) )
                       	     {
                       	 	        benutzername =  puffer_string;
-                      	 	        protokol.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer wird aufgefordert Name einzugeben." ,  this.proto_datei ,"PortListener","rennen()" , false );
+                      	 	        protokol.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer wird aufgefordert Name einzugeben." ,  this.proto_datei ,"Client_Instanz","rennen_client()" , false );
                       	 	        client_antwort = text.byte_stream("Hallo " + benutzername + " gib Bitte dein Password ein. \n");
                       	 	        anmeldung    =  "password";
                       	     } 
                       	     else
-                      	     {    protokol.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer "+ benutzername +" wurde nicht gefunden." , this.proto_datei ,"PortListener","rennen()" , false );
+                      	     {    protokol.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer "+ benutzername +" wurde nicht gefunden." , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
                       	 	        client_antwort = text.byte_stream("Benutzername " + benutzername + " nicht gefunden Bitte Neu eingeben! \n");  }
                       	 
                              /* Info an Client senden */ 
@@ -229,12 +297,12 @@ namespace MEPort
                          {
                       	     if( benutzer.liste( text.klein(benutzername) , text.klein(puffer_string) )  )
                       	     {
-                      	 	        protokol.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer "+ benutzername +" wurde erfolgreich angemeldet." , this.proto_datei ,"PortListener","rennen()" , false );
+                      	 	        protokol.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer "+ benutzername +" wurde erfolgreich angemeldet." , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
                       	 	        client_antwort = text.byte_stream("Willkommen " + benutzername + "  im NOC Portal. \n Ich warte jetzt auf Daten :-) " + asciipic.warten() + "\n");
                       	 	        anmeldung =  "ok";
                       	     } 
                       	     else
-                      	     {    protokol.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer "+ benutzername +" hat Fehlerhaftes Password eingetragen." , this.proto_datei ,"PortListener","rennen()" , false );
+                      	     {    protokol.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer "+ benutzername +" hat Fehlerhaftes Password eingetragen." , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
                       	          client_antwort = text.byte_stream("Dein Password war Fehlerhaft "+ benutzername + ". Bitte Neu eingeben! \n");  }
                       	   
                       	      /* Info an Client senden */ 
@@ -257,7 +325,7 @@ namespace MEPort
 	  	  	  	        }	
 	  	  	  	    
 	  	  	  	       this.clientInstanz.Close(); /* Verbindung wurde getrennt */
-	  	  	  	       protokol.erstellen( this.proto_woher , this.proto_gruppe , "Verbindung wurde beendet." , this.proto_datei ,"PortListener","rennen()" , false );
+	  	  	  	       protokol.erstellen( this.proto_woher , this.proto_gruppe , "Verbindung wurde beendet." , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
 	  	  	  	    
 	  	  	  	    
 	  	  	          /*  Datenstrom Bauen und in einem String legen -- Start -- */
@@ -284,12 +352,43 @@ namespace MEPort
                           Clary.cfy_port_status = "komplett";  /* Clray List Status auf Komplett setezen und zur weiterverarbeitung Frei geben */ 
                      }
                      else {}
-	  	    	       
-	  	    }
+                     
+                     
+                   }
+                   catch (System.IO.IOException)
+                   {  protokol.erstellen( proto_woher , proto_gruppe , "Client hat Verbindung beendet.", proto_datei ,"Client_Instanz","rennen_client()" , true );  }
+                   catch (SocketException e)
+                   {
+                       string fehlermeldung = String.Format("SocketException: {0}", e.Message);
+                       protokol.erstellen( proto_woher , proto_gruppe , "SocketException wurde gewurfen Verbindung wurde getrennt. Fehler: " + fehlermeldung , proto_datei ,"Client_Instanz","rennen_client()" , true );
+                   }
+                     
+                   portzahler.kontrolle( max_verbindung , port , false ); /* Verbindung wieder Frei geben */ 
+              }
+              else
+              { /* Maximale Verbindung für Port wurden festgestellt oder CFY DatenImport wird noch bearbeitet im System */
+              	  
+                	   NetworkStream stream = this.clientInstanz.GetStream(); /* Datenstrom vom Clienten holen und im Stream legen */ 
+                	  
+                	   /* Speziele regelung für CFY Rohdaten empfangen */
+                     if(this.port_bezeichnung == "cfy_rohdaten" &&  Clary.cfy_port_status != "leer" ) 
+          	         {     protokol.erstellen( this.proto_woher , this.proto_gruppe , "CFY Rohdaten werden gerade im System Verarbeitet. Neue Verbindung wurde abgelehnt." , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
+                           client_antwort = text.byte_stream(" Achutung CFY Rohdaten Import wird gerade gerade im System verarbeitet. \n Neue Verbindung wurde abgebrochen. \n Bitte versuchen Sie es später noch einmal. \n");   }
+                     else
+                     {     protokol.erstellen( this.proto_woher , this.proto_gruppe , "Verbindung wurde abgebrochen Maximale Verbindungen ist erreicht." , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
+                           client_antwort = text.byte_stream(" Achtung es sind keine Verbindungen mehr Frei! Es wurde abgebrochen! \n Bitte versuchen Sie es später noch einmal. \n");   }
+                      	   
+                     /* Info an Client senden */ 
+                     stream.Write(client_antwort, 0, client_antwort.Length);
+                     
+                     this.clientInstanz.Close(); /* Verbindung wurde getrennt */
+              }
+          }
 	  	         
 	  	         
 	  	    public class PortPuffer
-	  	    {
+	  	    {   /* Klasse Puffert die empfangen Daten vom Clienten für weitere bearbeitung  ( List vorlage ) */
+	  	    	
 	  	    	   public volatile byte[] bitpuffer;
 	  	    	   public volatile int bytelange;
 	  	    	   

@@ -93,7 +93,7 @@ namespace NOCPortal
              	       if(netz.aktiv_ip == "ja")
                      { 
                  	       portlistener[port_i] = new PortListener();
-                 	       portlistener[port_i].ipport(netz.ip_adresse , port_liste.port , port_liste.bezeichnung  );
+                 	       portlistener[port_i].ipport(netz.ip_adresse , port_liste.port , port_liste.bezeichnung , port_liste.max_verbindung  );
                  	       noc_thread[pos] = new Thread( portlistener[port_i].rennen);
                  	       pos++;
                  	       port_i++;

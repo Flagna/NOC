@@ -32,7 +32,7 @@ namespace MySQL
 				   // Nur zu Testzwecken abgestellt -
 			     //  LoadMySQLData load = new LoadMySQLData ();
 		       //  load.Fill_Tables ();
-		        Console.WriteLine ( "OK Daten werden Vorgeladen und in MYSQL versendet.");
+		       Console.WriteLine ( "OK Daten werden Vorgeladen und in MYSQL versendet.");
 		       
 			     /*
 			        if (MEClary.Clary.cfy_port_status == "empfangen") {

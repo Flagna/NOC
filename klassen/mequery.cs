@@ -228,14 +228,17 @@ namespace MEQery
        	    
        	    public int port;
             public string bezeichnung;
+            public int max_verbindung;
+            
             
             
             public Port_List(){}
             
-            public Port_List(int port, string bezeichnung )
+            public Port_List(int port, string bezeichnung , int max_verbindung )
             {
-            	  this.port        = port; 
-   	            this.bezeichnung = bezeichnung;
+            	  this.port           = port; 
+   	            this.bezeichnung    = bezeichnung;
+   	            this.max_verbindung = max_verbindung;
    	        }
    	        
    	     }
@@ -247,8 +250,8 @@ namespace MEQery
    	     {
    	     	    List<Port_List> port_daten = new List<Port_List>();
              
-   	     	    port_daten.Add(new Port_List( 4411 , "cfy_rohdaten" ) );
-   	     	    port_daten.Add(new Port_List( 88   , "http"  ) );
+   	     	    port_daten.Add(new Port_List( 4411 , "cfy_rohdaten" , 1  )  );
+   	     	    port_daten.Add(new Port_List( 88   , "http"         , 500  ) );
    	     	    
    	     	    liste = port_daten;
    	     }
