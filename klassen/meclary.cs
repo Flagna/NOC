@@ -1,3 +1,26 @@
+/*
+   *************************************************************************************************************
+   /      MEClary - Modul -                                                                                    /
+   /                                                                                                           /
+   /                                                                                                           /
+   /      Cod by Meiko Eichler                                                                                 /
+   /      Copyright by Meiko Eichler                                                                           /
+   /                                                                                                           /
+   /      Datei erstellt am 01.03.2017                                                                         /
+   /                                                                                                           /
+   /      Ordner: /klassen/                                                                                    /
+   /      Datei Name: meclary.cs                                                                               /
+   /                                                                                                           /
+   /      Beschreibung: Hier werden die gesammelten Daten vom Portlistner in ein List Array gelegt.            /
+   /                    und bereitgestellt zum weiterverarbeiten.                                              /
+   /                    Die Klasse leifert ein status wo sich das List gerade befindet.                        /
+   /                    - "Clary" Klasse verarbeiet Datenimport vom Listener und stellt in einem List Daten    /
+   /                      Bereit zum weiterverarbeiten                                                         /
+   /                                                                                                           /
+   *************************************************************************************************************  
+*/
+
+
 using System;
 using System.Net;
 using System.Collections.Generic;

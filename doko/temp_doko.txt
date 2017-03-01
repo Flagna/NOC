@@ -1,4 +1,20 @@
-﻿
+﻿/*
+   *************************************************************************************************************
+   /      Doku Temp                                                                                            /
+   /                                                                                                           /
+   /                                                                                                           /
+   /      Cod by Meiko Eichler                                                                                 /
+   /      Copyright by Meiko Eichler                                                                           /
+   /                                                                                                           /
+   /      Datei erstellt am 00.03.2017                                                                         /
+   /                                                                                                           /
+   /      Ordner: /doku/                                                                                       /
+   /      Datei Name: doku.cs                                                                                  /
+   /                                                                                                           /
+   /      Beschreibung: keine zum Programm relevanten Daten nur Dokumentation und Temp Daten                   /
+   /                                                                                                           /
+   *************************************************************************************************************  
+*/
 
 
 
