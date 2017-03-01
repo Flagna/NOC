@@ -1,3 +1,25 @@
+/*
+   *************************************************************************************************************
+   /      NOC Portal Backend Hauptdatei                                                                        /
+   /                                                                                                           /
+   /                                                                                                           /
+   /      Cod by Meiko Eichler                                                                                 /
+   /      Copyright by Meiko Eichler                                                                           /
+   /                                                                                                           /
+   /      Datei erstellt am 01.03.2017                                                                         /
+   /                                                                                                           /
+   /      Ordner: /                                                                                            /
+   /      Datei Name: noc_main.cs                                                                              /
+   /                                                                                                           /
+   /      Beschreibung: In der Hauptdate startet und endet das kommplete Backend.                              /
+   /                    Hier werden die gesamten Haupt-Threads gestartet ( Module )  und Kontroliert.          /
+   /                    - "NocBackend" Klasse startet die Main und die Threads werden dort gestartet           /
+   /                    - "NocRun" Klasse steuert die gesamten Threads und Programm bis zum finalen ende       /
+   /                                                                                                           /
+   *************************************************************************************************************  
+*/
+
+
 using System;
 using MEQery;
 using MEClary;

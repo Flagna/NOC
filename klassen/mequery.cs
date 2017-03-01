@@ -1,3 +1,31 @@
+/*
+   *************************************************************************************************************
+   /      MEQuery - Modul -                                                                                    /
+   /                                                                                                           /
+   /                                                                                                           /
+   /      Cod by Meiko Eichler                                                                                 /
+   /      Copyright by Meiko Eichler                                                                           /
+   /                                                                                                           /
+   /      Datei erstellt am 01.03.2017                                                                         /
+   /                                                                                                           /
+   /      Ordner: /klassen/                                                                                    /
+   /      Datei Name: mequery.cs                                                                               /
+   /                                                                                                           /
+   /      Beschreibung: Dieses modul ist eine Sammlung für mehrer Klassen                                      /
+   /                    - "Benutzer" Klasse liefert Benutzer und Password                                      /
+   /                    - "MYSQL" Klasse diese liefert den zugang zur localen mysql Datenbank                  /
+   /                    - "EventObjekt" Klasse reagiert auf Tastatur eingaben ( eventhändler )                 /
+   /                    - "Protokoll"  Klasse protokolliert den Programverlauf und legt statuse in List        /
+   /                    - "Text" Klasse filtern von steuerzeichen, vergleichen usw.                            /
+   /                    - "Datum" Klasse liefert Datum,Unixzeitstempel usw.                                    /
+   /                    - "PortZuweisung" Klasse  sucht alle Netzwerkkomponenetn zb IP Adresse, Status,        /
+   /                       Lebenszeit, Welche art usw und Speichert diese in ein List                          /
+   /                    - "AsciiPic" Klasse hier sind Bilder in Ascii Format hinterlegt                        /
+   /                                                                                                           /
+   *************************************************************************************************************  
+*/
+
+
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -161,13 +189,8 @@ namespace MEQery
           return ausgabe;  	   	
    	   }
    	   
-   }
-  
-    // -> Vergleich Klasse <-- 
-   public class Vergleich
-   {
-  	  	  public bool gleich( string inhalt , string  verg_inhalt )
-  	  	  {
+   	    public bool gleich( string inhalt , string  verg_inhalt )
+  	  	{
   	  	  	   bool ruckgabe = false;
   	  	  	   
   	  	       if ( inhalt.Equals ( verg_inhalt ) )
@@ -175,8 +198,11 @@ namespace MEQery
   	  	       else {}
  	       
   	  	       return ruckgabe;
-  	  	  }
+  	    }
+   	   
    }
+  
+  
    
    public class Datum
    {
@@ -193,14 +219,6 @@ namespace MEQery
 	      
    }
 
-   public class Echo
-   {
-	    public void c(String ausgabe )
-	    {
-	    	 Console.WriteLine ( ausgabe );
-	    	
-	    }
-   }
    
    public class PortZuweisung
    {

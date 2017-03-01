@@ -8,7 +8,7 @@ namespace MySQL
 	
 	public class MySQLDatenImport
 	{  
-	   /* variable für Steuerung  Threads   */
+	   /* variable für Steuerung  Threadsa   */
 	  private  bool status = true;
 
     /* protokoll Klasse & datum  einbinden */
