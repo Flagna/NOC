@@ -29,9 +29,11 @@ namespace MySQL
 				   /* Protokoll erstellen */
 				   protokol.erstellen( proto_woher , proto_gruppe , "Neue daten sind angekommen vom Listener Status: " + MEClary.Clary.cfy_port_status , proto_datei ,"MySQLDatenImport","mainClaryDatenImport()" , false );
 				   
-			     LoadMySQLData load = new LoadMySQLData ();
-		 	
-			     load.Fill_Tables ();
+				   // Nur zu Testzwecken abgestellt -
+			     //  LoadMySQLData load = new LoadMySQLData ();
+		       //  load.Fill_Tables ();
+		        Console.WriteLine ( "OK Daten werden Vorgeladen und in MYSQL versendet.");
+		       
 			     /*
 			        if (MEClary.Clary.cfy_port_status == "empfangen") {
 				
