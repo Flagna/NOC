@@ -24,13 +24,18 @@
 using System;
 using System.Net;
 using System.Collections.Generic;
+using MEQery;
 
 namespace MEClary
 {
     
     public class Clary
     {
-    	
+    	 private  string  proto_woher  = "Clary_Daten_List_Erstellung";
+	  	 private  string  proto_datei  = "/klassen/meclary.cs";
+	  	 private  string  proto_klasse = "Clary";
+	  	 private  Protokol protokol = new Protokol();
+	  	    
        public class Clary_List
        {
     	   public string signalquelle_id;
@@ -98,9 +103,9 @@ namespace MEClary
    	   /* leer      = "So wird es geboren und erhält den status nach einer bearbeitung */
    	   /* mysql     = "Daten werden gerade an mysql weitergeleitet */
    	   public static string cfy_port_status = "leer";
+   	   public static string cfy_port_gruppe = string.Empty;
    	   
-   	   
-       public void rohdaten()
+       public void rohdaten(string daten ,string proto_gruppe)
        {
        	   /* Beispiel:
        	   
@@ -113,8 +118,9 @@ namespace MEClary
                }
            
            */
- 
-       	  
+             
+            
+       	    
        	    string signalquelle_id = string.Empty;
     	      string cluster_id   = string.Empty;
     	      string type      = string.Empty;
@@ -140,14 +146,22 @@ namespace MEClary
     	      
         	  List<Clary_List> clary_daten = new List<Clary_List>();
        	
-       	    /*  Datenstrom vom Port holen   - Start - */
+       	    /*  Daten Verarbeiten welche vom Portlistener gekommen sind  - Start - */
+       	    protokol.erstellen( proto_woher , proto_gruppe , "Es wird begonnen die List zu befühlen mit den Daten vom Portlistener." , proto_datei ,proto_klasse,"rohdaten(string daten ,string proto_gruppe)" , false );
        	    
        	    
+       	    Console.WriteLine( "\n Daten Was CFY Klasse zum Befühllen erhalten hat: " + daten + " \n Bitte Taste Drücken. " );  
+       	    Console.ReadKey();
        	    
        	    
-       	    
-       	    /*  Datenstrom vom Port holen   - Ende - */
+       	    /*  Daten Verarbeiten welche vom Portlistener gekommen sind  - Ende - */
         	    
+       	    
+       	    
+       	    
+       	    
+       	    
+       	    
        	    
        	    /* Testdaten  Start */
        	     
@@ -203,7 +217,9 @@ namespace MEClary
        	    
        	    
        	    
-       	    cfy_rohdaten = clary_daten;
+       	    cfy_rohdaten = clary_daten; /* Daten in Klassen List laden und zum verarbeiten bereitstellen */
+       	    protokol.erstellen( proto_woher , proto_gruppe , "List wurde erfolgreich erstellt mit daten und Status wurde auf Komplett gesetzt." , proto_datei ,proto_klasse,"rohdaten(string daten ,string proto_gruppe)" , false );
+       	    Clary.cfy_port_status = "komplett";  /* Clray List Status auf Komplett setezen und zur weiterverarbeitung Frei geben */ 
        } 
         
     }

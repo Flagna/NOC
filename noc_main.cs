@@ -27,6 +27,7 @@ using MEPort;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
+using System.Collections;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using MySQL;
@@ -48,6 +49,11 @@ namespace NOCPortal
         	  Console.WriteLine( "--------Willkommen im NOC Portal Backend  ----------- \n"); 
         	  Console.WriteLine( "----------------------------------------------------- \n\n"); 	
         	  Console.WriteLine( " Bitte drücken Sie eine Taste um das NOC Portal Backend zu starten. \n\n"); 	
+        	  Console.WriteLine( "----------------------------------------------------- \n\n");
+        	  Console.WriteLine( " Tastenkombination:  \n");
+        	  Console.WriteLine( " -> AltGr + C = Clary Thread ausschalten zur DB. ( es erfolgt kein neuer Durchlauf Aktueller wird noch abgearbeitet.  \n");
+        	  Console.WriteLine( " -> AltGr + B = Programm beenden.  \n\n");
+        	  
         	  Console.ReadKey();
         	  
         	  main_run();
@@ -78,12 +84,19 @@ namespace NOCPortal
         	   portlistener  = new PortListener[th_anzahl];
         	   noc_thread    = new Thread[th_anzahl]; 
         	   
-        	   noc_thread[0] = new Thread( noc_run.rennen); /* Thread Objekt erzeugen  aus Klasse - Standart Thread - */ 
-        	   noc_thread[1] = new Thread( mysqldatenimport.rennen ); /* Thread Objekt erzeugen  aus Klasse - Standart Thread - */ 
+        	   noc_thread[0]          = new Thread( noc_run.rennen); /* Thread Objekt erzeugen  aus Klasse - Standart Thread - */ 
+        	   noc_thread[0].Name     = "Hauptfunktion_main_run"; /* Thread Namen geben */
+        	   noc_thread[0].Priority = ThreadPriority.Highest; /* Höchste Priorität vergeben was Thread hat */
+        	   noc_thread[0].IsBackground = true;   /* Thread läuft im Backround  deklarieren ( System räumt bei nicht beenden des Thread selber diesen auf )  */
+        	   noc_thread[1]          = new Thread( mysqldatenimport.rennen ); /* Thread Objekt erzeugen  aus Klasse - Standart Thread - */ 
+        	   noc_thread[1].Name     = "CFY_zu_Mysql_Datenimport"; /* Thread Namen geben */
+        	   noc_thread[1].Priority = ThreadPriority.BelowNormal; /* eine stufe unter Normale Priorität vergeben was Thread hat */
+        	   noc_thread[1].IsBackground = true;   /* Thread läuft im Backround  deklarieren ( System räumt bei nicht beenden des Thread selber diesen auf )  */
         	   
         	   int port_i = 0;
         	   int pos = 2;
-
+             string thread_name = string.Empty;
+             
              /* Port Schleife */
              foreach (PortZuweisung.Port_List port_liste in PortZuweisung.liste)
              {
@@ -92,9 +105,13 @@ namespace NOCPortal
                   {  
              	       if(netz.aktiv_ip == "ja")
                      { 
+                     	   thread_name = "PortListener_" + netz.ip_adresse +":"+ port_liste.port;  /* Thread Namen zuweisen */
                  	       portlistener[port_i] = new PortListener();
-                 	       portlistener[port_i].ipport(netz.ip_adresse , port_liste.port , port_liste.bezeichnung , port_liste.max_verbindung  );
+                 	       portlistener[port_i].ipport(netz.ip_adresse , port_liste.port , port_liste.bezeichnung , port_liste.max_verbindung , thread_name  );
                  	       noc_thread[pos] = new Thread( portlistener[port_i].rennen);
+                 	       noc_thread[pos].Name = thread_name;
+                 	       noc_thread[pos].Priority = ThreadPriority.AboveNormal; /* eine Stufe unter Höchste Priorität vergeben was Thread hat */
+                 	       noc_thread[pos].IsBackground = true;   /* Thread läuft im Backround  deklarieren ( System räumt bei nicht beenden des Thread selber diesen auf )  */
                  	       pos++;
                  	       port_i++;
                      }
@@ -130,19 +147,44 @@ namespace NOCPortal
 	  	  	  EventObjekt eventobjekt = new EventObjekt(); /* Eventobjekt erstellen */
 	  	  	  ConsoleKeyInfo taste    = new ConsoleKeyInfo(); /* Tastaturabfrage Objekt erstellen */
 	  	  	  
-	  	  	  Console.WriteLine ( "-------- NOC Portal Backend  Hauptfunktion Main  wurde gestartet   ---------\n"  );
+	  	  	  Console.WriteLine ( "-- Hauptfunktion und Port Listener wurde gestartet --\n"  );
 	  	  	  while(status)
 	  	  	  {   
 	  	  	  	  /* Auswerung zurücksetzten und auf neue Eingabe lauschen von Tastatur */
 	  	  	  	  taste = Console.ReadKey(true);
 	  	  	  	 
-	  	  	  	  if( eventobjekt.tastatur(taste,"altgr+s") )
+	  	  	  	  if( eventobjekt.tastatur(taste,"altgr+b") )
 	  	  	  	  { /* Programm beenden  Alles Stoppen */
-	  	  	  	  	 
-	  	  	  	  	  this.anhalten();      /* HauptThread  ( Main ) anhalten */ 
-	  	  	  	  	  for(int i=0;i<NocBackend.portlistener.Length;i++)
-	  	  	  	  	  {  try{ NocBackend.portlistener[i].anhalten();  } catch { }  }  /* Allen Portlistner den Befehl geben anzuhalten */ 
-	  	  	  	  	  Console.WriteLine ( "-------- NOC Portal wurde beendet! ---------\n");
+	  	  	  	  	  
+	  	  	  	  	  Console.WriteLine ( "-- NOC Portal Backend wird jetzt geschlossen. Bitte warten. --\n\n");
+	  	  	  	  	  for(int i=1;i< NocBackend.noc_thread.Length;i++)
+	  	  	  	  	  {  
+	  	  	  	  	  	  try
+	  	  	  	  	  	  {
+	  	  	  	  	  	      if(NocBackend.noc_thread[i].IsAlive)
+	  	  	  	  	  	      {  
+	  	  	  	  	  	      	  foreach (TCP_Verwaltung.TCP_List tcpli in TCP_Verwaltung.liste)
+                                {
+              	                       if(tcpli.thread_name == NocBackend.noc_thread[i].Name ) /* TCP Listener suchen anhand des Thred Namen */
+              	                       {
+              	                          tcpli.listener.Stop();  /* TCP Listener Stoppen */
+              	                          break;
+              	                       }else {}
+                                }
+                                
+	  	  	  	  	  	      	  NocBackend.noc_thread[i].Abort();
+	  	  	  	  	  	      	  NocBackend.noc_thread[i].Join(); /* Warten bis Thread beendet wurde */
+	  	  	  	  	  	      }
+	  	  	  	  	  	      else {  } 
+	  	  	  	  	  	      
+	  	  	  	  	  	  }
+	  	  	  	  	  	  catch
+	  	  	  	  	  	  {  } 
+	  	  	  	  	  	   
+	  	  	  	  	  	  
+	  	  	  	  	  }
+	  	  	  	  	  this.anhalten();      /* HauptThread  ( Main ) anhalten -- erst zum schluss ;-)  */ 
+	  	  	  	  	  
 	  	  	  	  }
 	  	  	  	  else if( eventobjekt.tastatur(taste,"altgr+c") ) /* PortListener 5 Stoppen */
 	  	  	  	  {
@@ -171,7 +213,7 @@ namespace NOCPortal
 	  	  	  	  else{}
 	  	  	  	 
 	  	  	  }
-	  	  	  Console.WriteLine ( "-------- NOC Portal Backend  Hauptfunktion Main wurde beendet.  ---------\n");
+	  	  	  
 	  	  }
 	  	  
 	  	  

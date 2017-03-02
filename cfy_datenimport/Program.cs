@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MEClary;
 using MEQery;
+using System.Threading;
 
 namespace MySQL
 {
@@ -67,14 +68,22 @@ namespace MySQL
 		{  
 			 
 			  
-			 Console.WriteLine ( "-------- NOC Portal Clary Daten Import Modul wurde gestartet.---------");
-			 /* neue gruppen Nummer generieren aus unix zeitstempel */
+			 Console.WriteLine("-- NOC Portal Clary Daten Import Modul wurde gestartet. --");
+			 /* neue gruppen Nummer generieren aus unix zeitstempel */ 
 			 proto_gruppe = "" + datum.unix();
 			 /* Protokoll erstellen */
 			 protokol.erstellen( proto_woher , proto_gruppe , "CFY MYSQL Datenimport Modul wurde gestartet." , proto_datei ,"MySQLDatenImport","rennen()" , false );
  			 while(status)
-			 {
-				  mainClaryDatenImport();
+			 {   
+			 	   try
+			 	   {
+				      mainClaryDatenImport();
+				   }
+				   catch(ThreadAbortException e) /* Thread wird von der Main aus sofort abgebrochen - Programm wurde beendet */
+	  	  	 {
+	  	  	   	 protokol.erstellen( proto_woher , proto_gruppe , "Thread wurde von der Main sofort Beendet da Programm geschlossen wurde ( .Abort() )."  + e.Message , proto_datei ,"MySQLDatenImport","rennen()" , false );
+	  	  	   	 break;	  	       
+	  	  	 }
 			 }
 			 /* Protokoll erstellen */
 			 protokol.erstellen( proto_woher , proto_gruppe , "CFY MYSQL Datenimport Modul wurde beendet." , proto_datei ,"MySQLDatenImport","rennen()" , false );

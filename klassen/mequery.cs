@@ -93,6 +93,7 @@ namespace MEQery
 	  	  	
 	  	  	 bool ruckgabe = false;
 	  	  	 if(was == "altgr+s" && ( taste.Modifiers & ConsoleModifiers.Control) != 0  && taste.Key == ConsoleKey.S) ruckgabe = true; else {}
+	  	  	 if(was == "altgr+b" && ( taste.Modifiers & ConsoleModifiers.Control) != 0  && taste.Key == ConsoleKey.B) ruckgabe = true; else {}
 	  	  	 if(was == "altgr+1" && ( taste.Modifiers & ConsoleModifiers.Control) != 0  && taste.Key == ConsoleKey.D1) ruckgabe = true; else {}
 	  	  	 if(was == "altgr+2" && ( taste.Modifiers & ConsoleModifiers.Control) != 0  && taste.Key == ConsoleKey.D2) ruckgabe = true; else {}
 	  	  	 if(was == "altgr+3" && ( taste.Modifiers & ConsoleModifiers.Control) != 0  && taste.Key == ConsoleKey.D3) ruckgabe = true; else {}
@@ -266,7 +267,11 @@ namespace MEQery
    
    public class Host
    {   
-   	   public string name;
+   	   public   string  name;
+   	   private  string  proto_woher  = "Clary_Daten_List_Erstellung";
+	  	 private  string  proto_datei  = "/klassen/mequery.cs";
+	  	 private  string  proto_klasse = "Host";
+	  	 private  Protokol protokol = new Protokol();
    	   
    	   public Host()
    	   {  /* Konstruktur für Host  /-> Name für Maschiene raussuchen und in Variable legen  */
@@ -349,10 +354,12 @@ namespace MEQery
    	      string ip_adresse       = string.Empty;  /* IP Adresse der Schnittstelle */
    	      string aktiv_ip         = string.Empty;  /* Aktive IP Adresse */ 
    	      
-   	      NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
-          foreach (NetworkInterface adapter in interfaces)
-          { 
-          	  
+   	      protokol.erstellen( proto_woher , "Neztwerk_List" , "Neztwerk Daten werden bereitgestellt." , proto_datei ,proto_klasse,"netzwerk_daten()" , false );
+   	      try
+   	      {
+   	         NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
+             foreach (NetworkInterface adapter in interfaces)
+             { 
                 name = adapter.Name;
                 type = adapter.NetworkInterfaceType.ToString();
                 status = adapter.OperationalStatus.ToString();
@@ -360,7 +367,7 @@ namespace MEQery
                
                 ip4_or_ip6 = "";  aktiv_ip       = "";
                 ip_adresse = "";  max_lebenszeit = "";
-               
+                
                 if (adapter.Supports(NetworkInterfaceComponent.IPv4))ip4_or_ip6 = "IPv4";
                 else if (adapter.Supports(NetworkInterfaceComponent.IPv6))ip4_or_ip6 = "IPv6"; else {}
                  
@@ -375,18 +382,31 @@ namespace MEQery
                         if(UnicastIPAddressInformation.IsDnsEligible == true || ip_adresse == "127.0.0.1")
                          aktiv_ip = "ja";  else  aktiv_ip = "nein";
                          
-                        /* Maximale Lebensdauer ermitteln was vom DNS zugewiesen wurde in Secunden */
-                        max_lebenszeit = UnicastIPAddressInformation.DhcpLeaseLifetime.ToString();
+                        try
+                        {  max_lebenszeit = UnicastIPAddressInformation.DhcpLeaseLifetime.ToString(); }  /* Maximale Lebensdauer ermitteln was vom DNS zugewiesen wurde in Secunden */  
+                        catch(SocketException e)
+                        {   string fehlermeldung = String.Format("SocketException: {0}", e.Message);                        	  
+                        	  protokol.erstellen( proto_woher , "Neztwerk_List" , "Maximale Lebensdauer Fehler: " + fehlermeldung , proto_datei ,proto_klasse,"netzwerk_daten()" , true );
+                        }
 
-                        /* Verbleibende lebenszeit der IP Adresse in Secunden */
-                        offen_lebenszeit = UnicastIPAddressInformation.AddressValidLifetime.ToString();
-
+                        try  
+                        { offen_lebenszeit = UnicastIPAddressInformation.AddressValidLifetime.ToString(); } /* Verbleibende lebenszeit der IP Adresse in Secunden */
+                        catch(SocketException e)
+                        {   string fehlermeldung = String.Format("SocketException: {0}", e.Message);                        	  
+                        	  protokol.erstellen( proto_woher , "Neztwerk_List" , "Verbleibende lebenszeit Fehler: " + fehlermeldung , proto_datei ,proto_klasse,"netzwerk_daten()" , true );
+                        }
 
                 }               
              
                 netzw_daten.Add(new Neztwerk_List( name , type , status , ip4_or_ip6 , physical_adresse , max_lebenszeit , offen_lebenszeit , ip_adresse , aktiv_ip  ) ); 
+             }
+   	    
+   	      }
+   	      catch(SocketException e)
+          {   string fehlermeldung = String.Format("SocketException: {0}", e.Message);                        	  
+              protokol.erstellen( proto_woher , "Neztwerk_List" , "Fataler Fehler beim holen der Netzwerkdaten: " + fehlermeldung , proto_datei ,proto_klasse,"netzwerk_daten()" , true );
           }
-   	      
+        
    	      return netzw_daten;   	   
        }
    	   

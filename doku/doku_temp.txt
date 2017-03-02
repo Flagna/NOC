@@ -31,7 +31,21 @@
 8--->192.168.178.62-->DELL-ME-LAPTOP
 9--->2001:0:5ef5:79fb:3cc0:24c7:3f57:4dc1-->DELL-ME-LAPTOP
 
+ Console.WriteLine(" ");
+ Console.ReadKey();
 
+
+prio thread
+
+    Highest
+
+    AboveNormal
+
+    Normal
+
+    BelowNormal
+
+    Lowest
 
 
 In Make Datei muss bei UltraStudio abgeändert werden um die DLL einzubinden:

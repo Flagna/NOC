@@ -96,6 +96,51 @@ namespace MEPort
 	   	    }
 	   	
 	   }
+	   
+	   
+	   public class TCP_Verwaltung
+	   {
+	   	    
+	   	     public class TCP_List
+	   	     {
+	   	     	    public TcpListener listener;
+	   	     	    public string thread_name;
+	   	     	    
+	   	     	    public TCP_List() {}
+	   	     	    
+	   	     	    public TCP_List( TcpListener listener, string thread_name )
+	   	     	    {
+	   	     	    	  this.listener    = listener;
+	   	     	    	  this.thread_name = thread_name;
+	   	     	    }
+	   	     }
+	   	     
+	   	     public static List<TCP_List> liste = new List<TCP_List>();
+	   	     
+	   	     public void tcp_eintrag(string ip_adresse,int port,string thread_name)
+	   	     {
+	   	     	  bool status = false;
+	   	     	
+	   	        /* Prüfen ob Port noch Verbindungen entgegen nehmen kann oder nicht */
+              foreach (TCP_List tcpli in liste)
+              {
+              	    if(tcpli.thread_name == thread_name)
+              	    {
+              	       status = true; /* Kein neuer eintrag TCP Listener war schon vorhanden */
+              	    }
+              }
+              
+              if(status == false) /* Es war noch kein TCP Listener Vorhanden */ 
+              {     
+              	    IPAddress ipadress = IPAddress.Parse(ip_adresse);
+                    TcpListener listener = new TcpListener ( ipadress , port );
+                    liste.Add( new TCP_List( listener , thread_name  ) );
+              }
+              else {} 
+              
+           }
+	   }
+	   
 	
 
      public class PortListener
@@ -106,8 +151,8 @@ namespace MEPort
 	  	    private volatile int port;
 	  	    private volatile int max_verbindung;
 	  	    private volatile string port_bezeichnung;
+	  	    private volatile string thread_name;
 	  	    private volatile TcpListener listener;
-	  	    private volatile IPAddress localAddr;
 	  	    public  string  proto_woher = "Portsteuerung";
 	  	    public  string  proto_datei = "port_steuerung.cs";
 	  	    public volatile string proto_gruppe;
@@ -119,10 +164,22 @@ namespace MEPort
 	  	    	 proto_gruppe = ip_adresse + ":" + port + "|" + port_bezeichnung;  /* Gruppe für durchlauf defienieren für Protokoll */
 	  	    	 
 	  	    	 try
-	  	       {
-	  	    	   localAddr = IPAddress.Parse(ip_adresse);
-               listener = new TcpListener ( localAddr, port ); 
-               listener.Start ();
+	  	       { 
+	  	       	 TCP_Verwaltung tcp_verwaltung = new TCP_Verwaltung();
+	  	       	 tcp_verwaltung.tcp_eintrag( ip_adresse , port , thread_name );
+	  	       	 
+	  	       	
+	  	       	 foreach (TCP_Verwaltung.TCP_List tcpli in TCP_Verwaltung.liste)
+               {
+              	    if(tcpli.thread_name == thread_name )
+              	    {
+              	       listener = tcpli.listener;
+              	       break;
+              	    }else {}
+               }
+	  	       	 
+	  	       	 
+	  	       	 listener.Start ();
 	  	    	   
 	  	    	   
 	  	    	   protokol.erstellen( proto_woher , proto_gruppe , "PortListener wurde gestartet." , proto_datei ,"PortListener","rennen()" , false );
@@ -137,6 +194,11 @@ namespace MEPort
                        
                        clientThread.Add( new Client_Instanz( client , proto_woher , proto_gruppe , proto_datei , port_bezeichnung , max_verbindung , port ) ); /* übergebe Verbindung um eigenen Thread zu erstellen für Verbindung */
 	  	  	  	     }
+	  	  	  	     catch(ThreadAbortException e) /* Thread wird von der Main aus sofort abgebrochen - Programm wurde beendet */
+	  	  	         {
+	  	  	   	          protokol.erstellen( proto_woher , proto_gruppe , "Thread wurde von der Main sofort Beendet da Programm geschlossen wurde ( .Abort() )."  + e.Message , proto_datei ,"PortListener","rennen()" , false );
+	  	  	   	          break;
+	  	  	         }
 	  	  	  	     catch (System.IO.IOException)
                    {
                         protokol.erstellen( proto_woher , proto_gruppe , "Client hat Verbindung beendet.", proto_datei ,"PortListener","rennen()" , true );
@@ -153,11 +215,17 @@ namespace MEPort
 	  	  	     protokol.erstellen( proto_woher , proto_gruppe , "PortListener wurde beendet.", proto_datei ,"PortListener","rennen()" , false );
 	  	  	     listener.Stop ();   
 	  	  	   }
+	  	  	   catch(ThreadAbortException e) /* Thread wird von der Main aus sofort abgebrochen - Programm wurde beendet */
+	  	  	   {
+	  	  	   	  protokol.erstellen( proto_woher , proto_gruppe , "Thread wurde von der Main sofort Beendet da Programm geschlossen wurde ( .Abort() )."  + e.Message , proto_datei ,"PortListener","rennen()" , false );
+	  	  	   	  listener.Stop ();  	       
+	  	  	   }
 	  	  	   catch (SocketException e)
              {
                 string fehlermeldung = String.Format("SocketException: {0}", e.Message);
                 protokol.erstellen( proto_woher , proto_gruppe , "SocketException wurde gewurfen Portlistener wurde beendet. Fehler: " + fehlermeldung , proto_datei ,"PortListener","" , true );
              } 
+             
 	  	  	     
 	  	    }
 	  	  
@@ -167,12 +235,13 @@ namespace MEPort
               status = false;
           }
           
-          public void ipport(string adresse,int port_liste, string port_bezeichnung_liste , int max_verbindung_liste )
+          public void ipport(string adresse,int port_liste, string port_bezeichnung_liste , int max_verbindung_liste , string thread_name_liste )
           {
               ip_adresse       = adresse;
               port             = port_liste;
               port_bezeichnung = port_bezeichnung_liste;
               max_verbindung   = max_verbindung_liste;
+              thread_name      = thread_name_liste;
           }
           
          
@@ -212,6 +281,7 @@ namespace MEPort
 	  	    	      this.max_verbindung   = max_verbindung;
 	  	    	      this.port             = port;
 	  	    	      
+	  	    	      protokol.erstellen( proto_woher , proto_gruppe , "Thread für Verbindung wurde hergestellt." , proto_datei ,"Client_Instanz","konstruktor" , false );
 	  	    	  	  new Thread( new ThreadStart( rennen_client ) ).Start();
 	  	    }
 	  	    	  
@@ -344,25 +414,25 @@ namespace MEPort
                      puffer_string = text.steuerzeichen( puffer_string , "alle" ); 
                     /*  Datenstrom Bauen und in einem String legen -- Ende -- */  
                  
-                     Console.WriteLine( "\n Daten vom Memorystream: " + puffer_string + " \n" );  
-	  	  	  	    
+                    
 	  	  	  	       if(this.port_bezeichnung == "cfy_rohdaten")
                      {   /* CFY status nur ändern wenn Mit Port für CFY_Rohdaten gesprochen wird */
-                      
-                          Clary.cfy_port_status = "komplett";  /* Clray List Status auf Komplett setezen und zur weiterverarbeitung Frei geben */ 
+                           
+                          Clary clary = new Clary();
+                          clary.rohdaten(puffer_string , this.proto_gruppe );
                      }
                      else {}
                      
                      
                    }
                    catch (System.IO.IOException)
-                   {  protokol.erstellen( proto_woher , proto_gruppe , "Client hat Verbindung beendet.", proto_datei ,"Client_Instanz","rennen_client()" , true );  }
+                   {  protokol.erstellen( this.proto_woher , this.proto_gruppe , "Client hat Verbindung beendet.", this.proto_datei ,"Client_Instanz","rennen_client()" , true );  }
                    catch (SocketException e)
                    {
                        string fehlermeldung = String.Format("SocketException: {0}", e.Message);
-                       protokol.erstellen( proto_woher , proto_gruppe , "SocketException wurde gewurfen Verbindung wurde getrennt. Fehler: " + fehlermeldung , proto_datei ,"Client_Instanz","rennen_client()" , true );
+                       protokol.erstellen( this.proto_woher , this.proto_gruppe , "SocketException wurde gewurfen Verbindung wurde getrennt. Fehler: " + fehlermeldung , this.proto_datei ,"Client_Instanz","rennen_client()" , true );
                    }
-                     
+                   
                    portzahler.kontrolle( max_verbindung , port , false ); /* Verbindung wieder Frei geben */ 
               }
               else
