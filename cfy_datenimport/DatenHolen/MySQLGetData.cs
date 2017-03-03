@@ -19,6 +19,7 @@ namespace MySQL
 		private string uid;
 		private string password;
 		private string connectionString;
+		private bool connectionIsOpen = false;
 
 		//Konstruktor
 		public MySQLGetData ()
@@ -41,33 +42,42 @@ namespace MySQL
 		//Verbindung öffnen
 		public bool OpenConnection ()
 		{
-			try {
-				connection.Open ();
-				return true;
-			} catch (MySqlException ex) {
-				switch (ex.Number) {
-				case 0:
-					Console.WriteLine ("Cannot connect to server.  Contact administrator");
-					break;
+			if (!connectionIsOpen) {
+				try {
+					connection.Open ();
+					connectionIsOpen = true;
+					return true;
+				} catch (MySqlException ex) {
+				
+					switch (ex.Number) {
+					case 0:
+						Console.WriteLine ("Cannot connect to server.  Contact administrator");
+						break;
 
-				case 1045:
-					Console.WriteLine ("Invalid username/password, please try again");
-					break;
+					case 1045:
+						Console.WriteLine ("Invalid username/password, please try again");
+						break;
+					}
+					return false;
 				}
-				return false;
 			}
+			return false;
 		}
 
 		//Verbindung schließen
 		public bool CloseConnection ()
 		{
-			try {
-				connection.Close ();
-				return true;
-			} catch (MySqlException ex) {
-				Console.WriteLine (ex.Message);
-				return false;
+			if (connectionIsOpen) {
+				try {
+					connection.Close ();
+					connectionIsOpen = false;
+					return true;
+				} catch (MySqlException ex) {
+					Console.WriteLine (ex.Message);
+					return false;
+				}
 			}
+			return false;
 		}
 
 

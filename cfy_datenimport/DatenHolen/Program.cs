@@ -24,40 +24,28 @@ namespace MySQL
 		{
 
 			/* hier erst reingehen wenn Status komplett oder empfange geliefert wird von Klasse */
-			if( MEClary.Clary.cfy_port_status ==  "komplett") 
+			if(true )//MEClary.Clary.cfy_port_status ==  "empfange") 
 			{   
 				   /* Protokoll erstellen */
-				   protokol.erstellen( proto_woher , proto_gruppe , "Neue daten sind angekommen vom Listener Status: " + MEClary.Clary.cfy_port_status , proto_datei ,"MySQLDatenImport","mainClaryDatenImport()" , false );
-				   
-			     LoadMySQLData load = new LoadMySQLData ();
-		 	
-			     load.Fill_Tables ();
-			     /*
-			        if (MEClary.Clary.cfy_port_status == "empfangen") {
-				
-		         	}
-
-			        while (true) {
-		       		if (MEClary.Clary.cfy_port_status == "komplett") {
-					    break;
-				        }
-			        }
-			     */
+				   //protokol.erstellen( proto_woher , proto_gruppe , "Neue daten sind angekommen vom Listener Status: " + MEClary.Clary.cfy_port_status , proto_datei ,"MySQLDatenImport","mainClaryDatenImport()" , false );
 
 
-			     //Daten laden WICHTIG
-
-			     //Vergleichen und Update oder Insert in die Rohdaten-Tabelle machen.
-			     //mysqlcompare.Compare ();
+			    LoadMySQLData load = new LoadMySQLData ();
+				Compare compare = new Compare ();
+			 
 			
 			     /* Status ändern und Listener wieder frei geben das dieser neue Daten empfangen kann */
-			     MEClary.Clary.cfy_port_status = "leer";
+
+			     
 			     /* Protokoll erstellen */
-			     protokol.erstellen( proto_woher , proto_gruppe , "Daten wurden erfolgreich in MYSQL integriert ( CFY) warte auf neue Daten." , proto_datei ,"MySQLDatenImport","mainClaryDatenImport()" , false );
+			     //protokol.erstellen( proto_woher , proto_gruppe , "Daten wurden erfolgreich in MYSQL integriert ( CFY) warte auf neue Daten." , proto_datei ,"MySQLDatenImport","mainClaryDatenImport()" , false );
 			     /* neue gruppen Nummer generieren aus unix zeitstempel */
-			     proto_gruppe = "" + datum.unix();
+			     //proto_gruppe = "" + datum.unix();
 			}
-			else {}
+			else if(MEClary.Clary.cfy_port_status ==  "komplett") 
+			{
+				//Vergleichen und einfügen
+			}
 
 		} 
 		
