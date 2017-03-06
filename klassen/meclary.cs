@@ -24,7 +24,7 @@
 using System;
 using System.Net;
 using System.Collections.Generic;
-using MEQery;
+using MEQuery;
 
 namespace MEClary
 {
@@ -35,6 +35,17 @@ namespace MEClary
 	  	 private  string  proto_datei  = "/klassen/meclary.cs";
 	  	 private  string  proto_klasse = "Clary";
 	  	 private  Protokol protokol = new Protokol();
+	  	 
+	  	 /* Datensatz von CFY Rohdaten */
+   	   public static List<Clary_List> cfy_rohdaten;
+   	   
+   	   /* Status Variable wo sich der TCPListener gerade befindet */
+   	   /* empfange  = "Daten werden gerade von TCP Listener in List gefühlt Bitte Warten */
+   	   /* komplett  = "Daten wurden kommtlet geladen und sind zum weiter verarbeiten Bereit */
+   	   /* leer      = "So wird es geboren und erhält den status nach einer bearbeitung */
+   	   /* mysql     = "Daten werden gerade an mysql weitergeleitet */
+   	   public static string cfy_port_status = "leer";
+   	   public static string cfy_port_gruppe = string.Empty; /* Gruppen Zuweisung */
 	  	    
        public class Clary_List
        {
@@ -94,16 +105,7 @@ namespace MEClary
     	
        }
     
-       /* Datensatz von CFY Rohdaten */
-   	   public static List<Clary_List> cfy_rohdaten;
-   	   
-   	   /* Status Variable wo sich der TCPListener gerade befindet */
-   	   /* empfange  = "Daten werden gerade von TCP Listener in List gefühlt Bitte Warten */
-   	   /* komplett  = "Daten wurden kommtlet geladen und sind zum weiter verarbeiten Bereit */
-   	   /* leer      = "So wird es geboren und erhält den status nach einer bearbeitung */
-   	   /* mysql     = "Daten werden gerade an mysql weitergeleitet */
-   	   public static string cfy_port_status = "leer";
-   	   public static string cfy_port_gruppe = string.Empty;
+       
    	   
        public void rohdaten(string daten ,string proto_gruppe)
        {
@@ -142,8 +144,7 @@ namespace MEClary
     	      string gps_langengrad  = string.Empty;
     	      string gps_breitengrad = string.Empty;
     	      string signallieferant = string.Empty;
-    	      
-    	      
+    	          	      
         	  List<Clary_List> clary_daten = new List<Clary_List>();
        	
        	    /*  Daten Verarbeiten welche vom Portlistener gekommen sind  - Start - */
@@ -155,12 +156,7 @@ namespace MEClary
        	    
        	    
        	    /*  Daten Verarbeiten welche vom Portlistener gekommen sind  - Ende - */
-        	    
-       	    
-       	    
-       	    
-       	    
-       	    
+        	   
        	    
        	    
        	    /* Testdaten  Start */

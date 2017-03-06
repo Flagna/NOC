@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MEClary;
-using MEQery;
+using MEQuery;
 using System.Threading;
 
 namespace MySQL

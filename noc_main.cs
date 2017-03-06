@@ -21,7 +21,7 @@
 
 
 using System;
-using MEQery;
+using MEQuery;
 using MEClary;
 using MEPort;
 using System.Collections.Generic;

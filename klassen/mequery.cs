@@ -36,7 +36,7 @@ using System.Collections;
 
 
 
-namespace MEQery
+namespace MEQuery
 {   
 	
 	 public class Benutzer
