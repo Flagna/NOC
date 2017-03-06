@@ -30,14 +30,16 @@ using System.IO;
 using System.Text;
 using System.Net.Sockets;
 using System.Collections.Generic;
-using MEQery;
+using MEQuery;
 using MEClary;
 
 
 namespace MEPort
 {
 	   public class PortZahler
-	   {
+	   {    
+	   	    public static  List<Zahlwerk_List> zahlwerk = new List<Zahlwerk_List>();
+	   	
 	   	    public class Zahlwerk_List
 	   	    {
 	   	    	  public int port;
@@ -53,9 +55,6 @@ namespace MEPort
 	   	    	
 	   	    }
 	   	
-	   	    public static  List<Zahlwerk_List> zahlwerk = new List<Zahlwerk_List>();
-	   	    
-	   	    
 	   	    public bool kontrolle(int max_verbindung , int port , bool plus_minus )
 	   	    {
 	   	    	  bool status_vorhanden = false;
@@ -99,7 +98,8 @@ namespace MEPort
 	   
 	   
 	   public class TCP_Verwaltung
-	   {
+	   {     
+	   	     public static List<TCP_List> liste = new List<TCP_List>();
 	   	    
 	   	     public class TCP_List
 	   	     {
@@ -114,8 +114,6 @@ namespace MEPort
 	   	     	    	  this.thread_name = thread_name;
 	   	     	    }
 	   	     }
-	   	     
-	   	     public static List<TCP_List> liste = new List<TCP_List>();
 	   	     
 	   	     public void tcp_eintrag(string ip_adresse,int port,string thread_name)
 	   	     {
@@ -165,10 +163,12 @@ namespace MEPort
 	  	    	 
 	  	    	 try
 	  	       { 
+	  	       	 /* verbindung zur Netzwerk Schnittstelle herstellen dsc-wx 220*/
 	  	       	 TCP_Verwaltung tcp_verwaltung = new TCP_Verwaltung();
 	  	       	 tcp_verwaltung.tcp_eintrag( ip_adresse , port , thread_name );
 	  	       	 
 	  	       	
+	  	       	 /* */
 	  	       	 foreach (TCP_Verwaltung.TCP_List tcpli in TCP_Verwaltung.liste)
                {
               	    if(tcpli.thread_name == thread_name )
