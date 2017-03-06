@@ -38,13 +38,18 @@ namespace NOCPortal
 {  
 	  public class NocBackend
 	  {  
-	  	  
-	      /* Die Hauptfunktion / Main  vom backend NOC Portal */
-        public static void Main ()
+	  	  /* Die Hauptfunktion / Main  vom backend NOC Portal */
+        public static void Main()
         {   
-        	
+        	  string  proto_woher  = "NOC_Backend_Main";
+	  	      string  proto_datei  = "/noc_main.cs";
+	  	      string  proto_klasse = "NocBackend";
+	  	      string  proto_gruppe = "main";
+	  	      Protokol protokol = new Protokol();
+	  	      
         	  AsciiPic asciipic = new AsciiPic();
         	  
+        	  protokol.erstellen( proto_woher , proto_gruppe , "Noc Portal Backend wird gestartet." , proto_datei ,proto_klasse,"Main()" , false ); /* Protokoll Schreibe */
         	  Console.WriteLine( "----------------------------------------------------- \n"); 	
         	  Console.WriteLine( "--------Willkommen im NOC Portal Backend  ----------- \n"); 
         	  Console.WriteLine( "----------------------------------------------------- \n\n"); 	
@@ -62,6 +67,7 @@ namespace NOCPortal
         	  Console.WriteLine(   "-------- NOC Portal Backend wurde Beendet!  --------- \n"); 
         	  Console.WriteLine(   "----------------------------------------------------- \n\n"); 	
         	  Console.WriteLine( asciipic.computer()	);
+        	  protokol.erstellen( proto_woher , proto_gruppe , "Noc Portal Backend wurde beendet." , proto_datei ,proto_klasse,"Main()" , false ); /* Protokoll Schreibe */
         } 
         
        
@@ -71,7 +77,14 @@ namespace NOCPortal
         public static MySQLDatenImport mysqldatenimport = new MySQLDatenImport();
         
         public static void main_run()
-        {    /* Hier werden die gesamten Thread gstartet was benötigt werden im Backend */
+        {   
+        	  string  proto_woher  = "NOC_Backend_Main";
+	  	      string  proto_datei  = "/noc_main.cs";
+	  	      string  proto_klasse = "NocBackend";
+	  	      string  proto_gruppe = "main";
+	  	      Protokol protokol = new Protokol(); 
+        	
+        	  /* Hier werden die gesamten Thread gstartet was benötigt werden im Backend */
         	   Host host       = new Host();
         	   NocRun noc_run  = new NocRun();
         	   
@@ -83,6 +96,9 @@ namespace NOCPortal
         	   int th_anzahl = ( netzw_daten.Count + 2 ) * port_anzahl; /* Wieviel Thread erzeugt werden sollen ermitteln plus standart Threads die immer aktiviert werden * der Port Adressen die benötigt werden  */
         	   portlistener  = new PortListener[th_anzahl];
         	   noc_thread    = new Thread[th_anzahl]; 
+        	   
+        	   
+        	   protokol.erstellen( proto_woher , proto_gruppe , "Thread werden vorbereitet." , proto_datei ,proto_klasse,"main_run()" , false );  /* Protokoll Schreibe */
         	   
         	   noc_thread[0]          = new Thread( noc_run.rennen); /* Thread Objekt erzeugen  aus Klasse - Standart Thread - */ 
         	   noc_thread[0].Name     = "Hauptfunktion_main_run"; /* Thread Namen geben */
@@ -120,13 +136,17 @@ namespace NOCPortal
         	        /* Aktive Verbindungen lauschen lassen  - Ende - */
         	   }
         	 
+        	   
+        	   protokol.erstellen( proto_woher , proto_gruppe , "Thread werden jetzt alle gestartet." , proto_datei ,proto_klasse,"main_run()" , false );  /* Protokoll Schreibe */
         	           	   
         	   for(int i =0; i < pos;i++)
         	   {
         	      noc_thread[i].Start();   /* Alle Thread starten */ 
         	   }
         	   
-        	      
+        	   
+        	   protokol.erstellen( proto_woher , proto_gruppe , "Thread werden alle jetzt Überwacht bis diese Beendet werden. ( Join() )" , proto_datei ,proto_klasse,"main_run()" , false );  /* Protokoll Schreibe */
+        	   
         	   for(int i =0; i < pos;i++)
         	   {
         	      noc_thread[i].Join(); /* Prüft ob Thread beendet wurden wenn nicht Wartet System bis Threads ALLE beendet wurden  */ 
@@ -141,14 +161,19 @@ namespace NOCPortal
 	  {
 	  	  /* variable für Steuerung gleichzeitiger Threads deklarieren und für jeden Threads mit true versehen  */
 	  	  private volatile bool status = true;
+	  	  private string  proto_woher  = "NOC_Backend_Main";
+	  	  private string  proto_datei  = "/noc_main.cs";
+	  	  private string  proto_klasse = "NocRun";
+	  	  private string  proto_gruppe = "main";
+	  	  Protokol protokol = new Protokol();
 	  	  
 	  	  public void rennen()
 	  	  {    
 	  	  	  EventObjekt eventobjekt = new EventObjekt(); /* Eventobjekt erstellen */
 	  	  	  ConsoleKeyInfo taste    = new ConsoleKeyInfo(); /* Tastaturabfrage Objekt erstellen */
-	  	  	  
-	  	  	  Console.WriteLine ( "-- Hauptfunktion und Port Listener wurde gestartet --\n"  );
-	  	  	  while(status)
+	  	      
+	  	      protokol.erstellen( proto_woher , proto_gruppe , "Haupt Thread wird gestartet." , proto_datei ,proto_klasse,"rennen()" , false );  /* Protokoll Schreibe */
+	  	      while(status)
 	  	  	  {   
 	  	  	  	  /* Auswerung zurücksetzten und auf neue Eingabe lauschen von Tastatur */
 	  	  	  	  taste = Console.ReadKey(true);
@@ -156,7 +181,7 @@ namespace NOCPortal
 	  	  	  	  if( eventobjekt.tastatur(taste,"altgr+b") )
 	  	  	  	  { /* Programm beenden  Alles Stoppen */
 	  	  	  	  	  
-	  	  	  	  	  Console.WriteLine ( "-- NOC Portal Backend wird jetzt geschlossen. Bitte warten. --\n\n");
+	  	  	  	  	  protokol.erstellen( proto_woher , proto_gruppe , "Benutzer Stoppt das komplette Backend mit ( Abort() )." , proto_datei ,proto_klasse,"rennen()" , false );  /* Protokoll Schreibe */
 	  	  	  	  	  for(int i=1;i< NocBackend.noc_thread.Length;i++)
 	  	  	  	  	  {  
 	  	  	  	  	  	  try
@@ -186,29 +211,10 @@ namespace NOCPortal
 	  	  	  	  	  this.anhalten();      /* HauptThread  ( Main ) anhalten -- erst zum schluss ;-)  */ 
 	  	  	  	  	  
 	  	  	  	  }
-	  	  	  	  else if( eventobjekt.tastatur(taste,"altgr+c") ) /* PortListener 5 Stoppen */
+	  	  	  	  else if( eventobjekt.tastatur(taste,"altgr+c") ) /* MYSQL Datenimport Thread Beenden  */
 	  	  	  	  {
 	  	  	  	     try{ NocBackend.mysqldatenimport.anhalten(); } catch { }  	
-	  	  	  	  }
-	  	  	  	  else if( eventobjekt.tastatur(taste,"altgr+1") ) /* PortListener 1 Stoppen */
-	  	  	  	  {
-	  	  	  	     try{ NocBackend.portlistener[0].anhalten(); } catch { }
-	  	  	  	  }
-	  	  	  	  else if( eventobjekt.tastatur(taste,"altgr+2") ) /* PortListener 2 Stoppen */
-	  	  	  	  {
-	  	  	  	     try{ NocBackend.portlistener[1].anhalten(); } catch { } 
-	  	  	  	  }
-	  	  	  	  else if( eventobjekt.tastatur(taste,"altgr+3") ) /* PortListener 3 Stoppen */
-	  	  	  	  {
-	  	  	  	    try{ NocBackend.portlistener[2].anhalten(); } catch { }  	
-	  	  	  	  }
-	  	  	  	  else if( eventobjekt.tastatur(taste,"altgr+4") ) /* PortListener 4 Stoppen */
-	  	  	  	  {
-	  	  	  	     try{ NocBackend.portlistener[3].anhalten(); } catch { }  	
-	  	  	  	  }
-	  	  	  	  else if( eventobjekt.tastatur(taste,"altgr+5") ) /* PortListener 5 Stoppen */
-	  	  	  	  {
-	  	  	  	     try{ NocBackend.portlistener[4].anhalten(); } catch { }  	
+	  	  	  	     protokol.erstellen( proto_woher , proto_gruppe , "Thread - Datenimport zu MYSQL wurde gestoppt." , proto_datei ,proto_klasse,"rennen()" , false );  /* Protokoll Schreibe */
 	  	  	  	  }
 	  	  	  	  else{}
 	  	  	  	 

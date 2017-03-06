@@ -41,7 +41,11 @@ namespace MEQery
 	
 	 public class Benutzer
 	 {
-	 	     
+	 	     private string  proto_woher  = "NOC_Benutzer_Verwaltung";
+	   	   private string  proto_datei  = "/klassen/mequery.cs";
+	  	   private string  proto_klasse = "Benutzer";
+	  	   private string  proto_gruppe = "benutzer";
+	  	   Protokol protokol = new Protokol();
 	 	     
 	 	     private bool prufung(string p_name ,string p_passw = null ,string was = null )
 	 	     {
@@ -56,7 +60,8 @@ namespace MEQery
 	 	     }
 	 	     
 	 	     public bool liste(string p_name ,string p_passw = null ,string was = null )
-	 	     {
+	 	     {  
+	 	     	  protokol.erstellen( proto_woher , proto_gruppe , "Benutzer Zugangs-Daten werden abgefragt." , proto_datei ,proto_klasse,"liste(string p_name ,string p_passw = null ,string was = null )" , false );  /* Protokoll Schreibe */
 	 	     	  return prufung(p_name ,p_passw, was);
 	 	     }
 	 	     
@@ -64,7 +69,13 @@ namespace MEQery
 	 }
 	 
 	 public class MYSQL
-	 {
+	 {     
+	 	     private string  proto_woher  = "NOC_Mysql_Zugang";
+	   	   private string  proto_datei  = "/klassen/mequery.cs";
+	  	   private string  proto_klasse = "MYSQL";
+	  	   private string  proto_gruppe = "mysqlZugang";
+	  	   Protokol protokol = new Protokol();
+	 	   
 	 	     private  string benutzer_in()
 	 	     {   return "root";   }
 	 	     
@@ -76,13 +87,16 @@ namespace MEQery
 	 	     
 	 	     
 	 	     public  string ben()
-	 	     {   return benutzer_in();   }
+	 	     {  protokol.erstellen( proto_woher , proto_gruppe , "Benutzer für Mysql wurde abgefragt." , proto_datei ,proto_klasse,"ben()" , false );  /* Protokoll Schreibe */  
+	 	     	  return benutzer_in();   }
 	 	     
 	 	     public  string pass()
-	 	     {   return password_in();   }
+	 	     {   protokol.erstellen( proto_woher , proto_gruppe , "Password für Mysql wurde abgefragt." , proto_datei ,proto_klasse,"pass()" , false );  /* Protokoll Schreibe */  
+	 	     	   return password_in();   }
 	 	     
 	 	     public  string ip()
-	 	     {   return ipadresse_in();   }
+	 	     {   protokol.erstellen( proto_woher , proto_gruppe , "IP Adresse für Mysql wurde abgefragt." , proto_datei ,proto_klasse,"ip()" , false );  /* Protokoll Schreibe */  
+	 	     	   return ipadresse_in();   }
 	 }
 	 
    public class EventObjekt
@@ -222,7 +236,13 @@ namespace MEQery
 
    
    public class PortZuweisung
-   {
+   {    
+   	     private string  proto_woher  = "NOC_Mysql_Zugang";
+	   	   private string  proto_datei  = "/klassen/mequery.cs";
+	  	   private string  proto_klasse = "PortZuweisung";
+	  	   private string  proto_gruppe = "portklasse";
+	  	   Protokol protokol = new Protokol();
+   	
    	     public class Port_List 
          {   
        	    /* Klasse ist für List   */
@@ -248,7 +268,7 @@ namespace MEQery
    	     public static List<Port_List> liste;
    	     
    	     private void erstellen()
-   	     {
+   	     {   
    	     	    List<Port_List> port_daten = new List<Port_List>();
              
    	     	    port_daten.Add(new Port_List( 4411 , "cfy_rohdaten" , 1  )  );
@@ -259,6 +279,7 @@ namespace MEQery
    	     
    	     public void portlist()
    	     {
+   	     	  protokol.erstellen( proto_woher , proto_gruppe , "PortListe wird erstellt." , proto_datei ,proto_klasse,"portlist()" , false );  /* Protokoll Schreibe */  
    	     	  erstellen();
    	     }
    	    
