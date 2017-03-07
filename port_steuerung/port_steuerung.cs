@@ -351,12 +351,12 @@ namespace MEPort
                       	     {
                       	 	        benutzername =  puffer_string;
                       	 	        protokol.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer wird aufgefordert Name einzugeben." ,  this.proto_datei ,"Client_Instanz","rennen_client()" , false );
-                      	 	        client_antwort = text.byte_stream("Hallo " + benutzername + " gib Bitte dein Password ein. \n");
+                      	 	        client_antwort = text.byte_stream("Bitte gebe dein Password ein. \n");
                       	 	        anmeldung    =  "password";
                       	     } 
                       	     else
                       	     {    protokol.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer "+ benutzername +" wurde nicht gefunden." , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
-                      	 	        client_antwort = text.byte_stream("Benutzername " + benutzername + " nicht gefunden Bitte Neu eingeben! \n");  }
+                      	 	        client_antwort = text.byte_stream("Benutzername wurde nicht gefunden Bitte Neu eingeben!\n");  }
                       	 
                              /* Info an Client senden */ 
                              stream.Write(client_antwort, 0, client_antwort.Length);
@@ -366,12 +366,12 @@ namespace MEPort
                       	     if( benutzer.liste( text.klein(benutzername) , text.klein(puffer_string) )  )
                       	     {
                       	 	        protokol.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer "+ benutzername +" wurde erfolgreich angemeldet." , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
-                      	 	        client_antwort = text.byte_stream("Willkommen " + benutzername + "  im NOC Portal. \n Ich warte jetzt auf Daten :-) " + asciipic.warten() + "\n");
+                      	 	        client_antwort = text.byte_stream("Willkommen im NOC Portal Backend. Ich warte jetzt auf Daten.\n");
                       	 	        anmeldung =  "ok";
                       	     } 
                       	     else
                       	     {    protokol.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer "+ benutzername +" hat Fehlerhaftes Password eingetragen." , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
-                      	          client_antwort = text.byte_stream("Dein Password war Fehlerhaft "+ benutzername + ". Bitte Neu eingeben! \n");  }
+                      	          client_antwort = text.byte_stream("Dein Password war Fehlerhaft. Bitte Neu eingeben!\n");  }
                       	   
                       	      /* Info an Client senden */ 
                               stream.Write(client_antwort, 0, client_antwort.Length);
