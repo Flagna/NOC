@@ -154,9 +154,13 @@ namespace MEQuery
    	    public static List<Protokol_List> liste = new List<Protokol_List>();
    	     
    	    public void erstellen(string woher,string gruppe,string inhalt,string datei,string klasse ,string  funktion ,bool fehler )
-   	    {    
-   	    	   Datum datum = new Datum();
-   	     	   liste.Add(new Protokol_List( woher , gruppe , inhalt ,datei ,klasse ,funktion ,fehler , datum.unix() ) );   	     	 
+   	    {   
+   	    	  try
+   	    	  { 
+   	    	     Datum datum = new Datum();
+   	     	     liste.Add(new Protokol_List( woher , gruppe , inhalt ,datei ,klasse ,funktion ,fehler , datum.unix() ) ); 
+   	     	  }
+   	     	  catch {}  
    	    }
    	    
    }
