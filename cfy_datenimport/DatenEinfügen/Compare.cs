@@ -5,6 +5,7 @@ using MEClary;
 
 namespace MySQL
 {
+	//Vergleichsklasse
 	public class Compare
 	{
 		private Dictionary<string, List<string>[]> tables = new Dictionary<string, List<string>[]> ();
