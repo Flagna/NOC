@@ -163,12 +163,12 @@ namespace MEPort
 	  	    	 
 	  	    	 try
 	  	       { 
-	  	       	 /* verbindung zur Netzwerk Schnittstelle herstellen dsc-wx 220*/
+	  	       	 /* verbindung zur Netzwerk Schnittstelle herstellen ( Listener Vorbereiten und in List legen ) */
 	  	       	 TCP_Verwaltung tcp_verwaltung = new TCP_Verwaltung();
 	  	       	 tcp_verwaltung.tcp_eintrag( ip_adresse , port , thread_name );
 	  	       	 
 	  	       	
-	  	       	 /* */
+	  	       	 /* Listener aus List holen  für diese Thread zum Starten */
 	  	       	 foreach (TCP_Verwaltung.TCP_List tcpli in TCP_Verwaltung.liste)
                {
               	    if(tcpli.thread_name == thread_name )
@@ -178,11 +178,9 @@ namespace MEPort
               	    }else {}
                }
 	  	       	 
-	  	       	 
-	  	       	 listener.Start ();
+	  	       	 listener.Start (); /* Listener Starten */
 	  	    	   
-	  	    	   
-	  	    	   protokol.erstellen( proto_woher , proto_gruppe , "PortListener wurde gestartet." , proto_datei ,"PortListener","rennen()" , false );
+	  	    	   protokol.erstellen( proto_woher , proto_gruppe , "PortListener wurde gestartet." , proto_datei ,"PortListener","rennen()" , false ); /* Protokoll erstellen */
 	  	  	     while(status)
 	  	  	     {
 	  	  	     	   try
