@@ -36,7 +36,6 @@ namespace MySQL
 				try {
 					Console.WriteLine("Lade Daten Bitte warten...");
 					foreach (string item1 in table_names) {
-						
 						if (item1.Contains("cfy_"))
 						{
 							if(!(item1.Contains("cfy_rohdaten"))){

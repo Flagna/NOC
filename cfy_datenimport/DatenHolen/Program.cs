@@ -29,7 +29,8 @@ namespace MySQL
 				   /* Protokoll erstellen */
 				   //protokol.erstellen( proto_woher , proto_gruppe , "Neue daten sind angekommen vom Listener Status: " + MEClary.Clary.cfy_port_status , proto_datei ,"MySQLDatenImport","mainClaryDatenImport()" , false );
 
-
+				Clary newData = new Clary ();
+				newData.rohdaten ();
 			    LoadMySQLData load = new LoadMySQLData ();
 				Compare compare = new Compare ();
 			 
