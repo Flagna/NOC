@@ -351,7 +351,7 @@ namespace MEPort
                       	     {
                       	 	        benutzername =  puffer_string;
                       	 	        protokol.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer wird aufgefordert Name einzugeben." ,  this.proto_datei ,"Client_Instanz","rennen_client()" , false );
-                      	 	        client_antwort = text.byte_stream("Bitte gebe dein Password ein.\n");#
+                      	 	        client_antwort = text.byte_stream("Bitte gebe dein Password ein.\n");
                       	 	        anmeldung    =  "password";
                       	     } 
                       	     else
