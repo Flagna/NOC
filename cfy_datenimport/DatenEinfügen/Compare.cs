@@ -10,7 +10,6 @@ namespace MySQL
 	{
 
 		private static bool compared=false;
-		private List<MEClary.Clary.Clary_List> newData = MEClary.Clary.cfy_rohdaten;
 
 		public Compare ()
 		{
@@ -25,19 +24,28 @@ namespace MySQL
 			
 			if (!compared) {
 
-				foreach (MEClary.Clary.Clary_List item1 in newData) {
-					bool wurdeGefunden = false;
+				MySQLInsertData insert = new MySQLInsertData ();
 
+				foreach (MEClary.Clary.Clary_List item1 in MEClary.Clary.cfy_rohdaten) {
+					bool wurdeGefunden = false;
+					//foreach(string item2 in LoadMySQLData.KeyList)
 					for (int i=0; i< LoadMySQLData.tables["cfy_cluster"][0].Count; i++) {
 						if (item1.cluster_id == LoadMySQLData.tables ["cfy_cluster"] [0] [i]) {
 							wurdeGefunden = true;
 							//Update+Log
-							Console.WriteLine ("Gleich");
+
 						} 
 					}
 					if (!wurdeGefunden) {
-						//Insert+Log
-						Console.WriteLine ("Nicht gefunden");
+						var myVar = 
+
+						//Falls ein Datensatz nicht gefunden wurde, wird er eingefügt, gleichzeitig
+						//auf aktiv gesetzt und ... 
+						string tableName = insert.GetTableNameForColumn ("cluster_id");
+						insert.Insert (tableName,item1.cluster_id.ToString());
+						//...der Dictionary Liste hinzugefügt. Sonst wird der gleiche Datensatz mehrfach 
+						LoadMySQLData.tables [tableName] [0].Add (item1.cluster_id.ToString());
+						//LOG schreiben
 					}
 
 
@@ -46,6 +54,8 @@ namespace MySQL
 				//newData Löschen
 			}
 		}
+
+
 
 
 
