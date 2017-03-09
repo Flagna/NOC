@@ -63,16 +63,14 @@ namespace MySQL
 			}
 		}
 
-		//Fügt einen übergebenen Parameter
+		//Fügt einen übergebenen Parameter in die übergebene Tabelle ein.
 		public bool Insert(string table, string value)
 		{
 
 			string query = "INSERT INTO " + table + " (" +
-				GetFirstColumnName(table) + "," +
-				GetSecondColumnName(table) + ") " +
+				GetFirstColumnName(table) + ") " +
 					"VALUES ('" +
-					value + "','" +
-					0 + "');";
+					value + "');";
 			Console.WriteLine (query);
 
 			try {
@@ -92,6 +90,78 @@ namespace MySQL
 			return false;
 
 		}
+
+		public bool Insert(string table, string value, string value2)
+		{
+
+			string query = "INSERT INTO " + table + " (" +
+				GetFirstColumnName(table) + "," +
+				GetSecondColumnName(table) + ") " +
+					"VALUES ('" +
+					value + "','" +
+					value2 + "');";
+			Console.WriteLine (query);
+
+			try {
+				if (OpenConnection () == true) {
+					MySqlCommand cmd = new MySqlCommand (query, connection);
+					//Execute
+					cmd.ExecuteNonQuery ();
+					//Close Connection
+					CloseConnection ();
+					return true;
+				}
+			} catch (MySqlException ex) {
+
+				Console.WriteLine ("MySQL Fehler: " + ex.Number);
+
+			}
+			return false;
+
+		}
+		public bool Insert(string table, string sollWe, string subscriber, string internet, string telefon, string objektId)
+		{
+
+			string query = "INSERT INTO " + table + " (" +
+					GetFirstColumnName(table) + "," +
+					GetSecondColumnName(table) + "," +
+					GetThirdColumnName(table) + "," +
+					GetFourthColumnName(table) + "," +
+					GetSixthColumnName(table) + ") " +
+					"VALUES ('" +
+					sollWe + "','" +
+					subscriber + "','" +
+					internet + "','" +
+					telefon + "','" +
+					objektId + "');";
+
+
+			try {
+				if (OpenConnection () == true) {
+					MySqlCommand cmd = new MySqlCommand (query, connection);
+					//Execute
+					cmd.ExecuteNonQuery ();
+					//Close Connection
+					CloseConnection ();
+					return true;
+				}
+			} catch (MySqlException ex) {
+
+				Console.WriteLine ("MySQL Fehler: " + ex.Number);
+
+			}
+			return false;
+
+		}
+
+		public void UpdateCustomer(string table, string objektId)
+		{
+			string query = "UPDATE " + table + " SET status = 1 where objekt_id = " + objektId + ";";
+
+			Console.WriteLine (query);
+
+		}
+
 
 		public bool CheckTableName (string table_name)
 		{
@@ -152,7 +222,9 @@ namespace MySQL
 		}
 
 		//Gibt eine Liste mit allen Tabellen in denen der Spaltenname vorkommt aus dem Bereich cfy_%
-		//Jedoch ohne cfy_rohdaten
+		//Jedoch ohne cfy_rohdaten 
+		//Kann auch Doppelungen beinhalten, wobei jedoch die erste gefundene Tabelle zurückgegeben wird.
+		//Das Ergebnis ist nicht immer korrekt, deswegen wird die Funktion nicht mehr benutzt.
 		public string GetTableNameForColumn(string columnName)
 		{
 
@@ -182,7 +254,7 @@ namespace MySQL
 				//Returns a string list of tables related to the column
 			}catch(Exception){
 				Console.WriteLine ("GetTableNameForColumn Fehler.");
-				return "Fehler";
+				return "Fehler";//Noch zu bearbeiten...
 			}
 
 		}
@@ -202,7 +274,7 @@ namespace MySQL
 				List<string> columnNames = GetColumnNames (table);
 				return columnNames [0];
 			} else {
-				return "Fehler";
+				return "Fehler";//Noch zu bearbeiten...
 			}
 
 		}
@@ -211,6 +283,37 @@ namespace MySQL
 			if (GetColumnNumbers (table) >= 1) {
 				List<string> columnNames = GetColumnNames (table);
 				return columnNames [1];
+			} else {
+				return "Fehler";
+			}
+
+		}
+
+		private string GetThirdColumnName(string table)
+		{
+			if (GetColumnNumbers (table) >= 1) {
+				List<string> columnNames = GetColumnNames (table);
+				return columnNames [2];
+			} else {
+				return "Fehler";
+			}
+
+		}
+		private string GetFourthColumnName(string table)
+		{
+			if (GetColumnNumbers (table) >= 1) {
+				List<string> columnNames = GetColumnNames (table);
+				return columnNames [3];
+			} else {
+				return "Fehler";
+			}
+
+		}
+		private string GetSixthColumnName(string table)
+		{
+			if (GetColumnNumbers (table) >= 1) {
+				List<string> columnNames = GetColumnNames (table);
+				return columnNames [5];
 			} else {
 				return "Fehler";
 			}
