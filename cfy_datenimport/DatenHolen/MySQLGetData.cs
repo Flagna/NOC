@@ -19,6 +19,7 @@ namespace MySQL
 		private string uid;
 		private string password;
 		private string connectionString;
+		private string charset;
 		private bool connectionIsOpen = false;
 
 		//Konstruktor
@@ -34,8 +35,9 @@ namespace MySQL
 			database = "noc_portal";
 			uid = "root";
 			password = "";
+			charset = "CHARSET=utf8";
 			connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-			database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
+				database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";" + charset + ";";
 			connection = new MySqlConnection (connectionString);
 		}
 

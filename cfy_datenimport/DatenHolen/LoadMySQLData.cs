@@ -34,7 +34,7 @@ namespace MySQL
 			if (!datenGeladen) {
 				
 				try {
-					Console.WriteLine("Lade Daten Bitte warten...");
+					Console.Write("Lade Daten Bitte warten");
 					foreach (string item1 in table_names) {
 						if (item1.Contains("cfy_"))
 						{
@@ -44,6 +44,7 @@ namespace MySQL
 								//Console.WriteLine ("...geladen");
 
 								for (int i = 0; i < tables [item1].Length; i++) {
+
 									anzahlDatensätze += tables [item1] [i].Count;
 								}
 							}

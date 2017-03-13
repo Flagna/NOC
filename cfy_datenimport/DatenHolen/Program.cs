@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MEClary;
 using MEQery;
+using NOC;
 
 namespace MySQL
 {
@@ -18,7 +19,7 @@ namespace MySQL
 	  private static string proto_datei = "Program.cs";
     private static string proto_gruppe;
 	  
-		
+
 		/* Die Hauptfunktion / Main  vom backend NOC Portal */
 		public void mainClaryDatenImport()
 		{
@@ -33,6 +34,8 @@ namespace MySQL
 				newData.rohdaten ();
 			    LoadMySQLData load = new LoadMySQLData ();
 				Compare compare = new Compare ();
+				TestKlasse test = new TestKlasse ();
+				test.Test ();
 			 
 			
 			     /* Status ändern und Listener wieder frei geben das dieser neue Daten empfangen kann */

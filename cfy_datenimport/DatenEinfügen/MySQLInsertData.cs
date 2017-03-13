@@ -15,6 +15,7 @@ namespace MySQL
 		private string database;
 		private string uid;
 		private string password;
+		private string charset;
 		private string connectionString;
 
 		public MySQLInsertData ()
@@ -28,8 +29,9 @@ namespace MySQL
 			database = "noc_portal";
 			uid = "root";
 			password = "";
+			charset = "CHARSET=utf8";
 			connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-				database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
+				database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";" + charset + ";";
 			connection = new MySqlConnection (connectionString);
 		}
 
@@ -66,12 +68,18 @@ namespace MySQL
 		//Fügt einen übergebenen Parameter in die übergebene Tabelle ein.
 		public bool Insert(string table, string value)
 		{
+			System.Text.Encoding utf_8 = System.Text.Encoding.UTF8;
+
+			byte[] utf = System.Text.Encoding.UTF8.GetBytes(value);
+
+			value = string.Empty;
+			value = System.Text.Encoding.UTF8.GetString(utf);
+
 
 			string query = "INSERT INTO " + table + " (" +
 				GetFirstColumnName(table) + ") " +
 					"VALUES ('" +
 					value + "');";
-			Console.WriteLine (query);
 
 			try {
 				if (OpenConnection () == true) {
@@ -100,7 +108,7 @@ namespace MySQL
 					"VALUES ('" +
 					value + "','" +
 					value2 + "');";
-			Console.WriteLine (query);
+
 
 			try {
 				if (OpenConnection () == true) {
@@ -156,9 +164,25 @@ namespace MySQL
 
 		public void UpdateCustomer(string table, string objektId)
 		{
+			// update cfy_kunden set status = 1 where soll_we = 20;
 			string query = "UPDATE " + table + " SET status = 1 where objekt_id = " + objektId + ";";
 
-			Console.WriteLine (query);
+
+
+			try {
+				if (OpenConnection () == true) {
+					MySqlCommand cmd = new MySqlCommand (query, connection);
+					//Execute
+					cmd.ExecuteNonQuery ();
+					//Close Connection
+					CloseConnection ();
+
+				}
+			} catch (MySqlException ex) {
+
+				Console.WriteLine ("MySQL Fehler: " + ex.Number);
+
+			}
 
 		}
 
