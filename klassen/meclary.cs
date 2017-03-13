@@ -13,7 +13,7 @@
    /                                                                                                           /
    /      Beschreibung: Hier werden die gesammelten Daten vom Portlistner in ein List Array gelegt.            /
    /                    und bereitgestellt zum weiterverarbeiten.                                              /
-   /                    Die Klasse leifert ein status wo sich das List gerade befindet.                        /
+   /                    Die Klasse leifert ein status wo sich das List gerade befindet.                         /
    /                    - "Clary" Klasse verarbeiet Datenimport vom Listener und stellt in einem List Daten    /
    /                      Bereit zum weiterverarbeiten                                                         /
    /                                                                                                           /
@@ -40,9 +40,9 @@ namespace MEClary
    	   public static List<Clary_List> cfy_rohdaten;
    	   
    	   /* Status Variable wo sich der TCPListener gerade befindet */
-   	   /* empfange  = "Daten werden gerade von TCP Listener in List gefühlt Bitte Warten */
+   	   /* empfange  = "Daten werden gerade von TCP Listener in List gefÃ¼hlt Bitte Warten */
    	   /* komplett  = "Daten wurden kommtlet geladen und sind zum weiter verarbeiten Bereit */
-   	   /* leer      = "So wird es geboren und erhält den status nach einer bearbeitung */
+   	   /* leer      = "So wird es geboren und erhÃ¤lt den status nach einer bearbeitung */
    	   /* mysql     = "Daten werden gerade an mysql weitergeleitet */
    	   public static string cfy_port_status = "leer";
    	   public static string cfy_port_gruppe = string.Empty; /* Gruppen Zuweisung */
@@ -148,10 +148,10 @@ namespace MEClary
         	  List<Clary_List> clary_daten = new List<Clary_List>();
        	
        	    /*  Daten Verarbeiten welche vom Portlistener gekommen sind  - Start - */
-       	    protokol.erstellen( proto_woher , proto_gruppe , "Es wird begonnen die List zu befühlen mit den Daten vom Portlistener." , proto_datei ,proto_klasse,"rohdaten(string daten ,string proto_gruppe)" , false );
+       	    protokol.erstellen( proto_woher , proto_gruppe , "Es wird begonnen die List zu befÃ¼hlen mit den Daten vom Portlistener." , proto_datei ,proto_klasse,"rohdaten(string daten ,string proto_gruppe)" , false );
        	    
        	    
-       	    Console.WriteLine( "\n Daten Was CFY Klasse zum Befühllen erhalten hat: " + daten + " \n Bitte Taste Drücken. " );  
+       	    Console.WriteLine( "\n Daten Was CFY Klasse zum BefÃ¼hllen erhalten hat: " + daten + " \n Bitte Taste DrÃ¼cken. " );  
        	    Console.ReadKey();
        	    
        	    
@@ -164,7 +164,7 @@ namespace MEClary
        	    signalquelle_id = "58268";  	      cluster_id   = "005865";
     	      type      = "eigen";    	      kategorie = "sonstiges";
     	      region   =  1;     	            plz      = "04435";
-    	      ort      = "Schkeuditz";        strasse  = "teststraße";
+    	      ort      = "Schkeuditz";        strasse  = "teststraÃŸe";
     	      hnr      = "15";         	      gestatt_name       = "Wogetra";
     	      gestatt_vertragsn  = "jj88899222ll";    objekt_id       = 584848484;
     	      soll_we         = 10;      	      subscriber      = 5;
