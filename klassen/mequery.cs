@@ -18,9 +18,11 @@
    /                    - "Protokoll"  Klasse protokolliert den Programverlauf und legt statuse in List        /
    /                    - "Text" Klasse filtern von steuerzeichen, vergleichen usw.                            /
    /                    - "Datum" Klasse liefert Datum,Unixzeitstempel usw.                                    /
+   /                    - "BeepSong" Klasse liefert Lieder für den Speaker ;-)                                 /
    /                    - "PortZuweisung" Klasse  sucht alle Netzwerkkomponenetn zb IP Adresse, Status,        /
    /                       Lebenszeit, Welche art usw und Speichert diese in ein List                          /
    /                    - "AsciiPic" Klasse hier sind Bilder in Ascii Format hinterlegt                        /
+   /                    - "ConsolenAnimation" Klasse zb Ladestatus ausgabe auf einer Zeile usw.                /
    /                                                                                                           /
    *************************************************************************************************************  
 */
@@ -31,21 +33,179 @@ using System.Net;
 using System.Net.Sockets;
 using System.Net.NetworkInformation;
 using System.Text;
+using System.Threading;
 using System.Collections.Generic;
 using System.Collections;
+using System.IO;
 
 
 
 namespace MEQuery
 {   
-	
+	 
+	 public class Einstellung
+   {   
+   	   public static int cfy_rohdaten_port;
+   	   public static int http_port;
+   	   public static int https_port;
+   	   public static int admin_port;
+   	   public static string ip_adresse;
+   	   public static bool sound;
+   	   
+   	   private string  proto_woher  = "Server_Einstellung";
+	  	 private string  proto_datei  = "/klassen/mequery.cs";
+	  	 private string  proto_klasse = "Einstellung";
+	  	 private string  proto_gruppe = Environment.MachineName;
+	  	 Protokoll protokoll = new Protokoll();
+	  	 
+   	   
+   	   public bool laden( )
+   	   {
+   	   	 Text  text   = new Text();
+   	   	 Datum datum  = new Datum();
+   	   	 bool  status = false;
+   	   	 int   er     = 0;
+   	   	 
+   	   	 try
+   	   	 {    
+   	   	 	 protokoll.erstellen( proto_woher , proto_gruppe , "config.noc Datei Laden.", proto_datei ,proto_klasse,"laden()" , false);
+   	   	   if( File.Exists(@"config_server.noc")  == false )
+           {  /* Datei war noch nicht Vorhanden HTML Kopf Schreiben un als erstes anhängen */ 
+              protokoll.erstellen( proto_woher , proto_gruppe , "config_server.noc Datei war nicht vorhanden erstelle Default config." , proto_datei ,proto_klasse,"laden()" , false);
+              
+              string[] inhalt_datei  = new string[28];
+              inhalt_datei[0]  = "#";
+              inhalt_datei[1]  = "#   ************************************************************************************************************* ";
+              inhalt_datei[2]  = "#   /      NOC Portal Server Einstellungsdatei                                                                  / ";
+              inhalt_datei[3]  = "#   /                                                                                                           / ";
+              inhalt_datei[4]  = "#   /                                                                                                           / ";
+              inhalt_datei[5]  = "#   /      Cod by Meiko Eichler                                                                                 / ";
+              inhalt_datei[6]  = "#   /      Copyright by Meiko Eichler                                                                           / ";
+              inhalt_datei[7]  = "#   /                                                                                                           / ";
+              inhalt_datei[8]  = "#   /      Datei erstellt am 14.03.2017                                                                         / ";
+              inhalt_datei[9]  = "#   /      Generiert am " + datum.datum_zeit() + "                                                              / ";
+              inhalt_datei[10] = "#   /                                                                                                           / ";
+              inhalt_datei[11] = "#   /      Datei Name: config_server.noc                                                                        / ";
+              inhalt_datei[12] = "#   /                                                                                                           / ";
+              inhalt_datei[13] = "#   /      Werte immer in  \" \" schreiben!                                                                     / ";
+              inhalt_datei[14] = "#   /      Alle 4 Felder müssen angegeben werden sonst bricht Programm ab!                                      / ";
+              inhalt_datei[15] = "#   /      als Wert kann immer \"default\"  angegeben werden Es werden dann systemeinstellungen genommen vom Pr./ ";
+              inhalt_datei[16] = "#   /      bei sound gibt es zwei werte aus und an  ( standart bei default )                                    / ";
+              inhalt_datei[17] = "#   /                                                                                                           / ";
+              inhalt_datei[18] = "#   ************************************************************************************************************* ";
+              inhalt_datei[19] = "";
+              inhalt_datei[20] = "";
+              inhalt_datei[21] = "ip_adresse          =  \"default\" ";
+              inhalt_datei[22] = "cfy_rohdaten_port   =  \"default\" ";
+              inhalt_datei[23] = "http_port           =  \"default\" ";
+              inhalt_datei[24] = "https_port          =  \"default\" ";
+              inhalt_datei[25] = "admin_port          =  \"default\" ";
+              inhalt_datei[26] = "sound               =  \"default\" ";
+              inhalt_datei[27] = "";        
+              /* Config Datei in Datei Schreiben */
+              File.AppendAllLines( @"config_server.noc" , inhalt_datei );
+   	   	   }
+   	   	   else {}
+   	   	   
+   	   	   string[] inhalt = System.IO.File.ReadAllLines(@"config_server.noc");
+   	   	   foreach (string daten in inhalt)
+   	   	   {
+   	   	   	   string[] auswertung = text.split( "=" , daten );
+   	   	   	  
+   	   	   	   if( text.trim(auswertung[0]) == "ip_adresse")
+   	   	   	   {
+   	   	   	   	  string puffer = text.trim(auswertung[1]);
+   	   	   	   	  if(text.trim(puffer , "dophoch" ) == "default") /* Default Einstellung nehmen */
+   	   	   	   	    Einstellung.ip_adresse =  "alle";
+   	   	   	   	  else
+   	   	   	        Einstellung.ip_adresse =  text.trim(puffer , "dophoch" );
+   	   	   	      er++;
+   	   	   	      protokoll.erstellen( proto_woher , proto_gruppe , "IP Adresse in Datei gefunden: " + Einstellung.ip_adresse , proto_datei ,proto_klasse,"laden()" , false);
+   	   	   	   }
+   	   	   	   else if( text.trim(auswertung[0]) == "cfy_rohdaten_port")
+   	   	   	   {
+   	   	   	   	  string puffer = text.trim(auswertung[1]);
+   	   	   	   	  if(text.trim(puffer , "dophoch" )  == "default" ) /* Default Einstellung nehmen */
+   	   	   	   	    Einstellung.cfy_rohdaten_port     =  4411;
+   	   	   	   	  else
+   	   	   	        Einstellung.cfy_rohdaten_port     =  Convert.ToInt32( text.trim(puffer , "dophoch" ) );
+   	   	   	      er++;
+   	   	   	      protokoll.erstellen( proto_woher , proto_gruppe , "CFY Rohdaten Port wurde in Datei gefunden: " + Einstellung.cfy_rohdaten_port , proto_datei ,proto_klasse,"laden()" , false);
+   	   	   	   }
+   	   	   	   else if( text.trim(auswertung[0]) == "http_port")
+   	   	   	   {
+   	   	   	   	  string puffer = text.trim(auswertung[1]);
+   	   	   	      if(text.trim(puffer , "dophoch" ) == "default" ) /* Default Einstellung nehmen */
+   	   	   	        Einstellung.http_port     =  88;
+   	   	   	      else
+   	   	   	        Einstellung.http_port     =  Convert.ToInt32( text.trim(puffer , "dophoch" ) );
+   	   	   	      er++;
+   	   	   	      protokoll.erstellen( proto_woher , proto_gruppe , "http Port wurde gefunden: " + Einstellung.http_port , proto_datei ,proto_klasse,"laden()" , false);
+   	   	   	   }
+   	   	   	   else if( text.trim(auswertung[0]) == "https_port")
+   	   	   	   {
+   	   	   	   	  string puffer = text.trim(auswertung[1]);
+   	   	   	      if(text.trim(puffer , "dophoch" ) == "default" ) /* Default Einstellung nehmen */
+   	   	   	        Einstellung.https_port     =  88779;
+   	   	   	      else
+   	   	   	        Einstellung.https_port     =  Convert.ToInt32( text.trim(puffer , "dophoch" ) );
+   	   	   	      er++;
+   	   	   	      protokoll.erstellen( proto_woher , proto_gruppe , "https Port wurde gefunden: " + Einstellung.https_port , proto_datei ,proto_klasse,"laden()" , false);
+   	   	   	   }
+   	   	   	   else if( text.trim(auswertung[0]) == "admin_port")
+   	   	   	   {
+   	   	   	   	  string puffer = text.trim(auswertung[1]);
+   	   	   	      if(text.trim(puffer , "dophoch" ) == "default" ) /* Default Einstellung nehmen */
+   	   	   	        Einstellung.admin_port     =  771482;
+   	   	   	      else
+   	   	   	        Einstellung.admin_port     =  Convert.ToInt32( text.trim(puffer , "dophoch" ) );
+   	   	   	      er++;
+   	   	   	      protokoll.erstellen( proto_woher , proto_gruppe , "Admin Port wurde gefunden: " + Einstellung.admin_port , proto_datei ,proto_klasse,"laden()" , false);
+   	   	   	   }
+   	   	   	   else if( text.trim(auswertung[0]) == "sound") 
+   	   	   	   {
+   	   	   	   	  string puffer = text.trim(auswertung[1]);
+   	   	   	   	  string pr_ausgabe =  "an";
+   	   	   	   	  if( text.trim(puffer , "dophoch" ) == "default" )  /* Default Einstellung nehmen */
+   	   	   	   	    Einstellung.sound = true;
+   	   	   	   	  else
+   	   	   	   	  {
+   	   	   	   	  	pr_ausgabe = text.trim(puffer , "dophoch" );
+   	   	   	        if(text.trim(puffer , "dophoch" ) == "aus" ) Einstellung.sound = false;  else  Einstellung.sound = true; 
+   	   	   	      }
+   	   	   	      er++; 
+   	   	   	      protokoll.erstellen( proto_woher , proto_gruppe , "Sound Einstellung wurde in Datei gefunden: " + pr_ausgabe , proto_datei ,proto_klasse,"laden()" , false);
+   	   	   	   }
+   	   	   	   else {}
+   	   	   	   
+   	   	   }
+   	   	   
+   	   	   if(er == 6) /* Es müssen alle 6 Parameter gefunden werden in der Ini ansonsten Bricht das System ab */ 
+   	   	   {    status = true;  /* einstellungs Daten wurden alle geladen True zurückgeben das system weiter arbeitet */
+   	   	   	    protokoll.erstellen( proto_woher , proto_gruppe , "Alle Einstellungen in Config Datei gefunden." , proto_datei ,proto_klasse,"laden()" , false); 
+   	   	   }
+   	   	   else
+   	   	    protokoll.erstellen( proto_woher , proto_gruppe , "Config Datei wahr Fehlerhaft es wurden nur " + er + " Einstellungen gefunden. 6 Stück sind aber minimum." , proto_datei ,proto_klasse,"laden()" , true); 
+   	   	   
+   	   	 }
+   	   	 catch (SocketException e)
+         {
+               string fehlermeldung = String.Format("SocketException: ", e.Message);
+               protokoll.erstellen( proto_woher , proto_gruppe , "SocketException wurde gewurfen Verbindung wurde getrennt. Fehler: " + fehlermeldung , proto_datei ,proto_klasse,"laden()" , true);
+         }  
+   	   	 
+   	   	 return status;
+   	   }
+   
+   }
+	 
 	 public class Benutzer
 	 {
 	 	     private string  proto_woher  = "NOC_Benutzer_Verwaltung";
 	   	   private string  proto_datei  = "/klassen/mequery.cs";
 	  	   private string  proto_klasse = "Benutzer";
 	  	   private string  proto_gruppe = "benutzer";
-	  	   Protokol protokol = new Protokol();
+	  	   Protokoll protokoll = new Protokoll();
 	 	     
 	 	     private bool prufung(string p_name ,string p_passw = null ,string was = null )
 	 	     {
@@ -54,6 +214,8 @@ namespace MEQuery
 	 	     	           p_name == "meiko"   && was     == "name" ) aussage = true;
 	 	     	   else if(p_name == "martin"  && p_passw == "dell" || 
 	 	     	           p_name == "martin"  && was     == "name" ) aussage = true;
+	 	     	   else if(p_name == "cfy"     && p_passw == "cfy#77&17" || 
+	 	     	           p_name == "cfy"     && was     == "name" ) aussage = true;
 	 	     	   else { }
 	 	     	   
 	 	     	   return aussage;
@@ -61,7 +223,7 @@ namespace MEQuery
 	 	     
 	 	     public bool liste(string p_name ,string p_passw = null ,string was = null )
 	 	     {  
-	 	     	  protokol.erstellen( proto_woher , proto_gruppe , "Benutzer Zugangs-Daten werden abgefragt." , proto_datei ,proto_klasse,"liste(string p_name ,string p_passw = null ,string was = null )" , false );  /* Protokoll Schreibe */
+	 	     	  protokoll.erstellen( proto_woher , proto_gruppe , "Benutzer Zugangs-Daten werden abgefragt." , proto_datei ,proto_klasse,"liste(string p_name ,string p_passw = null ,string was = null )" , false );  /* Protokoll Schreibe */
 	 	     	  return prufung(p_name ,p_passw, was);
 	 	     }
 	 	     
@@ -74,7 +236,7 @@ namespace MEQuery
 	   	   private string  proto_datei  = "/klassen/mequery.cs";
 	  	   private string  proto_klasse = "MYSQL";
 	  	   private string  proto_gruppe = "mysqlZugang";
-	  	   Protokol protokol = new Protokol();
+	  	   Protokoll protokoll = new Protokoll();
 	 	   
 	 	     private  string benutzer_in()
 	 	     {   return "root";   }
@@ -87,15 +249,15 @@ namespace MEQuery
 	 	     
 	 	     
 	 	     public  string ben()
-	 	     {  protokol.erstellen( proto_woher , proto_gruppe , "Benutzer für Mysql wurde abgefragt." , proto_datei ,proto_klasse,"ben()" , false );  /* Protokoll Schreibe */  
+	 	     {  protokoll.erstellen( proto_woher , proto_gruppe , "Benutzer für Mysql wurde abgefragt." , proto_datei ,proto_klasse,"ben()" , false );  /* Protokoll Schreibe */  
 	 	     	  return benutzer_in();   }
 	 	     
 	 	     public  string pass()
-	 	     {   protokol.erstellen( proto_woher , proto_gruppe , "Password für Mysql wurde abgefragt." , proto_datei ,proto_klasse,"pass()" , false );  /* Protokoll Schreibe */  
+	 	     {   protokoll.erstellen( proto_woher , proto_gruppe , "Password für Mysql wurde abgefragt." , proto_datei ,proto_klasse,"pass()" , false );  /* Protokoll Schreibe */  
 	 	     	   return password_in();   }
 	 	     
 	 	     public  string ip()
-	 	     {   protokol.erstellen( proto_woher , proto_gruppe , "IP Adresse für Mysql wurde abgefragt." , proto_datei ,proto_klasse,"ip()" , false );  /* Protokoll Schreibe */  
+	 	     {   protokoll.erstellen( proto_woher , proto_gruppe , "IP Adresse für Mysql wurde abgefragt." , proto_datei ,proto_klasse,"ip()" , false );  /* Protokoll Schreibe */  
 	 	     	   return ipadresse_in();   }
 	 }
 	 
@@ -120,10 +282,10 @@ namespace MEQuery
    }
    
    
-   public class Protokol
+   public class Protokoll
    {
    	
-   	    public class Protokol_List
+   	    public class Protokoll_List
    	    {
    	    	   public string  woher;
    	    	   public string  inhalt;
@@ -134,9 +296,9 @@ namespace MEQuery
    	    	   public int     unixzeit;
    	    	   public string  gruppe;
    	    	   
-   	    	   public Protokol_List( ) { }   
+   	    	   public Protokoll_List( ) { }   
    	    	   
-   	    	   public Protokol_List(string woher,string gruppe ,string inhalt,string datei,string klasse,string  funktion,bool fehler,int unixzeit ) 
+   	    	   public Protokoll_List(string woher,string gruppe ,string inhalt,string datei,string klasse,string  funktion,bool fehler,int unixzeit ) 
    	    	   {
    	    	   	  this.woher  = woher;
    	    	   	  this.gruppe = gruppe;
@@ -150,21 +312,132 @@ namespace MEQuery
    	    	   }
    	    }
    	    
-   	    /* Protokol Liste erstellen */
-   	    public static List<Protokol_List> liste = new List<Protokol_List>();
+   	    /* Protokoll Liste erstellen */
+   	    public static List<Protokoll_List> liste = new List<Protokoll_List>();
    	     
    	    public void erstellen(string woher,string gruppe,string inhalt,string datei,string klasse ,string  funktion ,bool fehler )
    	    {   
    	    	  try
    	    	  { 
    	    	     Datum datum = new Datum();
-   	     	     liste.Add(new Protokol_List( woher , gruppe , inhalt ,datei ,klasse ,funktion ,fehler , datum.unix() ) ); 
+   	     	     liste.Add(new Protokoll_List( woher , gruppe , inhalt ,datei ,klasse ,funktion ,fehler , datum.unix() ) ); 
    	     	  }
    	     	  catch {}  
    	    }
    	    
+   	    private void speichern(string woher,string gruppe ,string inhalt,string datei,string klasse,string  funktion,bool fehler,int unixzeit )
+   	    {   /* Diese funktion speichert die gesamelten Daten in eine Datei auf dem system wo es gerade läuft beim beenden */
+
+               Datum datum = new Datum();
+                   
+   	    	     try
+               {  
+               	   string td_style  = "<td style=\"background:#efefef;color:#000000;font-weight:bold;text-align:left;font-size:1.0em;height:30px;\" >";
+                   string spaltenName = "<tr>" + td_style + "Datum</td>" + td_style + "Uhrzeit</td>" + td_style + "Fehler</td>" + td_style + "Woher</td>"+ td_style + "Gruppe</td>" + td_style + "Inhalt</td>" + td_style + "Datei</td>" + td_style + "Klasse</td>" + td_style + "Funktion</td></tr>";
+               	   
+               	  /* HTML Protokoll in Datei Speichern */
+               	   if( File.Exists(@"noc_protokoll_server.html")  == false )
+               	   {    /* Datei war noch nicht Vorhanden HTML Kopf Schreiben und Datei erstellen */ 
+                         
+                         string[] kopf_inhalt  = new string[39]; 
+               	   	     kopf_inhalt[0] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"> ";
+                         kopf_inhalt[1] = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\"> ";
+                         kopf_inhalt[2] = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"              \"http://www.w3.org/TR/html4/strict.dtd\"> ";
+                         kopf_inhalt[3] = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Frameset//EN\"     \"http://www.w3.org/TR/html4/frameset.dtd\"> ";
+                         kopf_inhalt[4] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"       \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\"> ";
+                         kopf_inhalt[5] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"> ";
+                         kopf_inhalt[6] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\"     \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\"> ";
+                         kopf_inhalt[7] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\"              \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\"> ";
+                         kopf_inhalt[8] = "<html>";
+                         kopf_inhalt[9] = "<head>";
+	                       kopf_inhalt[10] = "<meta charset=\"UTF-8\">";
+                         kopf_inhalt[11] = "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"> ";
+                         kopf_inhalt[12] = "<title>NOC Portal - Server Protokoll Datei erstellt am "+ datum.datum_zeit() + "</title>";
+                         kopf_inhalt[13] = "<style type=\"text/css\"> ";
+                         kopf_inhalt[14] = " /* ";
+                         kopf_inhalt[15] = "   *************************************************************************************************************  ";
+                         kopf_inhalt[16] = "   /      NOC Portal Server - Protokoll Datei                                                                  /  ";
+                         kopf_inhalt[17] = "   /                                                                                                           /  ";
+                         kopf_inhalt[18] = "   /                                                                                                           /  ";
+                         kopf_inhalt[19] = "   /      Cod by Meiko Eichler                                                                                 /  ";
+                         kopf_inhalt[20] = "   /      Copyright by Meiko Eichler                                                                           /  ";
+                         kopf_inhalt[21] = "   /                                                                                                           /  ";
+                         kopf_inhalt[22] = "   /      Datei erstellt am 14.03.2017                                                                         /  ";
+                         kopf_inhalt[23] = "   /      Generiert am " + datum.datum_zeit() + "                                                              / ";
+                         kopf_inhalt[24] = "   /                                                                                                           /  ";
+                         kopf_inhalt[25] = "   /      Datei Name: noc_protokoll_server.html                                                                /  ";
+                         kopf_inhalt[26] = "   /                                                                                                           /  ";
+                         kopf_inhalt[27] = "   /      Protokolle für die Laufzeitumgebung                                                                  /  ";
+                         kopf_inhalt[28] = "   /                                                                                                           /  ";
+                         kopf_inhalt[29] = "   *************************************************************************************************************  ";
+                         kopf_inhalt[30] = " */ ";
+                         kopf_inhalt[31] = "@charset \"UTF-8\"; ";
+                         kopf_inhalt[32] = "html{ height:100%; width:100%; }    ";
+                         kopf_inhalt[33] = "</style> ";
+                         kopf_inhalt[34] = "</head> ";
+                         kopf_inhalt[35] = "<body bgcolor=\"#707a7d\"> ";
+                         kopf_inhalt[36] = "<br /><center><table style=\"width:98%\"  border=\"3\" cellpadding=\"0\" cellspacing=\"0\"  bordercolorlight=\"#8C8E8C\" bordercolordark=\"#000000\">";
+                         kopf_inhalt[37] = "<tr><th height=\"25\" style=\"color:#FFFFFF;background-color:#bd0e39;font-size:1.2em;text-align:left;height:35px;\" colspan=\"9\">NOC Portal - Client Protokoll vom "+ datum.datum_zeit() + "</td></tr>";
+                         kopf_inhalt[38] = spaltenName;
+                   
+                          /* Datei mit Kopf erstellen und Datei erstellen */
+                         File.AppendAllLines( @"noc_protokoll_server.html" , kopf_inhalt );
+   	   	           }
+   	   	           else {}
+   	   	   
+   	   	           
+               }
+               catch{}
+               
+   	    }
+   	    
+   	    
    }
    
+   public class Datei
+   {  /* Datei Behandlung */
+   	
+   	     public bool einfugen(string anker,string pathDatei , string[] zeilenInhalt )
+   	     {  /* Array String an Besimmter Stelle danach einfügen in Datei  */
+   	     	
+   	     	         /* Kompletten daten von Datei holen */
+   	   	           string[] dateiInhalt = File.ReadAllLines(pathDatei);
+   	   	           
+   	   	           /* Gesamtgröße von neuer Datei ermitteln */
+   	   	           int neuDateiZeilen = dateiInhalt.Length + zeilenInhalt.Length;
+   	   	           
+   	   	           /* neues String Array für Übergabe der Datei erstellen */
+   	   	           string[] neueDaten = new string[neuDateiZeilen];
+   	   	           int neuZeile = 0;
+   	   	           
+   	   	           /* Anker suchen ab den eingehagen werden soll und Neuen datensatz erstellen */
+   	   	           for(int i=0;i < dateiInhalt.Length;i++)
+   	   	           {
+   	   	           	   if(dateiInhalt[i] == anker )
+   	   	           	   {  /* Anker wurde gefunden ( Neue Daten darunter einhängen ) */
+   	   	           	   	  neueDaten[neuZeile] = dateiInhalt[i]; /* Alte Daten in neuen Datenbestand schreiben */
+   	   	           	   	  neuZeile++;
+   	   	           	   	  for(int n=0;n<zeilenInhalt.Length;n++) /* Neue Daten in Datenbestand schreiben */
+   	   	           	   	  {
+   	   	           	   	  	 neueDaten[neuZeile] = zeilenInhalt[n];
+   	   	           	   	  	 neuZeile++;
+   	   	           	   	  }
+   	   	           	   	  
+   	   	           	   }
+   	   	           	   else 
+   	   	           	   {
+   	   	           	   	   neueDaten[neuZeile] = dateiInhalt[i]; /* Alte Daten in neuen Datenbestand schreiben */
+   	   	           	   	   neuZeile++;
+   	   	           	   }
+   	   	           }
+   	   	           
+   	   	           /* Datei Komplett Überschreiben */
+   	   	           File.WriteAllLines( pathDatei , neueDaten );   
+   	   	           
+   	   	        return true;	   	         
+   	     }
+   	
+   }   
    
    /* String KLasse um Inhalt zu bearbeiten */
    public class Text 
@@ -181,6 +454,35 @@ namespace MEQuery
    	   	  
    	   	  return inhalt;
    	   }
+   	   
+   	   public string trim(string inhalt , string was = null )
+   	   { /* schneidet vorne und Hinten alles ab was defieniert wird */    
+   	   	     
+   	   	     char[]  wasTrim = new char[1];
+   	         if(was == "dophoch" )
+   	           wasTrim[0] =  '"';
+   	         else if(was != null)
+   	            wasTrim[0] =  Convert.ToChar(was);
+   	         else
+   	            wasTrim[0] =  ' ';
+
+             return inhalt.Trim(wasTrim);
+       }
+       
+       public string[] split( string zeichen , string inhalt , string optional = null)
+       { /* string zerschneiden */
+       	  
+       	     char[]  wasSplit = new char[1];
+   	         wasSplit[0] =  Convert.ToChar(zeichen);
+   	      
+   	         StringSplitOptions  option = new StringSplitOptions();
+   	         if(optional == "kk")
+   	           option = StringSplitOptions.RemoveEmptyEntries;
+   	         else
+   	           option = StringSplitOptions.None;  /* Standart Zerschneiden an diesem Punkt und ein Array daraus machen */
+   	      
+             return inhalt.Split( wasSplit , option );
+       }
    	   
    	   public string gross(string inhalt)
    	   {   return inhalt.ToUpper();  }
@@ -235,9 +537,344 @@ namespace MEQuery
 	     {
 	     	   return  (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;  // -> gibt aus: 1487235150
 	     }
+	     
+	     public string unixDatum(int unixStempel,string was = null)
+       {
+            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0);  /*  gerechnet wird ab der UNIX Epoche  - Startpunkt - */
+            dateTime = dateTime.AddSeconds(unixStempel); /* Die Zeit was vergangen ist auf den Startpunkt addieren */
+            
+            /* INFO:  Unix Zeit stimmt bei Umrechnung es fehlen aber trodsdem eine Stunde ?? Fehler wird mit berechnung winter sommer behoben hier */
+            if( TimeZoneInfo.Local.IsDaylightSavingTime( dateTime ) ) /* Sommer / Winterzeit Prüfen wo sich Datum befindet */
+             { }   /* Es ist Sommer Zeitangabe Stimmt  */
+            else 
+              dateTime = dateTime.AddSeconds(3600);  /* Es ist Winter Einse Stunde Vorstellen */
+              
+            string ausgabe = string.Empty;
+            if(was == "datum")
+              ausgabe = dateTime.ToShortDateString();
+            else if(was == "uhrzeit")
+              ausgabe = dateTime.ToLongTimeString();
+            else if(was == "br")
+              ausgabe = dateTime.ToShortDateString() +"<br />"+ dateTime.ToLongTimeString();
+            else
+              ausgabe = dateTime.ToShortDateString() +", "+ dateTime.ToLongTimeString();
+           
+            return ausgabe;
+       }
 	      
    }
 
+   public class BeepSong
+   {
+   	
+   	     public void denahy()
+   	     {
+   	     	         Console.Beep(704,750);
+   	     	         Console.Beep(792,250);
+   	     	         Console.Beep(880,500);
+   	     	         Console.Beep(792,500);
+   	     	         Console.Beep(940,500);
+   	     	         Console.Beep(880,500);
+   	     	         Console.Beep(792,250);
+   	     	         Console.Beep(660,250);
+   	     	         Console.Beep(704,500);
+   	     	         Console.Beep(1188,500);
+   	     	         Console.Beep(1056,500);
+   	     	         Console.Beep(940,500);
+   	     	         Console.Beep(880,500);
+   	     	         Console.Beep(792,500);
+   	     	         Console.Beep(880,250);
+   	     	         Console.Beep(704,250);
+   	     	         Console.Beep(1056,1000);
+   	     	         Console.Beep(704,750);
+   	     	         Console.Beep(792,250);
+   	     	         Console.Beep(880,500);
+   	     	         Console.Beep(792,500);
+   	     	         Console.Beep(940,500);
+   	     	         Console.Beep(880,500);
+   	     	         Console.Beep(792,250);
+   	     	         Console.Beep(660,250);
+   	     	         Console.Beep(704,500);
+   	     	         Console.Beep(1188,500);
+   	     	         Console.Beep(1056,500);
+   	     	         Console.Beep(940,500);
+   	     	         Console.Beep(880,500);
+   	     	         Console.Beep(792,500);
+   	     	         Console.Beep(880,250);
+   	     	         Console.Beep(704,250);
+   	     	         Console.Beep(1056,1000);
+   	     	         Console.Beep(792,500);
+   	     	         Console.Beep(880,500);
+   	     	         Console.Beep(792,250);
+   	     	         Console.Beep(660,250);
+   	     	         Console.Beep(528,500);
+   	     	         Console.Beep(940,500);
+   	     	         Console.Beep(880,500);
+   	     	         Console.Beep(792,250);
+   	     	         Console.Beep(660,250);
+   	     	         Console.Beep(528,500);
+   	     	         Console.Beep(1056,500);
+   	     	         Console.Beep(940,500);
+   	     	         Console.Beep(880,750);
+   	     	         Console.Beep(880,250);
+   	     	         Console.Beep(990,500);
+   	     	         Console.Beep(940,250);
+   	     	         Console.Beep(1056,250);
+   	     	         Console.Beep(1056,1000);
+   	     	         Console.Beep(1408,750);
+   	     	         Console.Beep(1320,250);
+   	     	         Console.Beep(1320,250);
+   	     	         Console.Beep(1188,250);
+   	     	         Console.Beep(1056,500);
+   	     	         Console.Beep(1188,750);
+   	     	         Console.Beep(1056,250);
+   	     	         Console.Beep(1056,250);
+   	     	         Console.Beep(940,250);
+   	     	         Console.Beep(880,500);
+   	     	         Console.Beep(792,750);
+   	     	         Console.Beep(880,125);
+   	     	         Console.Beep(940,125);
+   	     	         Console.Beep(1056,250);
+   	     	         Console.Beep(1188,250);
+   	     	         Console.Beep(940,250);
+   	     	         Console.Beep(792,250);
+   	     	         Console.Beep(704,500);
+   	     	         Console.Beep(880,250);
+    	     	       Console.Beep(792,250);
+   	     	         Console.Beep(704,1000);
+   	     	         Console.Beep(1408,750);
+   	     	         Console.Beep(1320,250);
+   	     	         Console.Beep(1320,250);
+   	     	         Console.Beep(1188,250);
+   	     	         Console.Beep(1056,500);
+   	     	         Console.Beep(1188,750);
+   	     	         Console.Beep(1056,250);
+   	     	         Console.Beep(1056,250);
+   	     	         Console.Beep(940,250);
+   	     	         Console.Beep(880,500);
+   	     	         Console.Beep(792,750);
+   	     	         Console.Beep(880,125);
+   	     	         Console.Beep(940,125);
+   	     	         Console.Beep(1056,250);
+   	     	         Console.Beep(1188,250);
+   	     	         Console.Beep(940,250);
+   	     	         Console.Beep(792,250);
+   	     	         Console.Beep(704,500);
+   	     	         Console.Beep(880,250);
+   	     	         Console.Beep(792,250);
+   	     	         Console.Beep(704,1000);
+   	     }
+   	     
+   	     public void mario(string block)
+   	     {
+   	     	   if(block == "alle" || block == "1")
+   	     	   {
+   	     	         Console.Beep(480,200);
+   	     	         Console.Beep(1568,200);
+   	     	         Console.Beep(1568,200);
+   	     	         Console.Beep(1568,200);
+   	     	         Console.Beep(739,200);
+   	     	         Console.Beep(783,200);
+   	     	         Console.Beep(783,200);
+   	     	         Console.Beep(783,200);
+   	     	         Console.Beep(369,200);
+                   Console.Beep(392,200);
+                   Console.Beep(369,200);
+                   Console.Beep(392,200);
+                   Console.Beep(392,400);
+                   Console.Beep(196,400);
+             }
+             else {}
+             
+             if(block == "alle" || block == "2")
+   	     	   {
+
+                   Console.Beep(739,200);
+                   Console.Beep(783,200);
+                   Console.Beep(783,200);
+                   Console.Beep(739,200);
+                   Console.Beep(783,200);
+                   Console.Beep(783,200);
+                   Console.Beep(739,200);
+                   Console.Beep(83,200);
+                   Console.Beep(880,200);
+                   Console.Beep(830,200);
+                   Console.Beep(880,200);
+                   Console.Beep(987,400);
+             }
+             else {}
+             
+             if(block == "alle" || block == "3")
+   	     	   {
+                   Console.Beep(880,200);
+                   Console.Beep(783,200);
+                   Console.Beep(698,200);
+                   Console.Beep(739,200);
+                   Console.Beep(783,200);
+                   Console.Beep(783,200);
+                   Console.Beep(739,200);
+                   Console.Beep(783,200);
+                   Console.Beep(783,200);
+                   Console.Beep(739,200);
+                   Console.Beep(783,200);
+                   Console.Beep(880,200);
+                   Console.Beep(830,200);
+                   Console.Beep(880,200);
+                   Console.Beep(987,400);
+             }
+             else 
+             {  }
+
+   	     	   	
+   	     }
+   	     	
+   	     
+   	     public void tetris(string block)
+   	     {  
+   	     	  if(block == "alla" ||block == "1")
+   	     	  {  /* Normaler Song */
+   	     	         Console.Beep(1320,500);
+                   Console.Beep(990,250);
+                   Console.Beep(1056,250);
+                   Console.Beep(1188,250);
+                   Console.Beep(1320,125);
+                   Console.Beep(1188,125);
+                   Console.Beep(1056,250);
+                   Console.Beep(990,250);
+                   Console.Beep(880,500);
+                   Console.Beep(880,250);
+                   Console.Beep(1056,250);
+                   Console.Beep(1320,500);
+                   Console.Beep(1188,250);
+                   Console.Beep(1056,250);
+                   Console.Beep(990,750);
+                   Console.Beep(1056,250);
+                   Console.Beep(1188,500);
+                   Console.Beep(1320,500);
+                   Console.Beep(1056,500);
+                   Console.Beep(880,500);
+                   Console.Beep(880,500);
+                   Thread.Sleep(250);
+            }
+            else {}
+
+            if(block == "alla" ||block == "2")
+   	     	  {   /* Normaler Song */
+                   Console.Beep(1188,500);
+                   Console.Beep(1408,250);
+                   Console.Beep(1760,500);
+                   Console.Beep(1584,250);
+                   Console.Beep(1408,250);
+                   Console.Beep(1320,750);
+                   Console.Beep(1056,250);
+                   Console.Beep(1320,500);
+                   Console.Beep(1188,250);
+                   Console.Beep(1056,250);
+                   Console.Beep(990,500);
+                   Console.Beep(990,250);
+                   Console.Beep(1056,250);
+                   Console.Beep(1188,500);
+                   Console.Beep(1320,500);
+                   Console.Beep(1056,500);
+                   Console.Beep(880,500);
+                   Console.Beep(880,500);
+                   Thread.Sleep(500);
+            }
+            else {}
+            
+            if(block == "alla" ||block == "3")
+   	     	  {    /* etwas schneller */
+                   Console.Beep(1320,500);
+                   Console.Beep(990,250);
+                   Console.Beep(1056,250);
+                   Console.Beep(1188,250);
+                   Console.Beep(1320,125);
+                   Console.Beep(1188,125);
+                   Console.Beep(1056,250);
+                   Console.Beep(990,250);
+                   Console.Beep(880,500);
+                   Console.Beep(880,250);
+                   Console.Beep(1056,250);
+                   Console.Beep(1320,500);
+                   Console.Beep(1188,250);
+                   Console.Beep(1056,250);
+                   Console.Beep(990,750);
+                   Console.Beep(1056,250);
+                   Console.Beep(1188,500);
+                   Console.Beep(1320,500);
+                   Console.Beep(1056,500);
+                   Console.Beep(880,500);
+                   Console.Beep(880,500);
+                   Thread.Sleep(250);
+            }
+            else{ }
+            
+            if(block == "alla" ||block == "4")
+   	     	  {    /* normal */
+                   Console.Beep(1188,500);
+                   Console.Beep(1408,250);
+                   Console.Beep(1760,500);
+                   Console.Beep(1584,250);
+                   Console.Beep(1408,250);
+                   Console.Beep(1320,750);
+                   Console.Beep(1056,250);
+                   Console.Beep(1320,500);
+                   Console.Beep(1188,250);
+                   Console.Beep(1056,250);
+                   Console.Beep(990,500);
+                   Console.Beep(990,250);
+                   Console.Beep(1056,250);
+                   Console.Beep(1188,500);
+                   Console.Beep(1320,500);
+                   Console.Beep(1056,500);
+                   Console.Beep(880,500);
+                   Console.Beep(880,500);
+                   Thread.Sleep(500);
+            }
+            else { }
+            
+            if(block == "alla" ||block == "5")
+   	     	  {   /* etwas Tiefer und lang */
+                   Console.Beep(660,1000);
+                   Console.Beep(528,1000);
+                   Console.Beep(594,1000);
+                   Console.Beep(495,1000);
+                   Console.Beep(528,1000);
+                   Console.Beep(440,1000);
+                   Console.Beep(419,1000);
+                   Console.Beep(495,1000);
+                   Console.Beep(660,1000);
+                   Console.Beep(528,1000);
+                   Console.Beep(594,1000);
+                   Console.Beep(495,1000);
+                   Console.Beep(528,500);
+                   Console.Beep(660,500);
+                   Console.Beep(880,1000);
+                   Console.Beep(838,2000);
+                   Console.Beep(660,1000);
+                   Console.Beep(528,1000);
+                   Console.Beep(594,1000);
+                   Console.Beep(495,1000);
+                   Console.Beep(528,1000);
+                   Console.Beep(440,1000);
+                   Console.Beep(419,1000);
+                   Console.Beep(495,1000);
+                   Console.Beep(660,1000);
+                   Console.Beep(528,1000);
+                   Console.Beep(594,1000);
+                   Console.Beep(495,1000);
+                   Console.Beep(528,500);
+                   Console.Beep(660,500);
+                   Console.Beep(880,1000);
+                   Console.Beep(838,2000); 
+                   Thread.Sleep(500);
+   	     	  }
+   	     	  else { }
+   	     	
+   	     }
+   	
+   }
+ 
    
    public class PortZuweisung
    {    
@@ -245,7 +882,7 @@ namespace MEQuery
 	   	   private string  proto_datei  = "/klassen/mequery.cs";
 	  	   private string  proto_klasse = "PortZuweisung";
 	  	   private string  proto_gruppe = "portklasse";
-	  	   Protokol protokol = new Protokol();
+	  	   Protokoll protokoll = new Protokoll();
    	
    	     public class Port_List 
          {   
@@ -283,7 +920,7 @@ namespace MEQuery
    	     
    	     public void portlist()
    	     {
-   	     	  protokol.erstellen( proto_woher , proto_gruppe , "PortListe wird erstellt." , proto_datei ,proto_klasse,"portlist()" , false );  /* Protokoll Schreibe */  
+   	     	  protokoll.erstellen( proto_woher , proto_gruppe , "PortListe wird erstellt." , proto_datei ,proto_klasse,"portlist()" , false );  /* Protokoll Schreibe */  
    	     	  erstellen();
    	     }
    	    
@@ -296,7 +933,7 @@ namespace MEQuery
    	   private  string  proto_woher  = "Clary_Daten_List_Erstellung";
 	  	 private  string  proto_datei  = "/klassen/mequery.cs";
 	  	 private  string  proto_klasse = "Host";
-	  	 private  Protokol protokol = new Protokol();
+	  	 private  Protokoll protokoll = new Protokoll();
    	   
    	   public Host()
    	   {  /* Konstruktur für Host  /-> Name für Maschiene raussuchen und in Variable legen  */
@@ -379,7 +1016,7 @@ namespace MEQuery
    	      string ip_adresse       = string.Empty;  /* IP Adresse der Schnittstelle */
    	      string aktiv_ip         = string.Empty;  /* Aktive IP Adresse */ 
    	      
-   	      protokol.erstellen( proto_woher , "Neztwerk_List" , "Neztwerk Daten werden bereitgestellt." , proto_datei ,proto_klasse,"netzwerk_daten()" , false );
+   	      protokoll.erstellen( proto_woher , "Neztwerk_List" , "Neztwerk Daten werden bereitgestellt." , proto_datei ,proto_klasse,"netzwerk_daten()" , false );
    	      try
    	      {
    	         NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
@@ -411,14 +1048,14 @@ namespace MEQuery
                         {  max_lebenszeit = UnicastIPAddressInformation.DhcpLeaseLifetime.ToString(); }  /* Maximale Lebensdauer ermitteln was vom DNS zugewiesen wurde in Secunden */  
                         catch(SocketException e)
                         {   string fehlermeldung = String.Format("SocketException: {0}", e.Message);                        	  
-                        	  protokol.erstellen( proto_woher , "Neztwerk_List" , "Maximale Lebensdauer Fehler: " + fehlermeldung , proto_datei ,proto_klasse,"netzwerk_daten()" , true );
+                        	  protokoll.erstellen( proto_woher , "Neztwerk_List" , "Maximale Lebensdauer Fehler: " + fehlermeldung , proto_datei ,proto_klasse,"netzwerk_daten()" , true );
                         }
 
                         try  
                         { offen_lebenszeit = UnicastIPAddressInformation.AddressValidLifetime.ToString(); } /* Verbleibende lebenszeit der IP Adresse in Secunden */
                         catch(SocketException e)
                         {   string fehlermeldung = String.Format("SocketException: {0}", e.Message);                        	  
-                        	  protokol.erstellen( proto_woher , "Neztwerk_List" , "Verbleibende lebenszeit Fehler: " + fehlermeldung , proto_datei ,proto_klasse,"netzwerk_daten()" , true );
+                        	  protokoll.erstellen( proto_woher , "Neztwerk_List" , "Verbleibende lebenszeit Fehler: " + fehlermeldung , proto_datei ,proto_klasse,"netzwerk_daten()" , true );
                         }
 
                 }               
@@ -429,7 +1066,7 @@ namespace MEQuery
    	      }
    	      catch(SocketException e)
           {   string fehlermeldung = String.Format("SocketException: {0}", e.Message);                        	  
-              protokol.erstellen( proto_woher , "Neztwerk_List" , "Fataler Fehler beim holen der Netzwerkdaten: " + fehlermeldung , proto_datei ,proto_klasse,"netzwerk_daten()" , true );
+              protokoll.erstellen( proto_woher , "Neztwerk_List" , "Fataler Fehler beim holen der Netzwerkdaten: " + fehlermeldung , proto_datei ,proto_klasse,"netzwerk_daten()" , true );
           }
         
    	      return netzw_daten;   	   
@@ -511,6 +1148,54 @@ namespace MEQuery
    	    	  return ausgabe;
    	    }
    	
+   	
+   }
+   
+   public class ConsolenAnimation
+   {  /* Konsolen Animationen */
+   	      
+   	    	public class LadeStatus
+   	      {           private double aktuellProzent;
+   	    	            private double gesamtWert;        /* Gesamt Wert von dem alles aus berechnet wird ( 100% ) */
+   	    	            private double einWert;           /* ein Wert was 1 % darstellt  */
+   	    	            private double prozentProLauf;      /* ein Wert was pro Durchlauf darstellt */
+   	    	            private int top;
+   	    	            private int left;
+   	    	            private ConsoleColor farbe = new ConsoleColor();
+   	    	           
+   	    	            public LadeStatus( double gesamtWert , int left , int top)
+   	    	            {
+   	    	     	          this.gesamtWert  = gesamtWert;
+   	    	     	          this.einWert     = gesamtWert / 100.00;   /* ein Wert was 1 % darstellt  */
+   	    	     	          this.prozentProLauf =  100.00 / gesamtWert;  /* Prozent pro Lauf pro Durchlauf darstellt */
+   	    	     	          this.left        = left;
+   	    	     	          this.top         = top;
+   	    	            }
+   	    	      
+   	    	            public void statusEins( )
+   	    	            {    
+   	    	            	
+   	    	            	      this.aktuellProzent += this.prozentProLauf;  /* Pro Durchlauf  Prozentwert hinzuaddieren */
+   	    	          	     	  
+                              /* farbe defienieren für Hintergrund */
+                                   if( this.aktuellProzent < 25.00 )farbe =  ConsoleColor.Red;
+                              else if( this.aktuellProzent < 50.00 )farbe =  ConsoleColor.Blue;
+                              else if( this.aktuellProzent < 75.00 )farbe =  ConsoleColor.Yellow;
+                              else                                  farbe =  ConsoleColor.Green;
+
+                              
+                              Console.CursorVisible = false;
+                              Console.SetCursorPosition( this.left , this.top ); /* Position festlegen */
+                              Console.BackgroundColor  =  farbe; /* Hintergrund Farbe zuweisen */
+                              Console.ForegroundColor  =  ConsoleColor.Black; /* Text Frabe zuweisen */
+                              if(this.aktuellProzent > 100)this.aktuellProzent = 100; else {} /* Schutz das nicht größer als 100 */ 
+   	    	          	     	  Console.Write( " Sende " + this.gesamtWert + " Zeilen. Bitte Warten Sie. Aktuell sind " +Convert.ToInt16(Math.Ceiling(this.aktuellProzent))  + "% erledigt.");
+   	    	          	     	  Console.ResetColor(); /* auf Standart Farbzuweisung gehen zurückgehen */
+   	    	          	    
+   	    	            } 
+   	    	 
+   	    	}
+   	       	
    	
    }
 }
