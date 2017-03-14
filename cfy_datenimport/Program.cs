@@ -13,7 +13,7 @@ namespace MySQL
 	  private  bool status = true;
 
     /* protokoll Klasse & datum  einbinden */
-    private static Protokol protokol = new Protokol();
+    private static Protokoll protokoll = new Protokoll();
     private static Datum  datum = new Datum();
     private static string proto_woher = "Mysql-CFY-Datenimport";
 	  private static string proto_datei = "Program.cs";
@@ -28,7 +28,7 @@ namespace MySQL
 			if( MEClary.Clary.cfy_port_status ==  "komplett") 
 			{   
 				   /* Protokoll erstellen */
-				   protokol.erstellen( proto_woher , proto_gruppe , "Neue daten sind angekommen vom Listener Status: " + MEClary.Clary.cfy_port_status , proto_datei ,"MySQLDatenImport","mainClaryDatenImport()" , false );
+				   protokoll.erstellen( proto_woher , proto_gruppe , "Neue daten sind angekommen vom Listener Status: " + MEClary.Clary.cfy_port_status , proto_datei ,"MySQLDatenImport","mainClaryDatenImport()" , false );
 				   
 				   // Nur zu Testzwecken abgestellt -
 			     //  LoadMySQLData load = new LoadMySQLData ();
@@ -56,7 +56,7 @@ namespace MySQL
 			     /* Status ändern und Listener wieder frei geben das dieser neue Daten empfangen kann */
 			     MEClary.Clary.cfy_port_status = "leer";
 			     /* Protokoll erstellen */
-			     protokol.erstellen( proto_woher , proto_gruppe , "Daten wurden erfolgreich in MYSQL integriert ( CFY) warte auf neue Daten." , proto_datei ,"MySQLDatenImport","mainClaryDatenImport()" , false );
+			     protokoll.erstellen( proto_woher , proto_gruppe , "Daten wurden erfolgreich in MYSQL integriert ( CFY) warte auf neue Daten." , proto_datei ,"MySQLDatenImport","mainClaryDatenImport()" , false );
 			     /* neue gruppen Nummer generieren aus unix zeitstempel */
 			     proto_gruppe = "" + datum.unix();
 			}
@@ -72,7 +72,7 @@ namespace MySQL
 			 /* neue gruppen Nummer generieren aus unix zeitstempel */ 
 			 proto_gruppe = "" + datum.unix();
 			 /* Protokoll erstellen */
-			 protokol.erstellen( proto_woher , proto_gruppe , "CFY MYSQL Datenimport Modul wurde gestartet." , proto_datei ,"MySQLDatenImport","rennen()" , false );
+			 protokoll.erstellen( proto_woher , proto_gruppe , "CFY MYSQL Datenimport Modul wurde gestartet." , proto_datei ,"MySQLDatenImport","rennen()" , false );
  			 while(status)
 			 {   
 			 	   try
@@ -81,12 +81,12 @@ namespace MySQL
 				   }
 				   catch(ThreadAbortException e) /* Thread wird von der Main aus sofort abgebrochen - Programm wurde beendet */
 	  	  	 {
-	  	  	   	 protokol.erstellen( proto_woher , proto_gruppe , "Thread wurde von der Main sofort Beendet da Programm geschlossen wurde ( .Abort() )."  + e.Message , proto_datei ,"MySQLDatenImport","rennen()" , false );
+	  	  	   	 protokoll.erstellen( proto_woher , proto_gruppe , "Thread wurde von der Main sofort Beendet da Programm geschlossen wurde ( .Abort() )."  + e.Message , proto_datei ,"MySQLDatenImport","rennen()" , false );
 	  	  	   	 break;	  	       
 	  	  	 }
 			 }
 			 /* Protokoll erstellen */
-			 protokol.erstellen( proto_woher , proto_gruppe , "CFY MYSQL Datenimport Modul wurde beendet." , proto_datei ,"MySQLDatenImport","rennen()" , false );
+			 protokoll.erstellen( proto_woher , proto_gruppe , "CFY MYSQL Datenimport Modul wurde beendet." , proto_datei ,"MySQLDatenImport","rennen()" , false );
 		}
 		
 	  public void anhalten()

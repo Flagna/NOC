@@ -41,33 +41,44 @@ namespace NOCPortal
 	  	  /* Die Hauptfunktion / Main  vom backend NOC Portal */
         public static void Main()
         {   
-        	  string  proto_woher  = "NOC_Backend_Main";
+        	  Einstellung  einstellung = new Einstellung();
+        	  bool status_einstellung =  einstellung.laden();
+        	  
+        	  string  proto_woher  = "NOC_Backend_Mai";
 	  	      string  proto_datei  = "/noc_main.cs";
 	  	      string  proto_klasse = "NocBackend";
 	  	      string  proto_gruppe = "main";
-	  	      Protokol protokol = new Protokol();
+	  	      Protokoll protokoll = new Protokoll();
 	  	      
         	  AsciiPic asciipic = new AsciiPic();
         	  
-        	  protokol.erstellen( proto_woher , proto_gruppe , "Noc Portal Backend wird gestartet." , proto_datei ,proto_klasse,"Main()" , false ); /* Protokoll Schreibe */
+        	  protokoll.erstellen( proto_woher , proto_gruppe , "Noc Portal Backend wird gestartet." , proto_datei ,proto_klasse,"Main()" , false ); /* Protokoll Schreibe */
         	  Console.WriteLine( "----------------------------------------------------- \n"); 	
         	  Console.WriteLine( "--------Willkommen im NOC Portal Backend  ----------- \n"); 
         	  Console.WriteLine( "----------------------------------------------------- \n\n"); 	
-        	  Console.WriteLine( " Bitte drücken Sie eine Taste um das NOC Portal Backend zu starten. \n\n"); 	
-        	  Console.WriteLine( "----------------------------------------------------- \n\n");
-        	  Console.WriteLine( " Tastenkombination:  \n");
-        	  Console.WriteLine( " -> AltGr + C = Clary Thread ausschalten zur DB. ( es erfolgt kein neuer Durchlauf Aktueller wird noch abgearbeitet.  \n");
-        	  Console.WriteLine( " -> AltGr + B = Programm beenden.  \n\n");
+            
+            if(status_einstellung == true)
+            {
+        	     Console.WriteLine( " Tastenkombination:  \n");
+        	     Console.WriteLine( " -> AltGr + C = Clary Thread ausschalten zur DB. ( es erfolgt kein neuer Durchlauf Aktueller wird noch abgearbeitet.  \n");
+        	     Console.WriteLine( " -> AltGr + B = Programm beenden.  \n\n");
         	  
-        	  Console.ReadKey();
-        	  
-        	  main_run();
+        	     main_run();
+        	  }
+        	  else
+        	  {
+        	  	      protokoll.erstellen( proto_woher , proto_gruppe , "Config Datei vom Server war fehlerhaft. Programm wurde abgebrochen." , proto_datei ,proto_klasse,"Main()" , true ); /* Protokoll Schreibe */
+        	  	      Console.BackgroundColor  =  ConsoleColor.Magenta; /* Hintergrund Farbe zuweisen */
+                    Console.ForegroundColor  =  ConsoleColor.Black; /* Text Frabe zuweisen */
+                    Console.WriteLine("\n\n Fehler in der Config datei! Programm wurde abgebrochen. \n");
+                    Console.ResetColor(); /* auf Standart Farbzuweisung gehen zurückgehen */
+        	  }
         	  
         	  Console.WriteLine( "\n----------------------------------------------------- \n"); 	
         	  Console.WriteLine(   "-------- NOC Portal Backend wurde Beendet!  --------- \n"); 
         	  Console.WriteLine(   "----------------------------------------------------- \n\n"); 	
         	  Console.WriteLine( asciipic.computer()	);
-        	  protokol.erstellen( proto_woher , proto_gruppe , "Noc Portal Backend wurde beendet." , proto_datei ,proto_klasse,"Main()" , false ); /* Protokoll Schreibe */
+        	  protokoll.erstellen( proto_woher , proto_gruppe , "Noc Portal Backend wurde beendet." , proto_datei ,proto_klasse,"Main()" , false ); /* Protokoll Schreibe */
         } 
         
        
@@ -82,7 +93,7 @@ namespace NOCPortal
 	  	      string  proto_datei  = "/noc_main.cs";
 	  	      string  proto_klasse = "NocBackend";
 	  	      string  proto_gruppe = "main";
-	  	      Protokol protokol = new Protokol(); 
+	  	      Protokoll protokoll = new Protokoll(); 
         	
         	  /* Hier werden die gesamten Thread gstartet was benötigt werden im Backend */
         	   Host host       = new Host();
@@ -98,7 +109,7 @@ namespace NOCPortal
         	   noc_thread    = new Thread[th_anzahl]; 
         	   
         	   
-        	   protokol.erstellen( proto_woher , proto_gruppe , "Thread werden vorbereitet." , proto_datei ,proto_klasse,"main_run()" , false );  /* Protokoll Schreibe */
+        	   protokoll.erstellen( proto_woher , proto_gruppe , "Thread werden vorbereitet." , proto_datei ,proto_klasse,"main_run()" , false );  /* Protokoll Schreibe */
         	   
         	   noc_thread[0]          = new Thread( noc_run.rennen); /* Thread Objekt erzeugen  aus Klasse - Standart Thread - */ 
         	   noc_thread[0].Name     = "Hauptfunktion_main_run"; /* Thread Namen geben */
@@ -137,7 +148,7 @@ namespace NOCPortal
         	   }
         	 
         	   
-        	   protokol.erstellen( proto_woher , proto_gruppe , "Thread werden jetzt alle gestartet." , proto_datei ,proto_klasse,"main_run()" , false );  /* Protokoll Schreibe */
+        	   protokoll.erstellen( proto_woher , proto_gruppe , "Thread werden jetzt alle gestartet." , proto_datei ,proto_klasse,"main_run()" , false );  /* Protokoll Schreibe */
         	           	   
         	   for(int i =0; i < pos;i++)
         	   {
@@ -145,7 +156,7 @@ namespace NOCPortal
         	   }
         	   
         	   
-        	   protokol.erstellen( proto_woher , proto_gruppe , "Thread werden alle jetzt Überwacht bis diese Beendet werden. ( Join() )" , proto_datei ,proto_klasse,"main_run()" , false );  /* Protokoll Schreibe */
+        	   protokoll.erstellen( proto_woher , proto_gruppe , "Thread werden alle jetzt Überwacht bis diese Beendet werden. ( Join() )" , proto_datei ,proto_klasse,"main_run()" , false );  /* Protokoll Schreibe */
         	   
         	   for(int i =0; i < pos;i++)
         	   {
@@ -165,14 +176,14 @@ namespace NOCPortal
 	  	  private string  proto_datei  = "/noc_main.cs";
 	  	  private string  proto_klasse = "NocRun";
 	  	  private string  proto_gruppe = "main";
-	  	  Protokol protokol = new Protokol();
+	  	  Protokoll protokoll = new Protokoll();
 	  	  
 	  	  public void rennen()
 	  	  {    
 	  	  	  EventObjekt eventobjekt = new EventObjekt(); /* Eventobjekt erstellen */
 	  	  	  ConsoleKeyInfo taste    = new ConsoleKeyInfo(); /* Tastaturabfrage Objekt erstellen */
 	  	      
-	  	      protokol.erstellen( proto_woher , proto_gruppe , "Haupt Thread wird gestartet." , proto_datei ,proto_klasse,"rennen()" , false );  /* Protokoll Schreibe */
+	  	      protokoll.erstellen( proto_woher , proto_gruppe , "Haupt Thread wird gestartet." , proto_datei ,proto_klasse,"rennen()" , false );  /* Protokoll Schreibe */
 	  	      while(status)
 	  	  	  {   
 	  	  	  	  /* Auswerung zurücksetzten und auf neue Eingabe lauschen von Tastatur */
@@ -181,7 +192,7 @@ namespace NOCPortal
 	  	  	  	  if( eventobjekt.tastatur(taste,"altgr+b") )
 	  	  	  	  { /* Programm beenden  Alles Stoppen */
 	  	  	  	  	  
-	  	  	  	  	  protokol.erstellen( proto_woher , proto_gruppe , "Benutzer Stoppt das komplette Backend mit ( Abort() )." , proto_datei ,proto_klasse,"rennen()" , false );  /* Protokoll Schreibe */
+	  	  	  	  	  protokoll.erstellen( proto_woher , proto_gruppe , "Benutzer Stoppt das komplette Backend mit ( Abort() )." , proto_datei ,proto_klasse,"rennen()" , false );  /* Protokoll Schreibe */
 	  	  	  	  	  for(int i=1;i< NocBackend.noc_thread.Length;i++)
 	  	  	  	  	  {  
 	  	  	  	  	  	  try
@@ -214,7 +225,7 @@ namespace NOCPortal
 	  	  	  	  else if( eventobjekt.tastatur(taste,"altgr+c") ) /* MYSQL Datenimport Thread Beenden  */
 	  	  	  	  {
 	  	  	  	     try{ NocBackend.mysqldatenimport.anhalten(); } catch { }  	
-	  	  	  	     protokol.erstellen( proto_woher , proto_gruppe , "Thread - Datenimport zu MYSQL wurde gestoppt." , proto_datei ,proto_klasse,"rennen()" , false );  /* Protokoll Schreibe */
+	  	  	  	     protokoll.erstellen( proto_woher , proto_gruppe , "Thread - Datenimport zu MYSQL wurde gestoppt." , proto_datei ,proto_klasse,"rennen()" , false );  /* Protokoll Schreibe */
 	  	  	  	  }
 	  	  	  	  else{}
 	  	  	  	 

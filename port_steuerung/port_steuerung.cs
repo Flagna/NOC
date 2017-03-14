@@ -154,7 +154,7 @@ namespace MEPort
 	  	    public  string  proto_woher = "Portsteuerung";
 	  	    public  string  proto_datei = "port_steuerung.cs";
 	  	    public volatile string proto_gruppe;
-	  	    private Protokol  protokol = new Protokol();
+	  	    private Protokoll  protokoll = new Protokoll();
 	  	    private static ArrayList clientThread = new ArrayList();  /* Die Liste der laufenden Server-Threads */
     
 	  	    public void rennen( )
@@ -180,12 +180,12 @@ namespace MEPort
 	  	       	 
 	  	       	 listener.Start (); /* Listener Starten */
 	  	    	   
-	  	    	   protokol.erstellen( proto_woher , proto_gruppe , "PortListener wurde gestartet." , proto_datei ,"PortListener","rennen()" , false ); /* Protokoll erstellen */
+	  	    	   protokoll.erstellen( proto_woher , proto_gruppe , "PortListener wurde gestartet." , proto_datei ,"PortListener","rennen()" , false ); /* Protokoll erstellen */
 	  	  	     while(status)
 	  	  	     {
 	  	  	     	   try
 	  	  	     	   {
-	  	  	     	       protokol.erstellen( proto_woher , proto_gruppe , "Warte auf Eingehende Verbindung." , proto_datei ,"PortListener","rennen()" , false );
+	  	  	     	       protokoll.erstellen( proto_woher , proto_gruppe , "Warte auf Eingehende Verbindung." , proto_datei ,"PortListener","rennen()" , false );
 	  	  	     	  
 	  	  	     	       /* Auf Verbindung Lauschen ob Jemand was möchte - System wartet hier bis sich jemand meldet */   
 	  	  	  	         TcpClient client = listener.AcceptTcpClient();    
@@ -194,34 +194,34 @@ namespace MEPort
 	  	  	  	     }
 	  	  	  	     catch(ThreadAbortException e) /* Thread wird von der Main aus sofort abgebrochen - Programm wurde beendet */
 	  	  	         {
-	  	  	   	          protokol.erstellen( proto_woher , proto_gruppe , "Thread wurde von der Main sofort Beendet da Programm geschlossen wurde ( .Abort() )."  + e.Message , proto_datei ,"PortListener","rennen()" , false );
+	  	  	   	          protokoll.erstellen( proto_woher , proto_gruppe , "Thread wurde von der Main sofort Beendet da Programm geschlossen wurde ( .Abort() )."  + e.Message , proto_datei ,"PortListener","rennen()" , false );
 	  	  	   	          break;
 	  	  	         }
 	  	  	  	     catch (System.IO.IOException)
                    {
-                        protokol.erstellen( proto_woher , proto_gruppe , "Client hat Verbindung beendet.", proto_datei ,"PortListener","rennen()" , true );
+                        protokoll.erstellen( proto_woher , proto_gruppe , "Client hat Verbindung beendet.", proto_datei ,"PortListener","rennen()" , true );
                    }
                    catch (SocketException e)
                    {
                         string fehlermeldung = String.Format("SocketException: {0}", e.Message);
-                        protokol.erstellen( proto_woher , proto_gruppe , "SocketException wurde gewurfen Verbindung wurde getrennt. Fehler: " + fehlermeldung , proto_datei ,"PortListener","rennen()" , true );
+                        protokoll.erstellen( proto_woher , proto_gruppe , "SocketException wurde gewurfen Verbindung wurde getrennt. Fehler: " + fehlermeldung , proto_datei ,"PortListener","rennen()" , true );
                    }
 	  	  	  	    
 	  	  	  	     Thread.Sleep(2000); /* 2 Secunden Warden bis Überwachung erneut gestartet wird */
 	  	  	     }
 	  	  	     
-	  	  	     protokol.erstellen( proto_woher , proto_gruppe , "PortListener wurde beendet.", proto_datei ,"PortListener","rennen()" , false );
+	  	  	     protokoll.erstellen( proto_woher , proto_gruppe , "PortListener wurde beendet.", proto_datei ,"PortListener","rennen()" , false );
 	  	  	     listener.Stop ();   
 	  	  	   }
 	  	  	   catch(ThreadAbortException e) /* Thread wird von der Main aus sofort abgebrochen - Programm wurde beendet */
 	  	  	   {
-	  	  	   	  protokol.erstellen( proto_woher , proto_gruppe , "Thread wurde von der Main sofort Beendet da Programm geschlossen wurde ( .Abort() )."  + e.Message , proto_datei ,"PortListener","rennen()" , false );
+	  	  	   	  protokoll.erstellen( proto_woher , proto_gruppe , "Thread wurde von der Main sofort Beendet da Programm geschlossen wurde ( .Abort() )."  + e.Message , proto_datei ,"PortListener","rennen()" , false );
 	  	  	   	  listener.Stop ();  	       
 	  	  	   }
 	  	  	   catch (SocketException e)
              {
                 string fehlermeldung = String.Format("SocketException: {0}", e.Message);
-                protokol.erstellen( proto_woher , proto_gruppe , "SocketException wurde gewurfen Portlistener wurde beendet. Fehler: " + fehlermeldung , proto_datei ,"PortListener","" , true );
+                protokoll.erstellen( proto_woher , proto_gruppe , "SocketException wurde gewurfen Portlistener wurde beendet. Fehler: " + fehlermeldung , proto_datei ,"PortListener","" , true );
              } 
              
 	  	  	     
@@ -254,7 +254,7 @@ namespace MEPort
 	  	    private  string  proto_gruppe;
 	  	    private  int byte_lange;            /* wert wie viel in Byte gescrieben wurde Antwort erhäkt man aus dem stream */
 	  	    private  string  port_bezeichnung;
-	  	    private  Protokol  protokol = new Protokol();
+	  	    private  Protokoll  protokoll = new Protokoll();
 	  	    private  string anmeldung;
 	  	    private  string benutzername;
 	  	    private  string puffer_string;     /* wird verwendet um den String zu speichern was von der Umwandlung aus Byte zu string kommt */
@@ -279,7 +279,7 @@ namespace MEPort
 	  	    	      this.max_verbindung   = max_verbindung;
 	  	    	      this.port             = port;
 	  	    	      
-	  	    	      protokol.erstellen( proto_woher , proto_gruppe , "Thread für Verbindung wurde hergestellt." , proto_datei ,"Client_Instanz","konstruktor" , false );
+	  	    	      protokoll.erstellen( proto_woher , proto_gruppe , "Thread für Verbindung wurde hergestellt." , proto_datei ,"Client_Instanz","konstruktor" , false );
 	  	    	  	  new Thread( new ThreadStart( rennen_client ) ).Start();
 	  	    }
 	  	    	  
@@ -307,7 +307,7 @@ namespace MEPort
 	  	    	   
 	  	    	          client_eingang = new Byte[256]; /* Länge vom Stream defienieren ( 256 byte lang )  */
                 
-                      protokol.erstellen( this.proto_woher , this.proto_gruppe , "Verbindung wurde Hergestellt." , this.proto_datei ,"PortListener","rennen_client()" , false );
+                      protokoll.erstellen( this.proto_woher , this.proto_gruppe , "Verbindung wurde Hergestellt." , this.proto_datei ,"PortListener","rennen_client()" , false );
               	     
                   
 	  	  	  	        /* Daten für nächsten durchlauf wieder leeren */
@@ -330,7 +330,7 @@ namespace MEPort
                       
                          if( text.klein(puffer_string) == "exit" )
                          {
-                           	 protokol.erstellen( this.proto_woher , this.proto_gruppe , "Verbindung wurde beendet. ( exit wurde empfangen )" , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
+                           	 protokoll.erstellen( this.proto_woher , this.proto_gruppe , "Verbindung wurde beendet. ( exit wurde empfangen )" , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
                             	client_antwort = text.byte_stream("Die Verbindung wurde beendet. Have a Nice Day :-) \n"); 
                       	     /* Info an Client senden */ 
                              stream.Write(client_antwort, 0, client_antwort.Length);
@@ -338,7 +338,7 @@ namespace MEPort
                          }
                          else if( text.klein(puffer_string) == "hallo" && anmeldung != "ok")  /* Verbindung wird mit "hallo" inisialiesiert  Vorher reagiert Port auf Datenstrom nicht */
                          {
-                      	     protokol.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer wird aufgefordert Name einzugeben." ,  this.proto_datei ,"Client_Instanz","rennen_client()" , false );
+                      	     protokoll.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer wird aufgefordert Name einzugeben." ,  this.proto_datei ,"Client_Instanz","rennen_client()" , false );
                       	     client_antwort = text.byte_stream("Hallo Benutzer Bitte gebe deinen Namen ein.\n");
                       	     anmeldung = "name";
                       	     /* Info an Client senden */ 
@@ -350,12 +350,12 @@ namespace MEPort
                       	     if( benutzer.liste( text.klein( puffer_string ) , "" , "name" ) )
                       	     {
                       	 	        benutzername =  puffer_string;
-                      	 	        protokol.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer wird aufgefordert Name einzugeben." ,  this.proto_datei ,"Client_Instanz","rennen_client()" , false );
+                      	 	        protokoll.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer wird aufgefordert Name einzugeben." ,  this.proto_datei ,"Client_Instanz","rennen_client()" , false );
                       	 	        client_antwort = text.byte_stream("Bitte gebe dein Password ein.\n");
                       	 	        anmeldung    =  "password";
                       	     } 
                       	     else
-                      	     {    protokol.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer "+ benutzername +" wurde nicht gefunden." , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
+                      	     {    protokoll.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer "+ benutzername +" wurde nicht gefunden." , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
                       	 	        client_antwort = text.byte_stream("Benutzername wurde nicht gefunden Bitte Neu eingeben!\n");  }
                       	 
                              /* Info an Client senden */ 
@@ -365,12 +365,12 @@ namespace MEPort
                          {
                       	     if( benutzer.liste( text.klein(benutzername) , text.klein(puffer_string) )  )
                       	     {
-                      	 	        protokol.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer "+ benutzername +" wurde erfolgreich angemeldet." , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
+                      	 	        protokoll.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer "+ benutzername +" wurde erfolgreich angemeldet." , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
                       	 	        client_antwort = text.byte_stream("Willkommen im NOC Portal Backend. Ich warte jetzt auf Daten.\n");
                       	 	        anmeldung =  "ok";
                       	     } 
                       	     else
-                      	     {    protokol.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer "+ benutzername +" hat Fehlerhaftes Password eingetragen." , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
+                      	     {    protokoll.erstellen( this.proto_woher , this.proto_gruppe , "Benutzer "+ benutzername +" hat Fehlerhaftes Password eingetragen." , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
                       	          client_antwort = text.byte_stream("Dein Password war Fehlerhaft. Bitte Neu eingeben!\n");  }
                       	   
                       	      /* Info an Client senden */ 
@@ -393,7 +393,7 @@ namespace MEPort
 	  	  	  	        }	
 	  	  	  	    
 	  	  	  	       this.clientInstanz.Close(); /* Verbindung wurde getrennt */
-	  	  	  	       protokol.erstellen( this.proto_woher , this.proto_gruppe , "Verbindung wurde beendet." , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
+	  	  	  	       protokoll.erstellen( this.proto_woher , this.proto_gruppe , "Verbindung wurde beendet." , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
 	  	  	  	    
 	  	  	  	    
 	  	  	          /*  Datenstrom Bauen und in einem String legen -- Start -- */
@@ -424,11 +424,11 @@ namespace MEPort
                      
                    }
                    catch (System.IO.IOException)
-                   {  protokol.erstellen( this.proto_woher , this.proto_gruppe , "Client hat Verbindung beendet.", this.proto_datei ,"Client_Instanz","rennen_client()" , true );  }
+                   {  protokoll.erstellen( this.proto_woher , this.proto_gruppe , "Client hat Verbindung beendet.", this.proto_datei ,"Client_Instanz","rennen_client()" , true );  }
                    catch (SocketException e)
                    {
                        string fehlermeldung = String.Format("SocketException: {0}", e.Message);
-                       protokol.erstellen( this.proto_woher , this.proto_gruppe , "SocketException wurde gewurfen Verbindung wurde getrennt. Fehler: " + fehlermeldung , this.proto_datei ,"Client_Instanz","rennen_client()" , true );
+                       protokoll.erstellen( this.proto_woher , this.proto_gruppe , "SocketException wurde gewurfen Verbindung wurde getrennt. Fehler: " + fehlermeldung , this.proto_datei ,"Client_Instanz","rennen_client()" , true );
                    }
                    
                    portzahler.kontrolle( max_verbindung , port , false ); /* Verbindung wieder Frei geben */ 
@@ -440,10 +440,10 @@ namespace MEPort
                 	  
                 	   /* Speziele regelung für CFY Rohdaten empfangen */
                      if(this.port_bezeichnung == "cfy_rohdaten" &&  Clary.cfy_port_status != "leer" ) 
-          	         {     protokol.erstellen( this.proto_woher , this.proto_gruppe , "CFY Rohdaten werden gerade im System Verarbeitet. Neue Verbindung wurde abgelehnt." , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
+          	         {     protokoll.erstellen( this.proto_woher , this.proto_gruppe , "CFY Rohdaten werden gerade im System Verarbeitet. Neue Verbindung wurde abgelehnt." , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
                            client_antwort = text.byte_stream(" Achutung CFY Rohdaten Import wird gerade gerade im System verarbeitet. \n Neue Verbindung wurde abgebrochen. \n Bitte versuchen Sie es später noch einmal. \n");   }
                      else
-                     {     protokol.erstellen( this.proto_woher , this.proto_gruppe , "Verbindung wurde abgebrochen Maximale Verbindungen ist erreicht." , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
+                     {     protokoll.erstellen( this.proto_woher , this.proto_gruppe , "Verbindung wurde abgebrochen Maximale Verbindungen ist erreicht." , this.proto_datei ,"Client_Instanz","rennen_client()" , false );
                            client_antwort = text.byte_stream(" Achtung es sind keine Verbindungen mehr Frei! Es wurde abgebrochen! \n Bitte versuchen Sie es später noch einmal. \n");   }
                       	   
                      /* Info an Client senden */ 

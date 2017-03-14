@@ -34,7 +34,7 @@ namespace MEClary
     	 private  string  proto_woher  = "Clary_Daten_List_Erstellung";
 	  	 private  string  proto_datei  = "/klassen/meclary.cs";
 	  	 private  string  proto_klasse = "Clary";
-	  	 private  Protokol protokol = new Protokol();
+	  	 private  Protokoll protokoll = new Protokoll();
 	  	 
 	  	 /* Datensatz von CFY Rohdaten */
    	   public static List<Clary_List> cfy_rohdaten;
@@ -148,7 +148,7 @@ namespace MEClary
         	  List<Clary_List> clary_daten = new List<Clary_List>();
        	
        	    /*  Daten Verarbeiten welche vom Portlistener gekommen sind  - Start - */
-       	    protokol.erstellen( proto_woher , proto_gruppe , "Es wird begonnen die List zu befühlen mit den Daten vom Portlistener." , proto_datei ,proto_klasse,"rohdaten(string daten ,string proto_gruppe)" , false );
+       	    protokoll.erstellen( proto_woher , proto_gruppe , "Es wird begonnen die List zu befühlen mit den Daten vom Portlistener." , proto_datei ,proto_klasse,"rohdaten(string daten ,string proto_gruppe)" , false );
        	    
        	    
        	    Console.WriteLine( "\n Daten Was CFY Klasse zum Befühllen erhalten hat: " + daten + " \n Bitte Taste Drücken. " );  
@@ -214,7 +214,7 @@ namespace MEClary
        	    
        	    
        	    cfy_rohdaten = clary_daten; /* Daten in Klassen List laden und zum verarbeiten bereitstellen */
-       	    protokol.erstellen( proto_woher , proto_gruppe , "List wurde erfolgreich erstellt mit daten und Status wurde auf Komplett gesetzt." , proto_datei ,proto_klasse,"rohdaten(string daten ,string proto_gruppe)" , false );
+       	    protokoll.erstellen( proto_woher , proto_gruppe , "List wurde erfolgreich erstellt mit daten und Status wurde auf Komplett gesetzt." , proto_datei ,proto_klasse,"rohdaten(string daten ,string proto_gruppe)" , false );
        	    Clary.cfy_port_status = "komplett";  /* Clray List Status auf Komplett setezen und zur weiterverarbeitung Frei geben */ 
        } 
         
