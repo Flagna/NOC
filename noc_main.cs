@@ -104,7 +104,7 @@ namespace NOCPortal
         	   
         	   List<Host.Neztwerk_List> netzw_daten = host.netzwerk_daten(); /* Netzwerk Daten  ( Schnittstellen holen ) */
         	   int port_anzahl = PortZuweisung.liste.Count;
-        	   int th_anzahl = ( netzw_daten.Count + 2 ) * port_anzahl; /* Wieviel Thread erzeugt werden sollen ermitteln plus standart Threads die immer aktiviert werden * der Port Adressen die benötigt werden  */
+        	   int th_anzahl = ( netzw_daten.Count + 3 ) * port_anzahl; /* Wieviel Thread erzeugt werden sollen ermitteln plus standart Threads die immer aktiviert werden * der Port Adressen die benötigt werden  */
         	   portlistener  = new PortListener[th_anzahl];
         	   noc_thread    = new Thread[th_anzahl]; 
         	   
@@ -119,9 +119,15 @@ namespace NOCPortal
         	   noc_thread[1].Name     = "CFY_zu_Mysql_Datenimport"; /* Thread Namen geben */
         	   noc_thread[1].Priority = ThreadPriority.BelowNormal; /* eine stufe unter Normale Priorität vergeben was Thread hat */
         	   noc_thread[1].IsBackground = true;   /* Thread läuft im Backround  deklarieren ( System räumt bei nicht beenden des Thread selber diesen auf )  */
+        	   noc_thread[2]          = new Thread(  protokoll.rennen ); /* Thread Objekt erzeugen  aus Klasse - Standart Thread - */ 
+        	   noc_thread[2].Name     = "Protokoll_in_Daten_Schreiben"; /* Thread Namen geben */
+        	   noc_thread[2].Priority = ThreadPriority.BelowNormal; /* eine stufe unter Normale Priorität vergeben was Thread hat */
+        	   noc_thread[2].IsBackground = true;   /* Thread läuft im Backround  deklarieren ( System räumt bei nicht beenden des Thread selber diesen auf )  */
+        	   
+        	  
         	   
         	   int port_i = 0;
-        	   int pos = 2;
+        	   int pos = 3;
              string thread_name = string.Empty;
              
              /* Port Schleife */

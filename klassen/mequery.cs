@@ -284,7 +284,37 @@ namespace MEQuery
    
    public class Protokoll
    {
-   	
+   	    public static string alt_datum;
+   	    public static int durchlauf;
+   	    private string  proto_woher  = "NOC_Protokoll";
+	   	  private string  proto_datei  = "/klassen/mequery.cs";
+	      private string  proto_klasse = "Protokoll";
+	  	  private string  proto_gruppe = "Protokoll";
+	  	  
+   	    public void rennen()
+   	    {
+   	    	    while(true)
+   	    	    {
+   	    	    	  try
+   	    	    	  {
+   	    	    	  	
+   	    	    	     if(liste.Count > 0 && liste[0].woher != "")
+   	    	    	     {
+   	    	    	   	    speichern(liste[0].woher,liste[0].gruppe ,liste[0].inhalt,liste[0].datei,liste[0].klasse,liste[0].funktion,liste[0].fehler );
+                        liste.RemoveAt(0);
+   	    	    	     }
+   	    	    	     else { }
+   	    	    	  }
+   	    	    	  catch (SocketException e)
+                  {
+                        string fehlermeldung = String.Format("SocketException: {0}", e.Message);
+                        erstellen( proto_woher , proto_gruppe , "SocketException wurde gewurfen. Fehler: " + fehlermeldung , proto_datei ,proto_klasse,"rennen()" , true );
+                  }
+   	    	    	
+   	    	    }
+   	    	     
+   	    }
+   	    
    	    public class Protokoll_List
    	    {
    	    	   public string  woher;
@@ -317,29 +347,34 @@ namespace MEQuery
    	     
    	    public void erstellen(string woher,string gruppe,string inhalt,string datei,string klasse ,string  funktion ,bool fehler )
    	    {   
-   	    	  try
-   	    	  { 
-   	    	     Datum datum = new Datum();
-   	     	     liste.Add(new Protokoll_List( woher , gruppe , inhalt ,datei ,klasse ,funktion ,fehler , datum.unix() ) ); 
-   	     	  }
-   	     	  catch {}  
+   	    	 try
+   	    	 { 
+   	    	   Datum datum = new Datum();
+   	     	   liste.Add(new Protokoll_List( woher , gruppe , inhalt ,datei ,klasse ,funktion ,fehler , datum.unix() ) );
+   	     	 }
+   	     	 catch{}
    	    }
    	    
-   	    private void speichern(string woher,string gruppe ,string inhalt,string datei,string klasse,string  funktion,bool fehler,int unixzeit )
+   	    
+   	    private void speichern(string woher,string gruppe ,string inhalt,string dateiname,string klasse,string  funktion,bool fehler )
    	    {   /* Diese funktion speichert die gesamelten Daten in eine Datei auf dem system wo es gerade läuft beim beenden */
 
-               Datum datum = new Datum();
-                   
-   	    	     try
-               {  
-               	   string td_style  = "<td style=\"background:#efefef;color:#000000;font-weight:bold;text-align:left;font-size:1.0em;height:30px;\" >";
-                   string spaltenName = "<tr>" + td_style + "Datum</td>" + td_style + "Uhrzeit</td>" + td_style + "Fehler</td>" + td_style + "Woher</td>"+ td_style + "Gruppe</td>" + td_style + "Inhalt</td>" + td_style + "Datei</td>" + td_style + "Klasse</td>" + td_style + "Funktion</td></tr>";
+               try
+               {   Datum datum = new Datum();
+                   Datei datei = new Datei();
+                  
+               	   int    unixzeit     = datum.unix();   
+               	   string td_style     = "<td style=\"background:#8fbc8f;color:#000000;font-weight:bold;text-align:left;font-size:1.0em;height:30px;\" >";
+               	   string td_intern    = "<td style=\"color:#000000;text-align:left;font-size:1.0em;height:30px;\" >";
+                   string td_intern_nw = "<td style=\"color:#000000;text-align:left;font-size:1.0em;height:30px;\" nowrap >";
+                   string spaltenName  = "<tr>" + td_style + "Datum</td>" + td_style + "Uhrzeit</td>" + td_style + "Fehler</td>" + td_style + "Woher</td>"+ td_style + "Gruppe</td>" + td_style + "Inhalt</td>" + td_style + "Datei</td>" + td_style + "Klasse</td>" + td_style + "Funktion</td></tr>";
                	   
                	  /* HTML Protokoll in Datei Speichern */
                	   if( File.Exists(@"noc_protokoll_server.html")  == false )
                	   {    /* Datei war noch nicht Vorhanden HTML Kopf Schreiben und Datei erstellen */ 
                          
-                         string[] kopf_inhalt  = new string[39]; 
+                         Protokoll.alt_datum = datum.unixDatum( unixzeit , "datum"); /* Datum Neu setzen */
+                         string[] kopf_inhalt  = new string[52]; 
                	   	     kopf_inhalt[0] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"> ";
                          kopf_inhalt[1] = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\"> ";
                          kopf_inhalt[2] = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"              \"http://www.w3.org/TR/html4/strict.dtd\"> ";
@@ -352,40 +387,88 @@ namespace MEQuery
                          kopf_inhalt[9] = "<head>";
 	                       kopf_inhalt[10] = "<meta charset=\"UTF-8\">";
                          kopf_inhalt[11] = "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"> ";
-                         kopf_inhalt[12] = "<title>NOC Portal - Server Protokoll Datei erstellt am "+ datum.datum_zeit() + "</title>";
-                         kopf_inhalt[13] = "<style type=\"text/css\"> ";
-                         kopf_inhalt[14] = " /* ";
-                         kopf_inhalt[15] = "   *************************************************************************************************************  ";
-                         kopf_inhalt[16] = "   /      NOC Portal Server - Protokoll Datei                                                                  /  ";
-                         kopf_inhalt[17] = "   /                                                                                                           /  ";
+                         kopf_inhalt[12] = "<meta http-equiv=\"refresh\" content=\"5\">";
+                         kopf_inhalt[13] = "<title>NOC Portal - Server Protokoll Datei erstellt am "+ datum.datum_zeit() + "</title>";
+                         kopf_inhalt[14] = "<style type=\"text/css\"> ";
+                         kopf_inhalt[15] = " /* ";
+                         kopf_inhalt[16] = "   *************************************************************************************************************  ";
+                         kopf_inhalt[17] = "   /      NOC Portal Server - Protokoll Datei                                                                  /  ";
                          kopf_inhalt[18] = "   /                                                                                                           /  ";
-                         kopf_inhalt[19] = "   /      Cod by Meiko Eichler                                                                                 /  ";
-                         kopf_inhalt[20] = "   /      Copyright by Meiko Eichler                                                                           /  ";
-                         kopf_inhalt[21] = "   /                                                                                                           /  ";
-                         kopf_inhalt[22] = "   /      Datei erstellt am 14.03.2017                                                                         /  ";
-                         kopf_inhalt[23] = "   /      Generiert am " + datum.datum_zeit() + "                                                              / ";
-                         kopf_inhalt[24] = "   /                                                                                                           /  ";
-                         kopf_inhalt[25] = "   /      Datei Name: noc_protokoll_server.html                                                                /  ";
-                         kopf_inhalt[26] = "   /                                                                                                           /  ";
-                         kopf_inhalt[27] = "   /      Protokolle für die Laufzeitumgebung                                                                  /  ";
-                         kopf_inhalt[28] = "   /                                                                                                           /  ";
-                         kopf_inhalt[29] = "   *************************************************************************************************************  ";
-                         kopf_inhalt[30] = " */ ";
-                         kopf_inhalt[31] = "@charset \"UTF-8\"; ";
-                         kopf_inhalt[32] = "html{ height:100%; width:100%; }    ";
-                         kopf_inhalt[33] = "</style> ";
-                         kopf_inhalt[34] = "</head> ";
-                         kopf_inhalt[35] = "<body bgcolor=\"#707a7d\"> ";
-                         kopf_inhalt[36] = "<br /><center><table style=\"width:98%\"  border=\"3\" cellpadding=\"0\" cellspacing=\"0\"  bordercolorlight=\"#8C8E8C\" bordercolordark=\"#000000\">";
-                         kopf_inhalt[37] = "<tr><th height=\"25\" style=\"color:#FFFFFF;background-color:#bd0e39;font-size:1.2em;text-align:left;height:35px;\" colspan=\"9\">NOC Portal - Client Protokoll vom "+ datum.datum_zeit() + "</td></tr>";
-                         kopf_inhalt[38] = spaltenName;
+                         kopf_inhalt[19] = "   /                                                                                                           /  ";
+                         kopf_inhalt[20] = "   /      Cod by Meiko Eichler                                                                                 /  ";
+                         kopf_inhalt[21] = "   /      Copyright by Meiko Eichler                                                                           /  ";
+                         kopf_inhalt[22] = "   /                                                                                                           /  ";
+                         kopf_inhalt[23] = "   /      Datei erstellt am 14.03.2017                                                                         /  ";
+                         kopf_inhalt[24] = "   /      Generiert am " + datum.datum_zeit() + "                                                              /  ";
+                         kopf_inhalt[25] = "   /                                                                                                           /  ";
+                         kopf_inhalt[26] = "   /      Datei Name: noc_protokoll_server.html                                                                /  ";
+                         kopf_inhalt[27] = "   /                                                                                                           /  ";
+                         kopf_inhalt[28] = "   /      Protokolle für die Laufzeitumgebung                                                                  /  ";
+                         kopf_inhalt[29] = "   /                                                                                                           /  ";
+                         kopf_inhalt[30] = "   *************************************************************************************************************  ";
+                         kopf_inhalt[31] = " */ ";
+                         kopf_inhalt[32] = "@charset \"UTF-8\"; ";
+                         kopf_inhalt[33] = "html{ height:100%; width:100%; }    ";
+                         kopf_inhalt[34] = "</style> ";
+                         kopf_inhalt[35] = "<script type=\"text/javascript\"> ";
+                         kopf_inhalt[36] = "function Seitenende() { ";
+                         kopf_inhalt[37] = " /* document.getElementById('endeDatei').scrollIntoView(true); */ ";
+                         kopf_inhalt[38] = "} ";
+                         kopf_inhalt[39] = "window.onload=function(){ ";
+                         kopf_inhalt[40] = "Seitenende(); ";
+                         kopf_inhalt[41] = "} ";
+                         kopf_inhalt[42] = "</script>";
+                         kopf_inhalt[43] = "</head> ";
+                         kopf_inhalt[44] = "<body bgcolor=\"#707a7d\"> ";
+                         kopf_inhalt[45] = "<br /><center><table style=\"width:98%\"  border=\"3\" cellpadding=\"0\" cellspacing=\"0\"  bordercolorlight=\"#8C8E8C\" bordercolordark=\"#000000\">";
+                         kopf_inhalt[46] = "<tr><th height=\"25\" style=\"color:#FFFFFF;background-color:#bd0e39;font-size:1.2em;text-align:left;height:35px;\" colspan=\"9\">NOC Portal - Server Protokoll vom "+ datum.datum_zeit() + "</td></tr>";
+                         kopf_inhalt[47] = spaltenName;
+                         kopf_inhalt[48] = "</table>";
+                         kopf_inhalt[49] = "</center><br />";
+                         kopf_inhalt[50] = "<div id='endeDatei'>";
+                         kopf_inhalt[51] = "</div></body></html>";
+                         
                    
                           /* Datei mit Kopf erstellen und Datei erstellen */
                          File.AppendAllLines( @"noc_protokoll_server.html" , kopf_inhalt );
+                   }
+   	   	           else if(Protokoll.alt_datum ==  "" || Protokoll.alt_datum != datum.unixDatum( unixzeit , "datum") ) 
+   	   	           {  /* Server wurde neu gestartet oder ein Neuer Tag hat begonnen  Tabelle Neu erstellen  */
+   	   	           	     
+   	   	           	     Protokoll.alt_datum = datum.unixDatum( unixzeit , "datum"); /* Datum Neu setzen */
+   	   	           	     string[] new_tabelle = new string[5];
+   	   	           	     new_tabelle[0] = "<br /><center><table style=\"width:98%\"  border=\"3\" cellpadding=\"0\" cellspacing=\"0\"  bordercolorlight=\"#8C8E8C\" bordercolordark=\"#000000\">";
+                         new_tabelle[1] = "<tr><th height=\"25\" style=\"color:#FFFFFF;background-color:#bd0e39;font-size:1.2em;text-align:left;height:35px;\" colspan=\"9\">NOC Portal - Server Protokoll vom "+ datum.datum_zeit() + "</td></tr>";
+                         new_tabelle[2] = spaltenName;
+                         new_tabelle[3] = "</table>";
+                         new_tabelle[4] = "</center><br />";
+                         
+                         datei.einfugen("<div id='endeDatei'>","davor","unten",@"noc_protokoll_server.html", new_tabelle );
    	   	           }
-   	   	           else {}
-   	   	   
+   	   	          
+   	   	           string farbe_ok_fehler = string.Empty; 
+   	   	           string fehler_text     = string.Empty;
+   	   	           if(fehler == true)
+                   {  farbe_ok_fehler = "background-color:#FE2E2E";
+                      fehler_text = "Ja";  }
+                   else 
+                   {  farbe_ok_fehler = "background-color:#efefef";
+                      fehler_text = "Nein"; }
+                      
+                               	   
+                   /* Prüfen ob Durchlauf schon 15 Erreicht hat wenn ja ein Array mehr erstellen und Spaltennamen einfügen */
+                   int str_lange = 1;
+                   if(Protokoll.durchlauf > 15)str_lange = 2; else {}
+                   string[] ubergabe = new string[str_lange];
+                  
+                   ubergabe[0] = "<tr style=\" "+ farbe_ok_fehler + "; \" >" + td_intern + Protokoll.durchlauf + "-" + datum.unixDatum( unixzeit , "datum") + "</td>" + td_intern + datum.unixDatum( unixzeit , "uhrzeit") + "</td>" + td_intern + fehler_text + "</td>" + td_intern_nw + woher + "</td>" + td_intern_nw + gruppe + "</td>" + td_intern + inhalt + "</td>" + td_intern + dateiname + "</td>" + td_intern + klasse + "</td>" + td_intern + funktion + "</td></tr>";
+                   if(Protokoll.durchlauf > 15){  ubergabe[1] = spaltenName;  Protokoll.durchlauf = 0; } else {}
+                     
+                   /* Protokoll in Datei einfügen */
+                   datei.einfugen("</table>","davor","unten",@"noc_protokoll_server.html", ubergabe );
    	   	           
+   	   	           /* Durchlauf zählen */
+   	   	           Protokoll.durchlauf++;
                }
                catch{}
                
@@ -396,52 +479,105 @@ namespace MEQuery
    
    public class Datei
    {  /* Datei Behandlung */
-   	
-   	     public bool einfugen(string anker,string pathDatei , string[] zeilenInhalt )
+         private Text text = new Text();
+          	
+   	     public bool einfugen(string anker,string wo,string suche,string pathDatei , string[] zeilenInhalt )
    	     {  /* Array String an Besimmter Stelle danach einfügen in Datei  */
    	     	
-   	     	         /* Kompletten daten von Datei holen */
-   	   	           string[] dateiInhalt = File.ReadAllLines(pathDatei);
+   	     	     bool ruckgabe = true;
+   	     	     try
+   	     	     {
+       	         /* Kompletten daten von Datei holen */
+   		           string[] dateiInhalt = File.ReadAllLines(pathDatei);
    	   	           
-   	   	           /* Gesamtgröße von neuer Datei ermitteln */
-   	   	           int neuDateiZeilen = dateiInhalt.Length + zeilenInhalt.Length;
+   	             /* Gesamtgröße von neuer Datei ermitteln */
+   	   	         int neuDateiZeilen = dateiInhalt.Length + zeilenInhalt.Length;
    	   	           
-   	   	           /* neues String Array für Übergabe der Datei erstellen */
-   	   	           string[] neueDaten = new string[neuDateiZeilen];
-   	   	           int neuZeile = 0;
-   	   	           
-   	   	           /* Anker suchen ab den eingehagen werden soll und Neuen datensatz erstellen */
+   	   	         /* neues String Array für Übergabe der Datei erstellen */
+   	   	         string[] neueDaten = new string[neuDateiZeilen];
+   	   	         int neuZeile = 0;
+   	   	         bool gefunden = false; /* Schutz das nur einmal Zeile eingefügt wird */
+   	   	        
+   	   	         int gesamtAnker = 1; /* Fängt bei eins an zu Zählen da Anker im einmal da sein muss um dort Daten einzuhängen */
+   	   	         if(suche == "unten") /* Suche von unten beginnen */
+   	   	         {
+   	   	         	  /* Anker ermitteln wieviel vorhanden sind wenn Daten beim letzten Anker eingehangen werden sollen */
+   	   	         	  gesamtAnker = text.wieOftZeile(dateiInhalt,anker);
+                 }
+   	   	         else{ }  
+   	   	       
+   	   	           int ankerZahler = 1; /* Fängt bei eins an zu Zählen da Anker im einmal da sein muss um dort Daten einzuhängen */
    	   	           for(int i=0;i < dateiInhalt.Length;i++)
-   	   	           {
-   	   	           	   if(dateiInhalt[i] == anker )
+   	   	           { 
+   	   	           	 try
+   	   	           	 {
+   	   	           	   if(dateiInhalt[i] == anker  && gefunden == false)
    	   	           	   {  /* Anker wurde gefunden ( Neue Daten darunter einhängen ) */
-   	   	           	   	  neueDaten[neuZeile] = dateiInhalt[i]; /* Alte Daten in neuen Datenbestand schreiben */
-   	   	           	   	  neuZeile++;
-   	   	           	   	  for(int n=0;n<zeilenInhalt.Length;n++) /* Neue Daten in Datenbestand schreiben */
-   	   	           	   	  {
-   	   	           	   	  	 neueDaten[neuZeile] = zeilenInhalt[n];
-   	   	           	   	  	 neuZeile++;
-   	   	           	   	  }
    	   	           	   	  
+   	   	           	   	  if(ankerZahler == gesamtAnker) /* richtigen Anker gefunden */
+   	   	           	   	  {
+   	   	           	   	  	   gefunden = true; /* Als gefunden deklarieren hier muss nicht noch einmal reingegangen werden */
+   	   	           	   	       if(wo == "danach")  /* Inhalt wird  nach dem Anker eingefügt  */
+   	   	           	   	       {  neueDaten[neuZeile] = dateiInhalt[i]; /* Alte Daten in neuen Datenbestand schreiben */
+   	   	           	   	          neuZeile++; }
+   	   	           	   	       else {}
+   	   	           	   	  
+   	   	           	   	       for(int n=0;n<zeilenInhalt.Length;n++) /* Neue Daten in Datenbestand schreiben */
+   	   	           	   	       {
+   	   	           	   	  	      neueDaten[neuZeile] = zeilenInhalt[n];
+   	   	           	   	  	      neuZeile++;
+   	   	           	   	       }
+   	   	           	   	  
+   	   	           	   	       if(wo == "davor") /* Inhalt wird vor dem Anker eingefügt */
+   	   	           	   	       {  neueDaten[neuZeile] = dateiInhalt[i]; /* Alte Daten in neuen Datenbestand schreiben */
+   	   	           	   	          neuZeile++; }
+   	   	           	   	       else {}
+   	   	           	   	  }
+   	   	           	   	  else
+   	   	           	   	  {
+   	   	           	   	  	 ankerZahler++; /* Es war nicht der richtige Anker zum nächsten gehen */
+   	   	           	   	  	 neueDaten[neuZeile] = dateiInhalt[i]; /* Alte Daten in neuen Datenbestand schreiben */
+   	   	           	   	     neuZeile++;
+   	   	           	   	  }
    	   	           	   }
    	   	           	   else 
    	   	           	   {
    	   	           	   	   neueDaten[neuZeile] = dateiInhalt[i]; /* Alte Daten in neuen Datenbestand schreiben */
    	   	           	   	   neuZeile++;
    	   	           	   }
+   	   	           	 }
+   	   	           	 catch{}
    	   	           }
-   	   	           
    	   	           /* Datei Komplett Überschreiben */
    	   	           File.WriteAllLines( pathDatei , neueDaten );   
-   	   	           
-   	   	        return true;	   	         
+   	   	       }
+   	   	       catch
+   	   	       {
+   	   	       	  ruckgabe = false;
+   	   	       	
+   	   	       }    
+   	   	       
+   	   	       return ruckgabe;
    	     }
    	
    }   
    
    /* String KLasse um Inhalt zu bearbeiten */
    public class Text 
-   {
+   {   
+   	   public  int wieOftZeile(string[] daten,string gesuchteZeile)
+   	   {
+   	   	    int ruckgabe = 0;
+   	   	    foreach(string suche in daten)
+   	   	    {
+   	   	       if(suche == gesuchteZeile)
+   	   	        ruckgabe++;
+   	   	       else {}
+   	   	    }
+   	   	    return ruckgabe;
+   	   }
+   	   
+   	   
    	   public string steuerzeichen(string inhalt,string welche)
    	   {
    	   	  if( welche == "n" || welche == "alle" )inhalt = inhalt.Replace("\n", String.Empty); else {} /* Zeilenumbruch entfernen */
