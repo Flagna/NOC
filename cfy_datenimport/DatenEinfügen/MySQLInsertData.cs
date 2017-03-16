@@ -10,7 +10,7 @@ namespace MySQL
 {
 	public class MySQLInsertData
 	{
-		private MySqlConnection connection;
+		public MySqlConnection connection;
 		private string server;
 		private string database;
 		private string uid;
@@ -23,7 +23,7 @@ namespace MySQL
 			Initialize ();
 		}
 
-		private void Initialize ()
+		public void Initialize ()
 		{
 			server = "localhost";
 			database = "noc_portal";
@@ -80,7 +80,6 @@ namespace MySQL
 				GetFirstColumnName(table) + ") " +
 					"VALUES ('" +
 					value + "');";
-
 			try {
 				if (OpenConnection () == true) {
 					MySqlCommand cmd = new MySqlCommand (query, connection);
@@ -108,7 +107,6 @@ namespace MySQL
 					"VALUES ('" +
 					value + "','" +
 					value2 + "');";
-
 
 			try {
 				if (OpenConnection () == true) {
@@ -143,7 +141,6 @@ namespace MySQL
 					telefon + "','" +
 					objektId + "');";
 
-
 			try {
 				if (OpenConnection () == true) {
 					MySqlCommand cmd = new MySqlCommand (query, connection);
@@ -162,11 +159,69 @@ namespace MySQL
 
 		}
 
+		public void InsertIntoData(string [] IdList)
+		{
+
+			List<string> columnNames = GetColumnNames ("cfy_daten");
+			string query = "INSERT INTO cfy_daten (" +
+				columnNames[0] + "," +
+					columnNames[1] + "," +
+					columnNames[3] + "," +
+					columnNames[4] + "," +
+					columnNames[5] + "," +
+					columnNames[6] + "," +
+					columnNames[7] + "," +
+					columnNames[8] + "," +
+					columnNames[9] + "," +
+					columnNames[10] + "," +
+					columnNames[11] + "," +
+					columnNames[13] + "," +
+					columnNames[14] + "," +
+					columnNames[15] + "," +
+					columnNames[21] + ") " +
+					"VALUES ('" +
+					IdList[0] + "','" +
+					IdList[1] + "','" +
+					IdList[2] + "','" +
+					IdList[3] + "','" +
+					IdList[4] + "','" +
+					IdList[5] + "','" +
+					IdList[6] + "','" +
+					IdList[7] + "','" +
+					IdList[8] + "','" +
+					IdList[9] + "','" +
+					IdList[10] + "','" +
+					IdList[11] + "','" +
+					IdList[12] + "','" +
+					IdList[13] + "','" +
+					IdList[14] + "');";
+
+			try {
+				if (OpenConnection () == true) {
+					MySqlCommand cmd = new MySqlCommand (query, connection);
+					//Execute
+					cmd.ExecuteNonQuery ();
+					//Close Connection
+					CloseConnection ();
+
+				}
+			} catch (MySqlException ex) {
+
+				Console.WriteLine ("MySQL Fehler: " + ex.Number);
+
+			}
+		}
+
 		public void UpdateCustomer(string table, string objektId)
 		{
+			int unix_zeitpunkt = 0;
+			MEQery.Datum time = new MEQery.Datum ();
+			unix_zeitpunkt = time.unix ();
 			// update cfy_kunden set status = 1 where soll_we = 20;
-			string query = "UPDATE " + table + " SET status = 1 where objekt_id = " + objektId + ";";
-
+			string query = "UPDATE " + table + " SET status = 1, unix_deaktiviert = '" + unix_zeitpunkt + "' where objekt_id = " + objektId + ";";
+			MySQLInsertLog log = new MySQLInsertLog ();
+			MySQLGetData get = new MySQLGetData ();
+			log.InsertIntoGeloescht ("cfy_kunden", get.GetIdfromTable("cfy_kunden",objektId),objektId.ToString());
 
 
 			try {

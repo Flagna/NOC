@@ -229,6 +229,83 @@ namespace MySQL
 			return table_names;
 		}
 
+		public string GetIdfromTable(string tableName, string value)
+		{
+
+			List<string> columnNames = GetColumnNames (tableName);
+			string getIdquery = "SELECT id FROM "+ tableName +" WHERE "+ columnNames[0] +" like '"+ value +"';";
+
+			string Id = "";
+
+			OpenConnection ();
+			MySqlCommand command = new MySqlCommand (getIdquery, connection);
+
+			//Reader starten
+			MySqlDataReader reader = command.ExecuteReader ();
+			//Reader liest Zeilenweise in der ersten Spalte (0)
+			while (reader.Read ()) {
+				Id = reader.GetString (0);
+			}
+			//Reader schließen
+			reader.Close ();
+			//Verbindung schließen
+			CloseConnection ();
+			return Id;
+		}
+		public string GetIdfromTable(string tableName, string value1, string value2)
+		{
+			List<string> columnNames = GetColumnNames (tableName);
+			string getIdquery = "SELECT id FROM "+ tableName +" WHERE "+ columnNames[0] +" LIKE '"+ value1 +"' AND" +
+				" " + columnNames[1] + " LIKE '" + value2 + "';" ;
+
+			string Id = "";
+
+			OpenConnection ();
+			MySqlCommand command = new MySqlCommand (getIdquery, connection);
+
+			//Reader starten
+			MySqlDataReader reader = command.ExecuteReader ();
+			//Reader liest Zeilenweise in der ersten Spalte (0)
+			while (reader.Read ()) {
+				Id = reader.GetString (0);
+			}
+			//Reader schließen
+			reader.Close ();
+			//Verbindung schließen
+			CloseConnection ();
+			return Id;
+		}
+
+		public string GetIdfromTable(string objektId)
+		{
+
+			string getIdquery = "SELECT id FROM cfy_kunden WHERE objekt_id like '" + objektId + "';" ;
+			string Id = "";
+
+			OpenConnection ();
+			MySqlCommand command = new MySqlCommand (getIdquery, connection);
+
+			//Reader starten
+			MySqlDataReader reader = command.ExecuteReader ();
+			//Reader liest Zeilenweise in der ersten Spalte (0)
+			while (reader.Read ()) {
+				Id = reader.GetString (0);
+			}
+			//Reader schließen
+			reader.Close ();
+			//Verbindung schließen
+			CloseConnection ();
+			return Id;
+		}
+
+//		public string GetStatusfromTable()
+//		{
+//
+//		}
+
+
+
+
 	}
 }
 
