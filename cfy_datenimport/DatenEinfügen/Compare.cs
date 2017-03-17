@@ -33,14 +33,17 @@ namespace MySQL
 
 
 				//SIGNALQUELLE_ID
+				for (int i=0; i< LoadMySQLData.tables["cfy_sq"][0].Count; i++) {
+					insert.ChangeStatus("cfy_sq", LoadMySQLData.tables ["cfy_sq"] [0] [i], true);
+				}
 				foreach (MEClary.Clary.Clary_List item1 in MEClary.Clary.cfy_rohdaten) {
 					bool wurdeGefunden = false;
 
-					//Alle auf inaktiv setzen. 
-
 					for (int i=0; i< LoadMySQLData.tables["cfy_sq"][0].Count; i++) {
+
 						if (item1.signalquelle_id == LoadMySQLData.tables ["cfy_sq"] [0] [i]) {
-							//Auf Aktiv setzen, AUCH in der Liste
+							//Auf Aktiv setzen
+							insert.ChangeStatus("cfy_sq", LoadMySQLData.tables ["cfy_sq"] [0] [i], false);
 							wurdeGefunden = true;
 
 						} 
@@ -64,11 +67,15 @@ namespace MySQL
 				}
 
 				//SIGNALLIEFERANT
+				for (int i=0; i< LoadMySQLData.tables["cfy_signallieferant"][0].Count; i++) {
+					insert.ChangeStatus("cfy_signallieferant", LoadMySQLData.tables ["cfy_signallieferant"] [0] [i], true);
+				}
 				foreach (MEClary.Clary.Clary_List item1 in MEClary.Clary.cfy_rohdaten) {
 					bool wurdeGefunden = false;
 
 					for (int i=0; i< LoadMySQLData.tables["cfy_signallieferant"][0].Count; i++) {
 						if (item1.signallieferant == LoadMySQLData.tables ["cfy_signallieferant"] [0] [i]) {
+							insert.ChangeStatus("cfy_signallieferant", LoadMySQLData.tables ["cfy_signallieferant"] [0] [i], false);
 							wurdeGefunden = true;
 
 						} 
@@ -92,11 +99,16 @@ namespace MySQL
 				}
 
 				//CLUSTER_ID
+				for (int i=0; i< LoadMySQLData.tables["cfy_cluster"][0].Count; i++) {
+					insert.ChangeStatus("cfy_cluster", LoadMySQLData.tables ["cfy_cluster"] [0] [i], true);
+				}
 				foreach (MEClary.Clary.Clary_List item1 in MEClary.Clary.cfy_rohdaten) {
 					bool wurdeGefunden = false;
 
 					for (int i=0; i< LoadMySQLData.tables["cfy_cluster"][0].Count; i++) {
 						if (item1.cluster_id == LoadMySQLData.tables ["cfy_cluster"] [0] [i]) {
+							insert.ChangeStatus("cfy_cluster", LoadMySQLData.tables ["cfy_cluster"] [0] [i], false);
+
 							wurdeGefunden = true;
 						} 
 					}
@@ -118,11 +130,16 @@ namespace MySQL
 
 				}
 				//CMTS
+				for (int i=0; i< LoadMySQLData.tables["cfy_cmts"][0].Count; i++) {
+					insert.ChangeStatus("cfy_cmts", LoadMySQLData.tables ["cfy_cmts"] [0] [i], true);
+				}
 				foreach (MEClary.Clary.Clary_List item1 in MEClary.Clary.cfy_rohdaten) {
 					bool wurdeGefunden = false;
 
 					for (int i=0; i< LoadMySQLData.tables["cfy_cmts"][0].Count; i++) {
 						if (item1.cmts == LoadMySQLData.tables ["cfy_cmts"] [0] [i]) {
+							insert.ChangeStatus("cfy_cmts", LoadMySQLData.tables ["cfy_cmts"] [0] [i], false);
+
 							wurdeGefunden = true;
 						} 
 					}
@@ -145,11 +162,16 @@ namespace MySQL
 				}
 
 				//TYPE
+				for (int i=0; i< LoadMySQLData.tables["cfy_sqtyp"][0].Count; i++) {
+					insert.ChangeStatus("cfy_sqtyp", LoadMySQLData.tables ["cfy_sqtyp"] [0] [i], true);
+				}
 				foreach (MEClary.Clary.Clary_List item1 in MEClary.Clary.cfy_rohdaten) {
 					bool wurdeGefunden = false;
 
 					for (int i=0; i< LoadMySQLData.tables["cfy_sqtyp"][0].Count; i++) {
 						if (item1.type == LoadMySQLData.tables ["cfy_sqtyp"] [0] [i]) {
+							insert.ChangeStatus("cfy_sqtyp", LoadMySQLData.tables ["cfy_sqtyp"] [0] [i], false);
+
 							wurdeGefunden = true;
 						} 
 					}
@@ -172,11 +194,16 @@ namespace MySQL
 				}
 
 				//PLZ
+				for (int i=0; i< LoadMySQLData.tables["cfy_plz"][0].Count; i++) {
+					insert.ChangeStatus("cfy_plz", LoadMySQLData.tables ["cfy_plz"] [0] [i], true);
+				}
 				foreach (MEClary.Clary.Clary_List item1 in MEClary.Clary.cfy_rohdaten) {
 					bool wurdeGefunden = false;
 
 					for (int i=0; i< LoadMySQLData.tables["cfy_plz"][0].Count; i++) {
 						if (item1.plz == LoadMySQLData.tables ["cfy_plz"] [0] [i]) {
+							insert.ChangeStatus("cfy_plz", LoadMySQLData.tables ["cfy_plz"] [0] [i], false);
+
 							wurdeGefunden = true;
 						} 
 					}
@@ -198,11 +225,16 @@ namespace MySQL
 
 				}
 				//ORT
+				for (int i=0; i< LoadMySQLData.tables["cfy_ort"][0].Count; i++) {
+					insert.ChangeStatus("cfy_ort", LoadMySQLData.tables ["cfy_ort"] [0] [i], true);
+				}
 				foreach (MEClary.Clary.Clary_List item1 in MEClary.Clary.cfy_rohdaten) {
 					bool wurdeGefunden = false;
 
 					for (int i=0; i< LoadMySQLData.tables["cfy_ort"][0].Count; i++) {
 						if (item1.ort == LoadMySQLData.tables ["cfy_ort"] [0] [i]) {
+							insert.ChangeStatus("cfy_ort", LoadMySQLData.tables ["cfy_ort"] [0] [i], false);
+
 							wurdeGefunden = true;
 						} 
 					}
@@ -224,11 +256,16 @@ namespace MySQL
 
 				}
 				//STRASSE
+				for (int i=0; i< LoadMySQLData.tables["cfy_strasse"][0].Count; i++) {
+					insert.ChangeStatus("cfy_strasse", LoadMySQLData.tables ["cfy_strasse"] [0] [i], true);
+				}
 				foreach (MEClary.Clary.Clary_List item1 in MEClary.Clary.cfy_rohdaten) {
 					bool wurdeGefunden = false;
 
 					for (int i=0; i< LoadMySQLData.tables["cfy_strasse"][0].Count; i++) {
 						if (item1.strasse.ToString() == LoadMySQLData.tables ["cfy_strasse"] [0] [i].ToString()) {
+							insert.ChangeStatus("cfy_strasse", LoadMySQLData.tables ["cfy_strasse"] [0] [i], false);
+
 							wurdeGefunden = true;
 						} 
 					}
@@ -249,11 +286,16 @@ namespace MySQL
 
 				}
 				//HNR
+				for (int i=0; i< LoadMySQLData.tables["cfy_hnr"][0].Count; i++) {
+					insert.ChangeStatus("cfy_hnr", LoadMySQLData.tables ["cfy_hnr"] [0] [i], true);
+				}
 				foreach (MEClary.Clary.Clary_List item1 in MEClary.Clary.cfy_rohdaten) {
 					bool wurdeGefunden = false;
 
 					for (int i=0; i< LoadMySQLData.tables["cfy_hnr"][0].Count; i++) {
 						if (item1.hnr == LoadMySQLData.tables ["cfy_hnr"] [0] [i]) {
+							insert.ChangeStatus("cfy_hnr", LoadMySQLData.tables ["cfy_hnr"] [0] [i], false);
+
 							wurdeGefunden = true;
 						} 
 					}
@@ -275,11 +317,16 @@ namespace MySQL
 				}
 
 				//GESTATT_NAME
+				for (int i=0; i< LoadMySQLData.tables["cfy_gestattungsgeber_name"][0].Count; i++) {
+					insert.ChangeStatus("cfy_gestattungsgeber_name", LoadMySQLData.tables ["cfy_gestattungsgeber_name"] [0] [i], true);
+				}
 				foreach (MEClary.Clary.Clary_List item1 in MEClary.Clary.cfy_rohdaten) {
 					bool wurdeGefunden = false;
 
 					for (int i=0; i< LoadMySQLData.tables["cfy_gestattungsgeber_name"][0].Count; i++) {
 						if (item1.gestatt_name == LoadMySQLData.tables ["cfy_gestattungsgeber_name"] [0] [i]) {
+							insert.ChangeStatus("cfy_gestattungsgeber_name", LoadMySQLData.tables ["cfy_gestattungsgeber_name"] [0] [i], false);
+
 							wurdeGefunden = true;
 						} 
 					}
@@ -300,11 +347,16 @@ namespace MySQL
 				}
 
 				//GESTATT_VERTRAGSN
+				for (int i=0; i< LoadMySQLData.tables["cfy_gestattungsgeber_daten"][0].Count; i++) {
+					insert.ChangeStatus("cfy_gestattungsgeber_daten", LoadMySQLData.tables ["cfy_gestattungsgeber_daten"] [0] [i], true);
+				}
 				foreach (MEClary.Clary.Clary_List item1 in MEClary.Clary.cfy_rohdaten) {
 					bool wurdeGefunden = false;
 
 					for (int i=0; i< LoadMySQLData.tables["cfy_gestattungsgeber_daten"][0].Count; i++) {
 						if (item1.gestatt_vertragsn == LoadMySQLData.tables ["cfy_gestattungsgeber_daten"] [0] [i]) {
+							insert.ChangeStatus("cfy_gestattungsgeber_daten", LoadMySQLData.tables ["cfy_gestattungsgeber_daten"] [0] [i], false);
+
 							wurdeGefunden = true;
 						} 
 					}
@@ -346,12 +398,17 @@ namespace MySQL
 			MySQLGetData get = new MySQLGetData ();
 
 			//GPS_LANGENGRAD + GPS_BREITENGRAD
+			for (int i=0; i< LoadMySQLData.tables["cfy_gps"][0].Count; i++) {
+				insert.ChangeStatus("cfy_gps", LoadMySQLData.tables ["cfy_gps"] [0] [i], LoadMySQLData.tables ["cfy_gps"] [1] [i], true);
+			}
 			foreach (MEClary.Clary.Clary_List item1 in MEClary.Clary.cfy_rohdaten) {
 				bool wurdeGefunden = false;
 
 				for (int i=0; i< LoadMySQLData.tables["cfy_gps"][0].Count; i++) {
 					if (item1.gps_langengrad == LoadMySQLData.tables ["cfy_gps"] [0] [i] && 
 					    item1.gps_breitengrad == LoadMySQLData.tables ["cfy_gps"] [1] [i]) {
+						insert.ChangeStatus("cfy_gps", LoadMySQLData.tables ["cfy_gps"] [0] [i], LoadMySQLData.tables ["cfy_gps"] [1] [i], false);
+
 						wurdeGefunden = true;
 					} 
 				}
@@ -377,6 +434,9 @@ namespace MySQL
 			MySQLGetData get = new MySQLGetData ();
 
 			//KUNDEN
+			for (int i=0; i< LoadMySQLData.tables["cfy_kunden"][0].Count; i++) {
+				insert.ChangeStatusInCustomer("cfy_kunden", LoadMySQLData.tables ["cfy_kunden"] [5] [i], true);
+			}
 			foreach (MEClary.Clary.Clary_List item1 in MEClary.Clary.cfy_rohdaten) {
 				bool wurdeGefunden = false;
 
@@ -384,16 +444,14 @@ namespace MySQL
 
 
 					if (item1.objekt_id.ToString() == LoadMySQLData.tables ["cfy_kunden"] [5] [i]) {
-
+						insert.ChangeStatusInCustomer("cfy_kunden", LoadMySQLData.tables ["cfy_kunden"] [5] [i], false);
 						if ((item1.soll_we.ToString() != LoadMySQLData.tables ["cfy_kunden"] [0] [i].ToString() ||
 						    item1.subscriber.ToString() != LoadMySQLData.tables ["cfy_kunden"] [1] [i].ToString() ||
 						    item1.subscriber_int.ToString() != LoadMySQLData.tables ["cfy_kunden"] [2] [i].ToString() ||
 						    item1.subscriber_tel.ToString() != LoadMySQLData.tables ["cfy_kunden"] [3] [i].ToString()) && 
 						    status.ToString() == LoadMySQLData.tables ["cfy_kunden"] [4] [i].ToString())
 						{
-							//Status auf 1 setzen
 
-							//Update Counter erhöhen
 
 							insert.Insert ("cfy_kunden",
 							               item1.soll_we.ToString(), 

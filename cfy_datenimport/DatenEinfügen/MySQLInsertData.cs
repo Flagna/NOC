@@ -18,6 +18,7 @@ namespace MySQL
 		private string charset;
 		private string connectionString;
 
+
 		public MySQLInsertData ()
 		{
 			Initialize ();
@@ -211,6 +212,96 @@ namespace MySQL
 
 			}
 		}
+
+		public void ChangeStatus(string tabelle, string id, bool status)
+		{
+			List<string> columnNames = GetColumnNames (tabelle);
+
+			string stat;
+			if (status) {
+				stat = "True";
+			}else{
+				stat = "False";
+			}
+			string query = "UPDATE " + tabelle + " SET status = " + stat + " WHERE " + columnNames[0] + " like '" + id + "';";
+			Console.WriteLine (query);
+
+			try {
+				if (OpenConnection () == true) {
+					MySqlCommand cmd = new MySqlCommand (query, connection);
+					//Execute
+					cmd.ExecuteNonQuery ();
+					//Close Connection
+					CloseConnection ();
+
+				}
+			} catch (MySqlException ex) {
+
+				Console.WriteLine ("MySQL Fehler: " + ex.Number);
+
+			}
+
+		}
+
+		public void ChangeStatus(string tabelle, string id, string id2, bool status)
+		{
+			List<string> columnNames = GetColumnNames (tabelle);
+
+			string stat;
+			if (status) {
+				stat = "True";
+			}else{
+				stat = "False";
+			}
+			string query = "UPDATE " + tabelle + " SET status = " + stat + " WHERE " + columnNames[0] + " like '" + id + "' " +
+				"AND " + columnNames[1] + " like '" + id2 + "';";
+
+			try {
+				if (OpenConnection () == true) {
+					MySqlCommand cmd = new MySqlCommand (query, connection);
+					//Execute
+					cmd.ExecuteNonQuery ();
+					//Close Connection
+					CloseConnection ();
+
+				}
+			} catch (MySqlException ex) {
+
+				Console.WriteLine ("MySQL Fehler: " + ex.Number);
+
+			}
+
+		}
+
+		public void ChangeStatusInCustomer(string tabelle, string id, bool status)
+		{
+			List<string> columnNames = GetColumnNames (tabelle);
+
+			string stat;
+			if (status) {
+				stat = "True";
+			}else{
+				stat = "False";
+			}
+			string query = "UPDATE " + tabelle + " SET status = " + stat + " WHERE " + columnNames[5] + " like '" + id + "';";
+
+			try {
+				if (OpenConnection () == true) {
+					MySqlCommand cmd = new MySqlCommand (query, connection);
+					//Execute
+					cmd.ExecuteNonQuery ();
+					//Close Connection
+					CloseConnection ();
+
+				}
+			} catch (MySqlException ex) {
+
+				Console.WriteLine ("MySQL Fehler: " + ex.Number);
+
+			}
+
+		}
+
 
 		public void UpdateCustomer(string table, string objektId)
 		{
