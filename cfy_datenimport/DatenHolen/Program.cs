@@ -36,7 +36,7 @@ namespace MySQL
 				try {
 					//Neue Daten laden...
 					Clary newData = new Clary ();
-					newData.rohdaten ();
+					newData.rohdaten ("");
 				} catch (Exception e) {
 					//protokoll.erstellen("Rohdaten holen", );
 
