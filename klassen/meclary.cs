@@ -5,6 +5,8 @@
    /                                                                                                           /
    /      Cod by Meiko Eichler                                                                                 /
    /      Copyright by Meiko Eichler                                                                           /
+   /      Handy: 0163 7378481                                                                                  /
+   /      Email: Meiko@Somba.de                                                                                /
    /                                                                                                           /
    /      Datei erstellt am 01.03.2017                                                                         /
    /                                                                                                           /
@@ -45,7 +47,7 @@ namespace MEClary
    	   /* leer      = "So wird es geboren und erhält den status nach einer bearbeitung */
    	   /* mysql     = "Daten werden gerade an mysql weitergeleitet */
    	   public static string cfy_port_status = "leer";
-   	   public static string cfy_port_gruppe = string.Empty; /* Gruppen Zuweisung */
+   	   public static string cfy_port_gruppe = "cfy"; /* Gruppen Zuweisung */
 	  	    
        public class Clary_List
        {
@@ -107,7 +109,7 @@ namespace MEClary
     
        
    	   
-       public void rohdaten(string daten ,string proto_gruppe)
+       public void rohdaten(string daten)
        {
        	   /* Beispiel:
        	   
@@ -148,7 +150,7 @@ namespace MEClary
         	  List<Clary_List> clary_daten = new List<Clary_List>();
        	
        	    /*  Daten Verarbeiten welche vom Portlistener gekommen sind  - Start - */
-       	    protokoll.erstellen( proto_woher , proto_gruppe , "Es wird begonnen die List zu befühlen mit den Daten vom Portlistener." , proto_datei ,proto_klasse,"rohdaten(string daten ,string proto_gruppe)" , false );
+       	    protokoll.erstellen( proto_woher , Clary.cfy_port_gruppe , "Es wird begonnen die List zu befühlen mit den Daten vom Portlistener." , proto_datei ,proto_klasse,"rohdaten()" , false );
        	    
        	    
        	    Console.WriteLine( "\n Daten Was CFY Klasse zum Befühllen erhalten hat: " + daten + " \n Bitte Taste Drücken. " );  
@@ -214,7 +216,7 @@ namespace MEClary
        	    
        	    
        	    cfy_rohdaten = clary_daten; /* Daten in Klassen List laden und zum verarbeiten bereitstellen */
-       	    protokoll.erstellen( proto_woher , proto_gruppe , "List wurde erfolgreich erstellt mit daten und Status wurde auf Komplett gesetzt." , proto_datei ,proto_klasse,"rohdaten(string daten ,string proto_gruppe)" , false );
+       	    protokoll.erstellen( proto_woher , Clary.cfy_port_gruppe , "List wurde erfolgreich erstellt mit daten und Status wurde auf Komplett gesetzt." , proto_datei ,proto_klasse,"rohdaten()" , false );
        	    Clary.cfy_port_status = "komplett";  /* Clray List Status auf Komplett setezen und zur weiterverarbeitung Frei geben */ 
        } 
         

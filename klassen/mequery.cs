@@ -5,6 +5,8 @@
    /                                                                                                           /
    /      Cod by Meiko Eichler                                                                                 /
    /      Copyright by Meiko Eichler                                                                           /
+   /      Handy: 0163 7378481                                                                                  /
+   /      Email: Meiko@Somba.de                                                                                /
    /                                                                                                           /
    /      Datei erstellt am 01.03.2017                                                                         /
    /                                                                                                           /
@@ -48,7 +50,8 @@ namespace MEQuery
    	   public static int cfy_rohdaten_port;
    	   public static int http_port;
    	   public static int https_port;
-   	   public static int admin_port;
+   	   public static int admin_port = 14778;  /* Dieser Port ist nicht Änderbar von ausen */
+   	   public static int extern_port;
    	   public static string ip_adresse;
    	   public static bool sound;
    	   
@@ -73,7 +76,7 @@ namespace MEQuery
            {  /* Datei war noch nicht Vorhanden HTML Kopf Schreiben un als erstes anhängen */ 
               protokoll.erstellen( proto_woher , proto_gruppe , "config_server.noc Datei war nicht vorhanden erstelle Default config." , proto_datei ,proto_klasse,"laden()" , false);
               
-              string[] inhalt_datei  = new string[28];
+              string[] inhalt_datei  = new string[39];
               inhalt_datei[0]  = "#";
               inhalt_datei[1]  = "#   ************************************************************************************************************* ";
               inhalt_datei[2]  = "#   /      NOC Portal Server Einstellungsdatei                                                                  / ";
@@ -81,27 +84,38 @@ namespace MEQuery
               inhalt_datei[4]  = "#   /                                                                                                           / ";
               inhalt_datei[5]  = "#   /      Cod by Meiko Eichler                                                                                 / ";
               inhalt_datei[6]  = "#   /      Copyright by Meiko Eichler                                                                           / ";
-              inhalt_datei[7]  = "#   /                                                                                                           / ";
-              inhalt_datei[8]  = "#   /      Datei erstellt am 14.03.2017                                                                         / ";
-              inhalt_datei[9]  = "#   /      Generiert am " + datum.datum_zeit() + "                                                              / ";
-              inhalt_datei[10] = "#   /                                                                                                           / ";
-              inhalt_datei[11] = "#   /      Datei Name: config_server.noc                                                                        / ";
+              inhalt_datei[7]  = "#   /      Handy: 0163 7378481                                                                                  / ";
+              inhalt_datei[8]  = "#   /      Email: Meiko@Somba.de                                                                                / ";
+              inhalt_datei[9]  = "#   /                                                                                                           / ";
+              inhalt_datei[10] = "#   /      Datei erstellt am 14.03.2017                                                                         / ";
+              inhalt_datei[11] = "#   /      Generiert am " + datum.datum_zeit() + "                                                              / ";
               inhalt_datei[12] = "#   /                                                                                                           / ";
-              inhalt_datei[13] = "#   /      Werte immer in  \" \" schreiben!                                                                     / ";
-              inhalt_datei[14] = "#   /      Alle 4 Felder müssen angegeben werden sonst bricht Programm ab!                                      / ";
-              inhalt_datei[15] = "#   /      als Wert kann immer \"default\"  angegeben werden Es werden dann systemeinstellungen genommen vom Pr./ ";
-              inhalt_datei[16] = "#   /      bei sound gibt es zwei werte aus und an  ( standart bei default )                                    / ";
-              inhalt_datei[17] = "#   /                                                                                                           / ";
-              inhalt_datei[18] = "#   ************************************************************************************************************* ";
-              inhalt_datei[19] = "";
-              inhalt_datei[20] = "";
-              inhalt_datei[21] = "ip_adresse          =  \"default\" ";
-              inhalt_datei[22] = "cfy_rohdaten_port   =  \"default\" ";
-              inhalt_datei[23] = "http_port           =  \"default\" ";
-              inhalt_datei[24] = "https_port          =  \"default\" ";
-              inhalt_datei[25] = "admin_port          =  \"default\" ";
-              inhalt_datei[26] = "sound               =  \"default\" ";
-              inhalt_datei[27] = "";        
+              inhalt_datei[13] = "#   /      Datei Name: config_server.noc                                                                        / ";
+              inhalt_datei[14] = "#   /                                                                                                           / ";
+              inhalt_datei[15] = "#   /      Werte immer in  \" \" schreiben!                                                                     / ";
+              inhalt_datei[16] = "#   /      Alle 4 Felder müssen angegeben werden sonst bricht Programm ab!                                      / ";
+              inhalt_datei[17] = "#   /      als Wert kann immer \"default\"  angegeben werden Es werden dann systemeinstellungen genommen vom Pr./ ";
+              inhalt_datei[18] = "#   /      bei sound gibt es zwei werte aus und an  ( standart bei default )                                    / ";
+              inhalt_datei[19] = "#   /      Tip! Portangabe geht nur bis zirka 65500                                                             / ";
+              inhalt_datei[20] = "#   /                                                                                                           / ";
+              inhalt_datei[21] = "#   /      Achten Sie auf die \"default\" Werte!                                                                / ";
+              inhalt_datei[22] = "#   /      ip_adresse        = System IP Adressen                                                               / ";
+              inhalt_datei[23] = "#   /      cfy_rohdaten_port = 4411                                                                             / ";
+              inhalt_datei[24] = "#   /      http_port         = 88                                                                               / ";
+              inhalt_datei[25] = "#   /      https_port        = 20779                                                                            / ";
+              inhalt_datei[26] = "#   /      extern_port       = 31482                                                                            / ";
+              inhalt_datei[27] = "#   /      admin_port        = 14778     Tip: admin Port ist nicht änderbar! FIX                                / ";
+              inhalt_datei[28] = "#   /                                                                                                           / ";
+              inhalt_datei[29] = "#   ************************************************************************************************************* ";
+              inhalt_datei[30] = "";
+              inhalt_datei[31] = "";
+              inhalt_datei[32] = "ip_adresse          =  \"default\" ";
+              inhalt_datei[33] = "cfy_rohdaten_port   =  \"default\" ";
+              inhalt_datei[34] = "http_port           =  \"default\" ";
+              inhalt_datei[35] = "https_port          =  \"default\" ";
+              inhalt_datei[36] = "extern_port         =  \"default\" ";
+              inhalt_datei[37] = "sound               =  \"default\" ";
+              inhalt_datei[38] = "";        
               /* Config Datei in Datei Schreiben */
               File.AppendAllLines( @"config_server.noc" , inhalt_datei );
    	   	   }
@@ -146,21 +160,21 @@ namespace MEQuery
    	   	   	   {
    	   	   	   	  string puffer = text.trim(auswertung[1]);
    	   	   	      if(text.trim(puffer , "dophoch" ) == "default" ) /* Default Einstellung nehmen */
-   	   	   	        Einstellung.https_port     =  88779;
+   	   	   	        Einstellung.https_port     =  20779;
    	   	   	      else
    	   	   	        Einstellung.https_port     =  Convert.ToInt32( text.trim(puffer , "dophoch" ) );
    	   	   	      er++;
    	   	   	      protokoll.erstellen( proto_woher , proto_gruppe , "https Port wurde gefunden: " + Einstellung.https_port , proto_datei ,proto_klasse,"laden()" , false);
    	   	   	   }
-   	   	   	   else if( text.trim(auswertung[0]) == "admin_port")
+   	   	   	   else if( text.trim(auswertung[0]) == "extern_port")
    	   	   	   {
    	   	   	   	  string puffer = text.trim(auswertung[1]);
    	   	   	      if(text.trim(puffer , "dophoch" ) == "default" ) /* Default Einstellung nehmen */
-   	   	   	        Einstellung.admin_port     =  771482;
+   	   	   	        Einstellung.extern_port     =  31482;
    	   	   	      else
-   	   	   	        Einstellung.admin_port     =  Convert.ToInt32( text.trim(puffer , "dophoch" ) );
+   	   	   	        Einstellung.extern_port     =  Convert.ToInt32( text.trim(puffer , "dophoch" ) );
    	   	   	      er++;
-   	   	   	      protokoll.erstellen( proto_woher , proto_gruppe , "Admin Port wurde gefunden: " + Einstellung.admin_port , proto_datei ,proto_klasse,"laden()" , false);
+   	   	   	      protokoll.erstellen( proto_woher , proto_gruppe , "Extern Port wurde gefunden: " + Einstellung.extern_port , proto_datei ,proto_klasse,"laden()" , false);
    	   	   	   }
    	   	   	   else if( text.trim(auswertung[0]) == "sound") 
    	   	   	   {
@@ -223,7 +237,7 @@ namespace MEQuery
 	 	     
 	 	     public bool liste(string p_name ,string p_passw = null ,string was = null )
 	 	     {  
-	 	     	  protokoll.erstellen( proto_woher , proto_gruppe , "Benutzer Zugangs-Daten werden abgefragt." , proto_datei ,proto_klasse,"liste(string p_name ,string p_passw = null ,string was = null )" , false );  /* Protokoll Schreibe */
+	 	     	  protokoll.erstellen( proto_woher , proto_gruppe , "Benutzer Zugangs-Daten werden abgefragt." , proto_datei ,proto_klasse,"liste()" , false );  /* Protokoll Schreibe */
 	 	     	  return prufung(p_name ,p_passw, was);
 	 	     }
 	 	     
@@ -290,18 +304,27 @@ namespace MEQuery
 	   	  private string  proto_datei  = "/klassen/mequery.cs";
 	      private string  proto_klasse = "Protokoll";
 	  	  private string  proto_gruppe = "Protokoll";
+	  	  private bool    statusRennen = true;
 	  	  
    	    public void rennen()
-   	    {
-   	    	    while(true)
+   	    {  /* Thread  wir din der Main gestartet */
+   	    	 
+   	    	 bool spezial = true; /* wird benötigt fals der Thread langsam gestoppt wird */
+   	    	 
+   	    	 try 
+   	    	 {
+   	    	    while(spezial)
    	    	    {
    	    	    	  try
    	    	    	  {
-   	    	    	  	
-   	    	    	     if(liste.Count > 0 && liste[0].woher != "")
-   	    	    	     {
-   	    	    	   	    speichern(liste[0].woher,liste[0].gruppe ,liste[0].inhalt,liste[0].datei,liste[0].klasse,liste[0].funktion,liste[0].fehler );
-                        liste.RemoveAt(0);
+   	    	    	     if(liste.Count != 0)
+   	    	    	     { try
+   	    	    	   	   { speichern( liste[0].woher,liste[0].gruppe ,liste[0].inhalt,liste[0].datei,liste[0].klasse,liste[0].funktion,liste[0].fehler );
+                         Thread.Sleep(500); /* Eine Secunde Warten bis zum nächsten durchlauf */
+                         liste.RemoveAt(0);
+                         Thread.Sleep(500); /* Eine Secunde Warten bis zum nächsten durchlauf */
+                       }catch{ }
+                       	
    	    	    	     }
    	    	    	     else { }
    	    	    	  }
@@ -310,9 +333,21 @@ namespace MEQuery
                         string fehlermeldung = String.Format("SocketException: {0}", e.Message);
                         erstellen( proto_woher , proto_gruppe , "SocketException wurde gewurfen. Fehler: " + fehlermeldung , proto_datei ,proto_klasse,"rennen()" , true );
                   }
-   	    	    	
+                  
+                  
+                  
+                  if( this.statusRennen == false && liste.Count == 0 ) /* wenn Protokoll Beendet werden soll alle erstlichen Protokolle schreiben und dann Beenden */
+                  	 spezial = false; 
+                  else { }
    	    	    }
-   	    	     
+   	    	 }
+   	    	 catch { }    
+   	    }
+   	    
+   	    public void stop()
+   	    { /* Protokllierung von außen  Stopen */ 
+   	    	
+   	    	this.statusRennen = false;   	    	
    	    }
    	    
    	    public class Protokoll_List
@@ -352,7 +387,10 @@ namespace MEQuery
    	    	   Datum datum = new Datum();
    	     	   liste.Add(new Protokoll_List( woher , gruppe , inhalt ,datei ,klasse ,funktion ,fehler , datum.unix() ) );
    	     	 }
-   	     	 catch{}
+   	     	 catch
+   	     	 {
+   	     	    erstellen(woher,gruppe,inhalt,datei,klasse , funktion ,fehler );
+   	     	 }
    	    }
    	    
    	    
@@ -365,16 +403,17 @@ namespace MEQuery
                   
                	   int    unixzeit     = datum.unix();   
                	   string td_style     = "<td style=\"background:#8fbc8f;color:#000000;font-weight:bold;text-align:left;font-size:1.0em;height:30px;\" >";
+               	   string td_style_nw  = "<td style=\"background:#8fbc8f;color:#000000;font-weight:bold;text-align:left;font-size:1.0em;height:30px;\" nowrap >";
                	   string td_intern    = "<td style=\"color:#000000;text-align:left;font-size:1.0em;height:30px;\" >";
                    string td_intern_nw = "<td style=\"color:#000000;text-align:left;font-size:1.0em;height:30px;\" nowrap >";
-                   string spaltenName  = "<tr>" + td_style + "Datum</td>" + td_style + "Uhrzeit</td>" + td_style + "Fehler</td>" + td_style + "Woher</td>"+ td_style + "Gruppe</td>" + td_style + "Inhalt</td>" + td_style + "Datei</td>" + td_style + "Klasse</td>" + td_style + "Funktion</td></tr>";
+                   string spaltenName  = "<tr>" + td_style + "Datum</td>" + td_style + "Uhrzeit</td>" + td_style + "Fehler</td>" + td_style + "Woher</td>"+ td_style + "Gruppe</td>" + td_style + "Inhalt</td>" + td_style_nw + "Datei</td>" + td_style_nw + "Klasse</td>" + td_style_nw + "Funktion</td></tr>";
+                   string spaltenName_csv  = "Unixzeit;Datum;Uhrzeit;Fehler;Woher;Gruppe;Inhalt;Datei;Klasse;Funktion";
                	   
                	  /* HTML Protokoll in Datei Speichern */
                	   if( File.Exists(@"noc_protokoll_server.html")  == false )
                	   {    /* Datei war noch nicht Vorhanden HTML Kopf Schreiben und Datei erstellen */ 
-                         
-                         Protokoll.alt_datum = datum.unixDatum( unixzeit , "datum"); /* Datum Neu setzen */
-                         string[] kopf_inhalt  = new string[52]; 
+                        
+                         string[] kopf_inhalt  = new string[54]; 
                	   	     kopf_inhalt[0] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"> ";
                          kopf_inhalt[1] = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\"> ";
                          kopf_inhalt[2] = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"              \"http://www.w3.org/TR/html4/strict.dtd\"> ";
@@ -387,7 +426,7 @@ namespace MEQuery
                          kopf_inhalt[9] = "<head>";
 	                       kopf_inhalt[10] = "<meta charset=\"UTF-8\">";
                          kopf_inhalt[11] = "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"> ";
-                         kopf_inhalt[12] = "<meta http-equiv=\"refresh\" content=\"5\">";
+                         kopf_inhalt[12] = "<meta http-equiv=\"refresh\" content=\"10\">";
                          kopf_inhalt[13] = "<title>NOC Portal - Server Protokoll Datei erstellt am "+ datum.datum_zeit() + "</title>";
                          kopf_inhalt[14] = "<style type=\"text/css\"> ";
                          kopf_inhalt[15] = " /* ";
@@ -397,36 +436,38 @@ namespace MEQuery
                          kopf_inhalt[19] = "   /                                                                                                           /  ";
                          kopf_inhalt[20] = "   /      Cod by Meiko Eichler                                                                                 /  ";
                          kopf_inhalt[21] = "   /      Copyright by Meiko Eichler                                                                           /  ";
-                         kopf_inhalt[22] = "   /                                                                                                           /  ";
-                         kopf_inhalt[23] = "   /      Datei erstellt am 14.03.2017                                                                         /  ";
-                         kopf_inhalt[24] = "   /      Generiert am " + datum.datum_zeit() + "                                                              /  ";
-                         kopf_inhalt[25] = "   /                                                                                                           /  ";
-                         kopf_inhalt[26] = "   /      Datei Name: noc_protokoll_server.html                                                                /  ";
+                         kopf_inhalt[22] = "   /      Handy: 0163 7378481                                                                                  /  ";
+                         kopf_inhalt[23] = "   /      Email: Meiko@Somba.de                                                                                /  ";
+                         kopf_inhalt[24] = "   /                                                                                                           /  ";
+                         kopf_inhalt[25] = "   /      Datei erstellt am 14.03.2017                                                                         /  ";
+                         kopf_inhalt[26] = "   /      Generiert am " + datum.datum_zeit() + "                                                              /  ";
                          kopf_inhalt[27] = "   /                                                                                                           /  ";
-                         kopf_inhalt[28] = "   /      Protokolle für die Laufzeitumgebung                                                                  /  ";
+                         kopf_inhalt[28] = "   /      Datei Name: noc_protokoll_server.html                                                                /  ";
                          kopf_inhalt[29] = "   /                                                                                                           /  ";
-                         kopf_inhalt[30] = "   *************************************************************************************************************  ";
-                         kopf_inhalt[31] = " */ ";
-                         kopf_inhalt[32] = "@charset \"UTF-8\"; ";
-                         kopf_inhalt[33] = "html{ height:100%; width:100%; }    ";
-                         kopf_inhalt[34] = "</style> ";
-                         kopf_inhalt[35] = "<script type=\"text/javascript\"> ";
-                         kopf_inhalt[36] = "function Seitenende() { ";
-                         kopf_inhalt[37] = " /* document.getElementById('endeDatei').scrollIntoView(true); */ ";
-                         kopf_inhalt[38] = "} ";
-                         kopf_inhalt[39] = "window.onload=function(){ ";
-                         kopf_inhalt[40] = "Seitenende(); ";
-                         kopf_inhalt[41] = "} ";
-                         kopf_inhalt[42] = "</script>";
-                         kopf_inhalt[43] = "</head> ";
-                         kopf_inhalt[44] = "<body bgcolor=\"#707a7d\"> ";
-                         kopf_inhalt[45] = "<br /><center><table style=\"width:98%\"  border=\"3\" cellpadding=\"0\" cellspacing=\"0\"  bordercolorlight=\"#8C8E8C\" bordercolordark=\"#000000\">";
-                         kopf_inhalt[46] = "<tr><th height=\"25\" style=\"color:#FFFFFF;background-color:#bd0e39;font-size:1.2em;text-align:left;height:35px;\" colspan=\"9\">NOC Portal - Server Protokoll vom "+ datum.datum_zeit() + "</td></tr>";
-                         kopf_inhalt[47] = spaltenName;
-                         kopf_inhalt[48] = "</table>";
-                         kopf_inhalt[49] = "</center><br />";
-                         kopf_inhalt[50] = "<div id='endeDatei'>";
-                         kopf_inhalt[51] = "</div></body></html>";
+                         kopf_inhalt[30] = "   /      Protokolle für die Laufzeitumgebung                                                                  /  ";
+                         kopf_inhalt[31] = "   /                                                                                                           /  ";
+                         kopf_inhalt[32] = "   *************************************************************************************************************  ";
+                         kopf_inhalt[33] = " */ ";
+                         kopf_inhalt[34] = "@charset \"UTF-8\"; ";
+                         kopf_inhalt[35] = "html{ height:100%; width:100%; }    ";
+                         kopf_inhalt[36] = "</style> ";
+                         kopf_inhalt[37] = "<script type=\"text/javascript\"> ";
+                         kopf_inhalt[38] = "function Seitenende() { ";
+                         kopf_inhalt[39] = " /* document.getElementById('endeDatei').scrollIntoView(true); */ ";
+                         kopf_inhalt[40] = "} ";
+                         kopf_inhalt[41] = "window.onload=function(){ ";
+                         kopf_inhalt[42] = "Seitenende(); ";
+                         kopf_inhalt[43] = "} ";
+                         kopf_inhalt[44] = "</script>";
+                         kopf_inhalt[45] = "</head> ";
+                         kopf_inhalt[46] = "<body bgcolor=\"#707a7d\"> ";
+                         kopf_inhalt[47] = "<br /><center><table style=\"width:98%\"  border=\"3\" cellpadding=\"0\" cellspacing=\"0\"  bordercolorlight=\"#8C8E8C\" bordercolordark=\"#000000\">";
+                         kopf_inhalt[48] = "<tr><th height=\"25\" style=\"color:#FFFFFF;background-color:#bd0e39;font-size:1.2em;text-align:left;height:35px;\" colspan=\"9\">NOC Portal - Server Protokoll vom "+ datum.datum_zeit() + "</td></tr>";
+                         kopf_inhalt[49] = spaltenName;
+                         kopf_inhalt[50] = "</table>";
+                         kopf_inhalt[51] = "</center><br />";
+                         kopf_inhalt[52] = "<div id='endeDatei'>";
+                         kopf_inhalt[53] = "</div></body></html>";
                          
                    
                           /* Datei mit Kopf erstellen und Datei erstellen */
@@ -435,7 +476,6 @@ namespace MEQuery
    	   	           else if(Protokoll.alt_datum ==  "" || Protokoll.alt_datum != datum.unixDatum( unixzeit , "datum") ) 
    	   	           {  /* Server wurde neu gestartet oder ein Neuer Tag hat begonnen  Tabelle Neu erstellen  */
    	   	           	     
-   	   	           	     Protokoll.alt_datum = datum.unixDatum( unixzeit , "datum"); /* Datum Neu setzen */
    	   	           	     string[] new_tabelle = new string[5];
    	   	           	     new_tabelle[0] = "<br /><center><table style=\"width:98%\"  border=\"3\" cellpadding=\"0\" cellspacing=\"0\"  bordercolorlight=\"#8C8E8C\" bordercolordark=\"#000000\">";
                          new_tabelle[1] = "<tr><th height=\"25\" style=\"color:#FFFFFF;background-color:#bd0e39;font-size:1.2em;text-align:left;height:35px;\" colspan=\"9\">NOC Portal - Server Protokoll vom "+ datum.datum_zeit() + "</td></tr>";
@@ -445,6 +485,61 @@ namespace MEQuery
                          
                          datei.einfugen("<div id='endeDatei'>","davor","unten",@"noc_protokoll_server.html", new_tabelle );
    	   	           }
+   	   	           else {}
+   	   	           
+   	   	          /* CSV Protokoll in Datei Speichern */
+               	   if( File.Exists(@"noc_protokoll_server.csv")  == false )
+   	   	           {
+   	   	           	     string[] kopf_inhalt_csv  = new string[27]; 
+               	   	     kopf_inhalt_csv[0]  = "NOC Portal - Server Protokoll Datei erstellt am "+ datum.datum_zeit() ;
+                         kopf_inhalt_csv[1]  = " ";
+                         kopf_inhalt_csv[2]  = " ";
+                         kopf_inhalt_csv[3]  = "   *************************************************************************************************************  ";
+                         kopf_inhalt_csv[4]  = "   /      NOC Portal Server - CSV Protokoll Datei                                                              /  ";
+                         kopf_inhalt_csv[5]  = "   /                                                                                                           /  ";
+                         kopf_inhalt_csv[6]  = "   /                                                                                                           /  ";
+                         kopf_inhalt_csv[7]  = "   /      Cod by Meiko Eichler                                                                                 /  ";
+                         kopf_inhalt_csv[8]  = "   /      Copyright by Meiko Eichler                                                                           /  ";
+                         kopf_inhalt_csv[9]  = "   /      Handy: 0163 7378481                                                                                  /  ";
+                         kopf_inhalt_csv[10] = "   /      Email: Meiko@Somba.de                                                                                /  ";
+                         kopf_inhalt_csv[11] = "   /                                                                                                           /  ";
+                         kopf_inhalt_csv[12] = "   /      Datei erstellt am 14.03.2017                                                                         /  ";
+                         kopf_inhalt_csv[13] = "   /      Generiert am " + datum.datum_zeit() + "                                                              /  ";
+                         kopf_inhalt_csv[14] = "   /                                                                                                           /  ";
+                         kopf_inhalt_csv[15] = "   /      Datei Name: noc_protokoll_server.csv                                                                 /  ";
+                         kopf_inhalt_csv[16] = "   /                                                                                                           /  ";
+                         kopf_inhalt_csv[17] = "   /      Protokolle für die Laufzeitumgebung                                                                  /  ";
+                         kopf_inhalt_csv[18] = "   /                                                                                                           /  ";
+                         kopf_inhalt_csv[19] = "   *************************************************************************************************************  ";
+                         kopf_inhalt_csv[20] = " ";
+                         kopf_inhalt_csv[21] = " ";
+                         kopf_inhalt_csv[22] = "[Start]";
+                         kopf_inhalt_csv[23] = spaltenName_csv;
+   	   	           	     kopf_inhalt_csv[24] = "[Ende]";
+   	   	           	     kopf_inhalt_csv[25] = " ";
+   	   	           	     kopf_inhalt_csv[26] = "[Ende-Datei]";
+   	   	           	     
+   	   	           	      /* Datei mit Kopf erstellen und Datei erstellen */
+                         File.AppendAllLines( @"noc_protokoll_server.csv" , kopf_inhalt_csv );
+   	   	           }	
+   	   	           else if(Protokoll.alt_datum ==  "" || Protokoll.alt_datum != datum.unixDatum( unixzeit , "datum") ) 
+   	   	           {  /* Server wurde neu gestartet oder ein Neuer Tag hat begonnen  Block Neu erstellen  */
+   	   	           	  
+   	   	           	     string[] new_block_csv = new string[5];
+   	   	           	     new_block_csv[0] = " ";
+                         new_block_csv[1] = "[Start]";
+                         new_block_csv[2] = spaltenName_csv;
+   	   	           	     new_block_csv[3] = "[Ende]";
+   	   	           	     new_block_csv[4] = " ";
+                         
+                         datei.einfugen("[Ende-Datei]","davor","unten",@"noc_protokoll_server.csv", new_block_csv );
+   	   	           }
+   	   	           else {}
+   	   	              	   	                    
+   	   	          /* Datum Neu setzen wenn sich was geändert hat oder noch nicht vergeben war */
+   	   	           if(Protokoll.alt_datum ==  "" || Protokoll.alt_datum != datum.unixDatum( unixzeit , "datum") )
+   	   	             Protokoll.alt_datum = datum.unixDatum( unixzeit , "datum"); /* Datum Neu setzen */
+   	   	           else {}
    	   	          
    	   	           string farbe_ok_fehler = string.Empty; 
    	   	           string fehler_text     = string.Empty;
@@ -460,12 +555,18 @@ namespace MEQuery
                    int str_lange = 1;
                    if(Protokoll.durchlauf > 15)str_lange = 2; else {}
                    string[] ubergabe = new string[str_lange];
+                   string[] ubergabe_csv = new string[1];
                   
-                   ubergabe[0] = "<tr style=\" "+ farbe_ok_fehler + "; \" >" + td_intern + Protokoll.durchlauf + "-" + datum.unixDatum( unixzeit , "datum") + "</td>" + td_intern + datum.unixDatum( unixzeit , "uhrzeit") + "</td>" + td_intern + fehler_text + "</td>" + td_intern_nw + woher + "</td>" + td_intern_nw + gruppe + "</td>" + td_intern + inhalt + "</td>" + td_intern + dateiname + "</td>" + td_intern + klasse + "</td>" + td_intern + funktion + "</td></tr>";
+                   /* HTML */
+                   ubergabe[0] = "<tr style=\" "+ farbe_ok_fehler + "; \" >" + td_intern + datum.unixDatum( unixzeit , "datum") + "</td>" + td_intern + datum.unixDatum( unixzeit , "uhrzeit") + "</td>" + td_intern + fehler_text + "</td>" + td_intern_nw + woher + "</td>" + td_intern_nw + gruppe + "</td>" + td_intern + inhalt + "</td>" + td_intern_nw + dateiname + "</td>" + td_intern_nw + klasse + "</td>" + td_intern_nw + funktion + "</td></tr>";
+                   /* CSV */
+                   ubergabe_csv[0] = unixzeit + ";" + datum.unixDatum( unixzeit , "datum") + ";" + datum.unixDatum( unixzeit , "uhrzeit") + ";" + fehler_text + ";" + woher + ";" + gruppe + ";" + inhalt + ";" + dateiname + ";" + klasse + ";" + funktion ;
+                  
                    if(Protokoll.durchlauf > 15){  ubergabe[1] = spaltenName;  Protokoll.durchlauf = 0; } else {}
                      
                    /* Protokoll in Datei einfügen */
-                   datei.einfugen("</table>","davor","unten",@"noc_protokoll_server.html", ubergabe );
+                   datei.einfugen("</table>","davor","unten",@"noc_protokoll_server.html", ubergabe ); /* HTML */
+                   datei.einfugen("[Ende]","davor","unten",@"noc_protokoll_server.csv", ubergabe_csv );   /* CSV Datei */
    	   	           
    	   	           /* Durchlauf zählen */
    	   	           Protokoll.durchlauf++;
@@ -487,25 +588,28 @@ namespace MEQuery
    	     	     bool ruckgabe = true;
    	     	     try
    	     	     {
-       	         /* Kompletten daten von Datei holen */
-   		           string[] dateiInhalt = File.ReadAllLines(pathDatei);
+       	           /* Kompletten daten von Datei holen */
+   		             string[] dateiInhalt = File.ReadAllLines(pathDatei);
    	   	           
-   	             /* Gesamtgröße von neuer Datei ermitteln */
-   	   	         int neuDateiZeilen = dateiInhalt.Length + zeilenInhalt.Length;
+   	   	           Thread.Sleep(1000);
+   	               /* Gesamtgröße von neuer Datei ermitteln */
+   	   	           int neuDateiZeilen = dateiInhalt.Length + zeilenInhalt.Length;
    	   	           
-   	   	         /* neues String Array für Übergabe der Datei erstellen */
-   	   	         string[] neueDaten = new string[neuDateiZeilen];
-   	   	         int neuZeile = 0;
-   	   	         bool gefunden = false; /* Schutz das nur einmal Zeile eingefügt wird */
+   	   	           /* neues String Array für Übergabe der Datei erstellen */
+   	   	           string[] neueDaten = new string[neuDateiZeilen];
+   	   	           int neuZeile = 0;
+   	   	           bool gefunden = false; /* Schutz das nur einmal Zeile eingefügt wird */
    	   	        
-   	   	         int gesamtAnker = 1; /* Fängt bei eins an zu Zählen da Anker im einmal da sein muss um dort Daten einzuhängen */
-   	   	         if(suche == "unten") /* Suche von unten beginnen */
-   	   	         {
-   	   	         	  /* Anker ermitteln wieviel vorhanden sind wenn Daten beim letzten Anker eingehangen werden sollen */
-   	   	         	  gesamtAnker = text.wieOftZeile(dateiInhalt,anker);
-                 }
-   	   	         else{ }  
-   	   	       
+   	   	           int gesamtAnker = 1; /* Fängt bei eins an zu Zählen da Anker im einmal da sein muss um dort Daten einzuhängen */
+   	   	           if(suche == "unten") /* Suche von unten beginnen */
+   	   	           {
+   	   	         	    /* Anker ermitteln wieviel vorhanden sind wenn Daten beim letzten Anker eingehangen werden sollen */
+   	   	         	    gesamtAnker = text.wieOftZeile(dateiInhalt,anker);
+                   }
+   	   	           else{ }  
+   	   	           
+   	   	           bool gefundenAnker = false; 
+   	   	            
    	   	           int ankerZahler = 1; /* Fängt bei eins an zu Zählen da Anker im einmal da sein muss um dort Daten einzuhängen */
    	   	           for(int i=0;i < dateiInhalt.Length;i++)
    	   	           { 
@@ -513,6 +617,7 @@ namespace MEQuery
    	   	           	 {
    	   	           	   if(dateiInhalt[i] == anker  && gefunden == false)
    	   	           	   {  /* Anker wurde gefunden ( Neue Daten darunter einhängen ) */
+   	   	           	   	  gefundenAnker = true;
    	   	           	   	  
    	   	           	   	  if(ankerZahler == gesamtAnker) /* richtigen Anker gefunden */
    	   	           	   	  {
@@ -548,8 +653,31 @@ namespace MEQuery
    	   	           	 }
    	   	           	 catch{}
    	   	           }
-   	   	           /* Datei Komplett Überschreiben */
-   	   	           File.WriteAllLines( pathDatei , neueDaten );   
+   	   	           
+   	   	           /* Anker nicht gefunden Daten Fall Back auslösen  */
+   	   	           if(gefundenAnker == false)
+   	   	           {   
+   	   	           	   /* Nicht Zuordenbare datei in spezial Datei schreiben für weiter auswertung später  */
+   	   	               File.AppendAllLines( @"anker_nicht_gefunden.noc" , zeilenInhalt );
+   	   	           }
+   	   	           else
+   	   	           {
+   	   	           	   /* Datei Komplett Überschreiben  Wenn alles OK war */
+   	   	               try
+   	   	               { 
+   	   	                	File.WriteAllLines( pathDatei , neueDaten );   
+   	   	               }
+   	   	               catch( PathTooLongException e)
+   	   	               {  Console.WriteLine("\n Fehler von Daten Einfügen in Daten() - Datei Pfad / Name ist zu Lang! Info:" +  e.Message + "\n" ); }
+   	   	               catch (UnauthorizedAccessException e)
+   	   	               {  Console.WriteLine("\n Fehler von Daten Einfügen in Daten() - Keine Berechtigung! Info:" +  e.Message + "\n" );    }
+   	   	               catch (IOException e)
+   	   	               {  /* Versuche noch einmal die Daten zu Speichern */
+   	   	               	  try { File.WriteAllLines( pathDatei , neueDaten ); } catch { }
+   	   	               	  /* Gib aber Info an Konsole aus das es ein Problem gab */
+   	   	               	  Console.WriteLine("\n Fehler von Daten Einfügen in Daten() - Lese Schreib Fehler! Info:" +  e.Message + "\n" );    }
+   	   	           }
+   	   	           
    	   	       }
    	   	       catch
    	   	       {
@@ -1048,8 +1176,12 @@ namespace MEQuery
    	     {   
    	     	    List<Port_List> port_daten = new List<Port_List>();
              
-   	     	    port_daten.Add(new Port_List( 4411 , "cfy_rohdaten" , 1  )  );
-   	     	    port_daten.Add(new Port_List( 88   , "http"         , 500  ) );
+              
+   	     	      port_daten.Add(new Port_List( Einstellung.cfy_rohdaten_port , "cfy_rohdaten"   , 1  )  );
+   	     	      port_daten.Add(new Port_List( Einstellung.http_port         , "http"           , 500  ) );
+   	     	      port_daten.Add(new Port_List( Einstellung.https_port        , "https"          , 500  ) );
+   	     	      port_daten.Add(new Port_List( Einstellung.admin_port        , "admin"          , 10  ) );
+   	     	      port_daten.Add(new Port_List( Einstellung.extern_port       , "extern"         , 500  ) );
    	     	    
    	     	    liste = port_daten;
    	     }
