@@ -5,6 +5,7 @@ using MySql.Data;
 using MySql.Data.MySqlClient;
 using System.Diagnostics;
 using System.Collections.Generic;
+using MEQuery;
 
 namespace MySQL
 {
@@ -304,7 +305,7 @@ namespace MySQL
 		public void UpdateCustomer (string table, string objektId)
 		{
 			int unix_zeitpunkt = 0;
-			MEQery.Datum time = new MEQery.Datum ();
+			Datum time = new Datum ();
 			unix_zeitpunkt = time.unix ();
 			// Update query erstellen
 			string query = "UPDATE " + table + " SET status = 1 where objekt_id = " + objektId + ";";
