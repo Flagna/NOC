@@ -33,16 +33,19 @@ namespace MySQL
 
 
 				//SIGNALQUELLE_ID
+				//Zuerst alle Datensätze in Signalquelle_id auf 1 => inaktiv setzen,...
 				for (int i=0; i< LoadMySQLData.tables["cfy_sq"][0].Count; i++) {
 					insert.ChangeStatus("cfy_sq", LoadMySQLData.tables ["cfy_sq"] [0] [i], true);
 				}
+				//...dann die Datensätze aus den neuen Daten holen.
 				foreach (MEClary.Clary.Clary_List item1 in MEClary.Clary.cfy_rohdaten) {
+
 					bool wurdeGefunden = false;
-
+					//Die geladenen Daten aus der Datenbank durchiterieren
 					for (int i=0; i< LoadMySQLData.tables["cfy_sq"][0].Count; i++) {
-
+						//Die bereits aus der Datenbank geladenen Daten mit den neuen Daten Vergleich, hier: neue Signalquelle vergleichen mit der Signalquelle aus der Datenbank vergleichen
 						if (item1.signalquelle_id == LoadMySQLData.tables ["cfy_sq"] [0] [i]) {
-							//Auf Aktiv setzen
+							//Falls der neue Datensatz mit dem alten Übereinstimmt den Alten Datensatz auf Aktiv setzen
 							insert.ChangeStatus("cfy_sq", LoadMySQLData.tables ["cfy_sq"] [0] [i], false);
 							wurdeGefunden = true;
 
@@ -54,13 +57,11 @@ namespace MySQL
 						//auf aktiv gesetzt und ... 
 						insert.Insert ("cfy_sq",item1.signalquelle_id.ToString());
 						log.InsertIntoErstellt ("cfy_sq", get.GetIdfromTable ("cfy_sq", item1.objekt_id.ToString()),item1.objekt_id.ToString());
-
+						//Counter erhöhen und...
 						insertCounter = insertCounter + 1;
-
-
-						//...der Dictionary Liste hinzugefügt. Sonst wird der gleiche Datensatz mehrfach eingefügt.
+						//...der Dictionary Liste hinzugefügen. Sonst wird der gleiche Datensatz mehrfach eingefügt.
 						LoadMySQLData.tables ["cfy_sq"] [0].Add (item1.signalquelle_id.ToString());
-						//LOG schreiben
+						//Für einwertige Vergleiche sind die Abläufe gleich. Weiter siehe CompareTwoValued...
 					}
 
 
@@ -394,19 +395,24 @@ namespace MySQL
 
 		private void StartCompareTwoValued()
 		{
-
+			//Objekt für MySQLGetData anlegen
 			MySQLGetData get = new MySQLGetData ();
 
 			//GPS_LANGENGRAD + GPS_BREITENGRAD
+
+			//Zuerst alle aus der Datenbank geladenen Elemente in der Datenbank auf 1 => inaktiv setzen
 			for (int i=0; i< LoadMySQLData.tables["cfy_gps"][0].Count; i++) {
 				insert.ChangeStatus("cfy_gps", LoadMySQLData.tables ["cfy_gps"] [0] [i], LoadMySQLData.tables ["cfy_gps"] [1] [i], true);
 			}
+			//Jeden neuen Datensatz einlesen
 			foreach (MEClary.Clary.Clary_List item1 in MEClary.Clary.cfy_rohdaten) {
 				bool wurdeGefunden = false;
-
+				//Jeden alten Datensatz einlesen
 				for (int i=0; i< LoadMySQLData.tables["cfy_gps"][0].Count; i++) {
+					//Beide GPS-Daten miteinander vergleichen, wenn gleich, dann
 					if (item1.gps_langengrad == LoadMySQLData.tables ["cfy_gps"] [0] [i] && 
 					    item1.gps_breitengrad == LoadMySQLData.tables ["cfy_gps"] [1] [i]) {
+						//... auf 0=> aktiv setzen
 						insert.ChangeStatus("cfy_gps", LoadMySQLData.tables ["cfy_gps"] [0] [i], LoadMySQLData.tables ["cfy_gps"] [1] [i], false);
 
 						wurdeGefunden = true;
@@ -417,13 +423,14 @@ namespace MySQL
 					//auf aktiv gesetzt und ... 
 					insert.Insert ("cfy_gps",item1.gps_langengrad.ToString(), item1.gps_breitengrad.ToString());
 
+					//Den Information, dass ein neuer Datensatz angelegt wurde in cfy_erstellt einfügen
 					log.InsertIntoErstellt ("cfy_gps", get.GetIdfromTable ("cfy_gps", item1.objekt_id.ToString()),item1.objekt_id.ToString());
+					//Den Counter erhöhen
 					insertCounter = insertCounter + 1;
 
 					//...der Dictionary Liste hinzugefügt. Sonst wird der gleiche Datensatz mehrfach eingefügt.
 					LoadMySQLData.tables ["cfy_gps"] [0].Add (item1.gps_langengrad.ToString());
 					LoadMySQLData.tables ["cfy_gps"] [1].Add (item1.gps_breitengrad.ToString());
-					//LOG schreiben
 				}
 			}
 		}
@@ -442,9 +449,11 @@ namespace MySQL
 
 				for (int i=0; i< LoadMySQLData.tables["cfy_kunden"][5].Count; i++) {
 
+					//Bis hier wie bei allen anderen Datensätzen gleichbleibend
 
 					if (item1.objekt_id.ToString() == LoadMySQLData.tables ["cfy_kunden"] [5] [i]) {
 						insert.ChangeStatusInCustomer("cfy_kunden", LoadMySQLData.tables ["cfy_kunden"] [5] [i], false);
+						//Ab hier: Falls für ein Objekt_Id eine neuer Datensatz anders ist, erfolgt ein...
 						if ((item1.soll_we.ToString() != LoadMySQLData.tables ["cfy_kunden"] [0] [i].ToString() ||
 						    item1.subscriber.ToString() != LoadMySQLData.tables ["cfy_kunden"] [1] [i].ToString() ||
 						    item1.subscriber_int.ToString() != LoadMySQLData.tables ["cfy_kunden"] [2] [i].ToString() ||
@@ -452,13 +461,14 @@ namespace MySQL
 						    status.ToString() == LoadMySQLData.tables ["cfy_kunden"] [4] [i].ToString())
 						{
 
-
+							//Ein neuer Datensatz wird eingefügt
 							insert.Insert ("cfy_kunden",
 							               item1.soll_we.ToString(), 
 							               item1.subscriber.ToString(),
 							               item1.subscriber_int.ToString(),
 							               item1.subscriber_tel.ToString(),
 							               item1.objekt_id.ToString());
+							//Update von cfy_kunden. Hier wird nur der alte Datensatz auf Inaktiv gesetzt
 							insert.UpdateCustomer ("cfy_kunden", item1.objekt_id.ToString ());
 
 							log.InsertIntoUpdate ("cfy_kunden",get.GetIdfromTable ("cfy_kunden", item1.objekt_id.ToString()),item1.objekt_id.ToString());

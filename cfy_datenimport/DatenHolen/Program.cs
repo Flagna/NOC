@@ -27,14 +27,33 @@ namespace MySQL
 			/* hier erst reingehen wenn Status komplett oder empfange geliefert wird von Klasse */
 			if(true )//MEClary.Clary.cfy_port_status ==  "empfange") 
 			{   
-				   /* Protokoll erstellen */
+				//MEQery.Protokol protokoll = new MEQery.Protokol ();
+
 				   //protokol.erstellen( proto_woher , proto_gruppe , "Neue daten sind angekommen vom Listener Status: " + MEClary.Clary.cfy_port_status , proto_datei ,"MySQLDatenImport","mainClaryDatenImport()" , false );
+				//protokol.erstellen()
 
-				Clary newData = new Clary ();
-				newData.rohdaten ();
-			    LoadMySQLData load = new LoadMySQLData ();
-				Compare compare = new Compare ();
+				
+				try {
+					//Neue Daten laden...
+					Clary newData = new Clary ();
+					newData.rohdaten ();
+				} catch (Exception e) {
+					//protokoll.erstellen("Rohdaten holen", );
 
+					
+				}
+				try {
+					//Datenbankdaten laden
+					LoadMySQLData load = new LoadMySQLData ();
+				} catch (Exception e) {
+					Console.WriteLine (e);
+				}
+				try {
+					//Neue mit alten Daten vergleichen
+					Compare compare = new Compare ();
+				} catch (Exception e) {
+					Console.WriteLine (e);
+				}
 			 
 			
 			     /* Status ändern und Listener wieder frei geben das dieser neue Daten empfangen kann */
