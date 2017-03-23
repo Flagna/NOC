@@ -12,12 +12,17 @@ namespace MySQL
 	   /* variable für Steuerung  Threads   */
 	  private  bool status = true;
 
-    /* protokoll Klasse & datum  einbinden */
-    private static Protokoll protokoll = new Protokoll();
+    
+    /* Datum */
     private static Datum  datum = new Datum();
-    private static string proto_woher = "Mysql-CFY-Datenimport";
-	  private static string proto_datei = "Program.cs";
-    private static string proto_gruppe;
+    
+    /* protokoll  */
+    private static Protokoll protokoll = new Protokoll();
+    private Debuger debuger = new Debuger();
+    private  string proto_woher   = "Mysql-CFY-Datenimport";
+    private  string  proto_klasse = "MySQLDatenImport";
+    private string proto_gruppe;
+	  
 	  
 
 		/* Die Hauptfunktion / Main  vom backend NOC Portal */
@@ -25,14 +30,18 @@ namespace MySQL
 		{
 
 			/* hier erst reingehen wenn Status komplett oder empfange geliefert wird von Klasse */
-			if(true )//MEClary.Clary.cfy_port_status ==  "empfange") 
-			{   
+			if(Clary.cfy_port_status == "mysql")//MEClary.Clary.cfy_port_status ==  "empfange") 
+			{ 
+				
+				 Clary.cfy_port_status = "leer";
+         Console.WriteLine ( "-------- Erledigt CFY Daten wurden in DB Geschrieben ---- ");
+				 
 				//MEQuery.Protokoll protokolll = new MEQuery.Protokoll ();
 
-				   //protokoll.erstellen( proto_woher , proto_gruppe , "Neue daten sind angekommen vom Listener Status: " + MEClary.Clary.cfy_port_status , proto_datei ,"MySQLDatenImport","mainClaryDatenImport()" , false );
-				//protokoll.erstellen()
-
+				 protokoll.erstellen( proto_woher , proto_gruppe , "Neue daten sind angekommen vom Listener Status: " + MEClary.Clary.cfy_port_status , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
 				
+
+				/*
 				try {
 					//Neue Daten laden...
 					Clary newData = new Clary ();
@@ -56,11 +65,11 @@ namespace MySQL
 				}
 			 
 			
-			     /* Status ändern und Listener wieder frei geben das dieser neue Daten empfangen kann */
+			     // Status ändern und Listener wieder frei geben das dieser neue Daten empfangen kann
 
-			     
+			*/     
 			     /* Protokoll erstellen */
-			     //protokoll.erstellen( proto_woher , proto_gruppe , "Daten wurden erfolgreich in MYSQL integriert ( CFY) warte auf neue Daten." , proto_datei ,"MySQLDatenImport","mainClaryDatenImport()" , false );
+			     protokoll.erstellen( proto_woher , proto_gruppe , "Daten wurden erfolgreich in MYSQL integriert ( CFY) warte auf neue Daten." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
 			     /* neue gruppen Nummer generieren aus unix zeitstempel */
 			     //proto_gruppe = "" + datum.unix();
 			}
@@ -68,7 +77,8 @@ namespace MySQL
 			{
 				//Vergleichen und einfügen
 			}
-
+			else
+			{   }
 		} 
 		
 		public void rennen()
@@ -79,13 +89,13 @@ namespace MySQL
 			 /* neue gruppen Nummer generieren aus unix zeitstempel */
 			 proto_gruppe = "" + datum.unix();
 			 /* Protokoll erstellen */
-			 protokoll.erstellen( proto_woher , proto_gruppe , "CFY MYSQL Datenimport Modul wurde gestartet." , proto_datei ,"MySQLDatenImport","rennen()" , false );
+			 protokoll.erstellen( proto_woher , proto_gruppe , "CFY MYSQL Datenimport Modul wurde gestartet." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
  			 while(status)
 			 {
 				  mainClaryDatenImport();
 			 }
 			 /* Protokoll erstellen */
-			 protokoll.erstellen( proto_woher , proto_gruppe , "CFY MYSQL Datenimport Modul wurde beendet." , proto_datei ,"MySQLDatenImport","rennen()" , false );
+			 protokoll.erstellen( proto_woher , proto_gruppe , "CFY MYSQL Datenimport Modul wurde beendet." ,proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
 		}
 		
 	  public void anhalten()

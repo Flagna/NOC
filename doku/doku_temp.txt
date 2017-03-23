@@ -38,6 +38,14 @@
 
   string.Empty;
 
+using System.Reflection;
+
+Process.GetCurrentProcess ().MainModule.FileName;    /Pfad
+Assembly.GetExecutingAssembly().GetName().Name;         //Projektname
+MethodBase.GetCurrentMethod().DeclaringType.Name;       //Klassenname
+MethodBase.GetCurrentMethod().Name;                      //Funktion
+ 
+
 prio thread
 
     Highest
@@ -61,31 +69,31 @@ Erstellen->Befehl Ausführen->Schow Mak File:
 ##### BUILD ####################################################################
 
 ALL: $(FG05)
-	csc /reference:..\..\git_projekt\NOC\dll\mysql\MySql.Web.dll /reference:..\..\git_projekt\NOC\dll\mysql\MySql.Fabric.Plugin.dll /reference:..\..\git_projekt\NOC\dll\mysql\MySql.Data.dll /reference:..\..\git_projekt\NOC\dll\mysql\MySql.Data.Entity.dll /reference:..\..\git_projekt\NOC\dll\mysql\MySql.Data.Entity.EF6.dll /nologo /out:test.EXE /t:exe /debug+ /debug:full /optimize- /d:TRACE /unsafe- /checked- $(FG00)
+	csc /reference:..\..\git_projekt\NOC\dll\mysql\MySql.Web.dll /reference:..\..\git_projekt\NOC\dll\mysql\MySql.Fabric.Plugin.dll /reference:..\..\git_projekt\NOC\dll\mysql\MySql.Data.dll /reference:..\..\git_projekt\NOC\dll\mysql\MySql.Data.Entity.dll /reference:..\..\git_projekt\NOC\dll\mysql\MySql.Data.Entity.EF6.dll /nologo /out:noc_backend.EXE /t:exe /debug+ /debug:full /optimize- /d:TRACE /unsafe- /checked- $(FG00)
 
-test.EXE: $(FG05)
-	csc /reference:..\..\git_projekt\NOC\dll\mysql\MySql.Web.dll /reference:..\..\git_projekt\NOC\dll\mysql\MySql.Fabric.Plugin.dll /reference:..\..\git_projekt\NOC\dll\mysql\MySql.Data.dll /reference:..\..\git_projekt\NOC\dll\mysql\MySql.Data.Entity.dll /reference:..\..\git_projekt\NOC\dll\mysql\MySql.Data.Entity.EF6.dll /nologo /out:test.EXE /t:exe /debug+ /debug:full /optimize- /d:TRACE /unsafe- /checked- $(FG00)
+noc_backend.EXE: $(FG05)
+	csc /reference:..\..\git_projekt\NOC\dll\mysql\MySql.Web.dll /reference:..\..\git_projekt\NOC\dll\mysql\MySql.Fabric.Plugin.dll /reference:..\..\git_projekt\NOC\dll\mysql\MySql.Data.dll /reference:..\..\git_projekt\NOC\dll\mysql\MySql.Data.Entity.dll /reference:..\..\git_projekt\NOC\dll\mysql\MySql.Data.Entity.EF6.dll /nologo /out:noc_backend.EXE /t:exe /debug+ /debug:full /optimize- /d:TRACE /unsafe- /checked- $(FG00)
 
 
 ##### COMMANDS #################################################################
 
-run:  test.EXE
-	test.EXE
+run:  noc_backend.EXE
+	noc_backend.EXE
 
-debug:  test.EXE
-	 test.EXE
+debug:  noc_backend.EXE
+	 noc_backend.EXE
 
-disasm:  test.EXE
-	ILDASM test.EXE
+disasm:  noc_backend.EXE
+	ILDASM noc_backend.EXE
 
 makef: 
-	uestudio test.EXE
+	uestudio noc_backend.mak
 
 
 ##### CLEAN ####################################################################
 
 CLEAN:
-	-@erase "test.EXE"
+	-@erase "noc_backend.EXE"
 
 
 

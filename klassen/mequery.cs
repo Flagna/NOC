@@ -39,12 +39,200 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Collections;
 using System.IO;
+using System.Diagnostics;
+using System.Reflection;
+
 
 
 
 namespace MEQuery
 {   
-	 
+
+   public class Debuger
+   {      
+   	      private Text text;
+   	      private static string routeOrdner; /* Der Route Ordnder ( Erste Ebene ) */
+   	      private string[] ausgabe;
+   	   
+   	      public void routeErmitteln()
+   	      { /* Route Verzeichnis ermitteln  MUSS in der Main Liegen da diese Datei immer in dem Rout Ordner liegt */ 
+   	      	  text = new Text();
+   	      	  bool status = false;
+   	      	  
+   	      	  try
+          	  { 
+          	  	for(int i=-1;i<30;i++) /* 30 Fenster Schleife ( suche nach Frame ) */
+          	  	{
+          	  		 try
+          	       {  StackFrame stackFrame = new StackFrame(i, true);
+          	       	  if(stackFrame.GetFileName().ToString() != "" ) /* Schutz das nicht Leer ist */
+                      {   ausgabe = text.split("\\",stackFrame.GetFileName().ToString());  /* Windows Trennzeichen \   */
+                          if(ausgabe.Length > 2 ) /* Schutz das  min 2 Länge */
+          	  	          {  status = true;
+                             break;  }
+                          else 
+                          {
+                          	  ausgabe = text.split("/",stackFrame.GetFileName().ToString());  /* Linux Trennzeichen  /   */
+                          	  if(ausgabe.Length > 2 ) /* Schutz das  min 2 Länge */
+          	  	              {  status = true;
+          	  	              	  break;  }
+          	  	              else {}
+                          }
+                      }else{}
+                   }
+                   catch(NullReferenceException)
+                   {  } 
+                }    
+                    
+                
+              }
+              catch(NullReferenceException)
+              {   }
+              
+              if( status == true) /* Prüfen ob Wert gefunden wurde */
+                 Debuger.routeOrdner = ausgabe[ ausgabe.Length - 2]; 
+              else
+              {  /* Wert nicht gefunden ander Suche beginnen */
+              	
+                  ausgabe = text.split("/", Process.GetCurrentProcess().MainModule.FileName ); /* Linux Trennzeichen   /   */ 
+                  if(ausgabe.Length > 2 ) Debuger.routeOrdner = ausgabe[ ausgabe.Length - 2]; 
+                  else 
+                  {   ausgabe = text.split("\\", Process.GetCurrentProcess().MainModule.FileName ); /* Windows Trennzeichen  \   */ 
+                   	  if(ausgabe.Length > 2 ) Debuger.routeOrdner = ausgabe[ ausgabe.Length - 2];  else  Debuger.routeOrdner = "FehlerLänge";
+                  }
+              }
+   	      }
+   	   
+   	      public  int zeile()
+          {   StackFrame stackFrame = new StackFrame(1, true);
+              return  stackFrame.GetFileLineNumber(); 
+          }
+          
+          public  string funktion()
+          {   
+          	  try
+          	  {  StackFrame stackFrame = new StackFrame(1, true);
+                 return stackFrame.GetMethod().ToString();
+              }
+              catch(NullReferenceException)
+              { return "FehlerNull"; }
+          }
+          
+          public string dateiName()
+          {  
+          	  text = new Text();
+   	      	  bool status = false;
+   	      	  try
+          	  {   Array.Clear(ausgabe , 0 , ausgabe.Length );  }
+          	  catch { }
+	            string[] arrayName = new string[5];
+	            
+	            string test = "";
+	            
+   	      	  try 
+          	  {
+          	    for(int i=-1;i<30;i++) /* 30 Fenster Frame suchen */
+          	    {
+          	  		 try
+          	       { 
+          	            StackFrame stackFrame = new StackFrame(i, true);
+          	  	        if(stackFrame.GetFileName().ToString() != "" ) /* Schutz darf nicht Leer sein */
+          	  	        {  arrayName = text.split("\\",stackFrame.GetFileName().ToString()); /* Windows Trennzeichen  \    */
+          	  	           test = stackFrame.GetFileName().ToString();
+          	  	           if(arrayName.Length > 2 ) /* Schutz das  min 2 Länge */
+          	  	           {  status = true;
+                              break;  }
+                           else 
+                           {
+                          	  arrayName = text.split("/",stackFrame.GetFileName().ToString());  /* Linux Trennzeichen  /   */
+                          	  if(arrayName.Length > 2 ) /* Schutz das  min 2 Länge */
+          	  	              {  status = true;
+          	  	              	  break;  }
+          	  	              else {}
+                           }
+                        }
+                        else{}
+                   }
+                   catch(NullReferenceException)
+                   {   }
+                }
+              }
+              catch(NullReferenceException)
+              { }
+               
+               
+              /* TEST */
+              
+          	    return test;
+          	    
+                
+               
+               
+              if( status == true)  /* Wert wurde gefunden */
+                 return arrayName[arrayName.Length - 1];
+              else
+                return "FehlerNull";
+                            
+          }
+   	      
+   	      public string path()
+          {   
+          	  text = new Text();
+          	  bool status = false;
+          	  try
+          	  {   Array.Clear(ausgabe , 0 , ausgabe.Length );  }
+          	  catch { }
+          	  
+          	  try 
+          	  {
+          	    for(int i=-1;i<30;i++) /* 30 Fenster Frame suchen */
+          	    {
+          	  		 try
+          	       { 
+          	            StackFrame stackFrame = new StackFrame(i, true);
+          	  	        if(stackFrame.GetFileName().ToString() != "" ) /* Schutz darf nicht Leer sein */
+          	  	        {  ausgabe = text.split("\\",stackFrame.GetFileName().ToString()); /* Windows Trennzeichen  \    */
+          	  	           if(ausgabe.Length > 2 ) /* Schutz das  min 2 Länge */
+          	  	           {  status = true;
+                              break;  }
+                           else 
+                           {
+                          	  ausgabe = text.split("/",stackFrame.GetFileName().ToString());  /* Linux Trennzeichen  /   */
+                          	  if(ausgabe.Length > 2 ) /* Schutz das  min 2 Länge */
+          	  	              {  status = true;
+          	  	              	  break;  }
+          	  	              else {}
+                           }
+                        }
+                        else{}
+                   }
+                   catch(NullReferenceException)
+                   {   }
+                }
+              }
+              catch(NullReferenceException)
+              { }
+              
+              if(status == true) 
+              {   /* OK Daten wurden gefunden Rout Bauen */
+              	 
+              	  string ausgebe_route =  string.Empty;
+              	  for(int i=0;i < ausgabe.Length -1;i++) /* Eins weniger da der Letzte Wert immer die Datei selber ist */
+                  { 
+              	     if(ausgabe[i] == Debuger.routeOrdner  && ausgebe_route == "" )
+              	 	      ausgebe_route = "/";
+              	     else if(ausgebe_route != "")
+              	        ausgebe_route += ausgabe[i] + "/"; 	
+              	      else {}
+                  }
+                  return 	ausgebe_route;
+              	
+              }
+              else
+              {  return "FehlerNull"; }
+          }
+   }
+
 	 public class Einstellung
    {   
    	   public static int cfy_rohdaten_port;
@@ -55,14 +243,13 @@ namespace MEQuery
    	   public static string ip_adresse;
    	   public static bool sound;
    	   
+   	   private Protokoll protokoll = new Protokoll();
+   	   private Debuger debuger = new Debuger();
    	   private string  proto_woher  = "Server_Einstellung";
-	  	 private string  proto_datei  = "/klassen/mequery.cs";
 	  	 private string  proto_klasse = "Einstellung";
 	  	 private string  proto_gruppe = Environment.MachineName;
-	  	 Protokoll protokoll = new Protokoll();
 	  	 
-   	   
-   	   public bool laden( )
+	  	 public bool laden( )
    	   {
    	   	 Text  text   = new Text();
    	   	 Datum datum  = new Datum();
@@ -71,10 +258,10 @@ namespace MEQuery
    	   	 
    	   	 try
    	   	 {    
-   	   	 	 protokoll.erstellen( proto_woher , proto_gruppe , "config.noc Datei Laden.", proto_datei ,proto_klasse,"laden()" , false);
+   	   	 	 protokoll.erstellen( proto_woher , proto_gruppe , "config.noc Datei Laden.",proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
    	   	   if( File.Exists(@"config_server.noc")  == false )
            {  /* Datei war noch nicht Vorhanden HTML Kopf Schreiben un als erstes anhängen */ 
-              protokoll.erstellen( proto_woher , proto_gruppe , "config_server.noc Datei war nicht vorhanden erstelle Default config." , proto_datei ,proto_klasse,"laden()" , false);
+              protokoll.erstellen( proto_woher , proto_gruppe , "config_server.noc Datei war nicht vorhanden erstelle Default config." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
               
               string[] inhalt_datei  = new string[39];
               inhalt_datei[0]  = "#";
@@ -134,7 +321,7 @@ namespace MEQuery
    	   	   	   	  else
    	   	   	        Einstellung.ip_adresse =  text.trim(puffer , "dophoch" );
    	   	   	      er++;
-   	   	   	      protokoll.erstellen( proto_woher , proto_gruppe , "IP Adresse in Datei gefunden: " + Einstellung.ip_adresse , proto_datei ,proto_klasse,"laden()" , false);
+   	   	   	      protokoll.erstellen( proto_woher , proto_gruppe , "IP Adresse in Datei gefunden: " + Einstellung.ip_adresse , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
    	   	   	   }
    	   	   	   else if( text.trim(auswertung[0]) == "cfy_rohdaten_port")
    	   	   	   {
@@ -144,7 +331,7 @@ namespace MEQuery
    	   	   	   	  else
    	   	   	        Einstellung.cfy_rohdaten_port     =  Convert.ToInt32( text.trim(puffer , "dophoch" ) );
    	   	   	      er++;
-   	   	   	      protokoll.erstellen( proto_woher , proto_gruppe , "CFY Rohdaten Port wurde in Datei gefunden: " + Einstellung.cfy_rohdaten_port , proto_datei ,proto_klasse,"laden()" , false);
+   	   	   	      protokoll.erstellen( proto_woher , proto_gruppe , "CFY Rohdaten Port wurde in Datei gefunden: " + Einstellung.cfy_rohdaten_port , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
    	   	   	   }
    	   	   	   else if( text.trim(auswertung[0]) == "http_port")
    	   	   	   {
@@ -154,7 +341,7 @@ namespace MEQuery
    	   	   	      else
    	   	   	        Einstellung.http_port     =  Convert.ToInt32( text.trim(puffer , "dophoch" ) );
    	   	   	      er++;
-   	   	   	      protokoll.erstellen( proto_woher , proto_gruppe , "http Port wurde gefunden: " + Einstellung.http_port , proto_datei ,proto_klasse,"laden()" , false);
+   	   	   	      protokoll.erstellen( proto_woher , proto_gruppe , "http Port wurde gefunden: " + Einstellung.http_port , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
    	   	   	   }
    	   	   	   else if( text.trim(auswertung[0]) == "https_port")
    	   	   	   {
@@ -164,7 +351,7 @@ namespace MEQuery
    	   	   	      else
    	   	   	        Einstellung.https_port     =  Convert.ToInt32( text.trim(puffer , "dophoch" ) );
    	   	   	      er++;
-   	   	   	      protokoll.erstellen( proto_woher , proto_gruppe , "https Port wurde gefunden: " + Einstellung.https_port , proto_datei ,proto_klasse,"laden()" , false);
+   	   	   	      protokoll.erstellen( proto_woher , proto_gruppe , "https Port wurde gefunden: " + Einstellung.https_port , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
    	   	   	   }
    	   	   	   else if( text.trim(auswertung[0]) == "extern_port")
    	   	   	   {
@@ -174,7 +361,7 @@ namespace MEQuery
    	   	   	      else
    	   	   	        Einstellung.extern_port     =  Convert.ToInt32( text.trim(puffer , "dophoch" ) );
    	   	   	      er++;
-   	   	   	      protokoll.erstellen( proto_woher , proto_gruppe , "Extern Port wurde gefunden: " + Einstellung.extern_port , proto_datei ,proto_klasse,"laden()" , false);
+   	   	   	      protokoll.erstellen( proto_woher , proto_gruppe , "Extern Port wurde gefunden: " + Einstellung.extern_port ,proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
    	   	   	   }
    	   	   	   else if( text.trim(auswertung[0]) == "sound") 
    	   	   	   {
@@ -188,7 +375,7 @@ namespace MEQuery
    	   	   	        if(text.trim(puffer , "dophoch" ) == "aus" ) Einstellung.sound = false;  else  Einstellung.sound = true; 
    	   	   	      }
    	   	   	      er++; 
-   	   	   	      protokoll.erstellen( proto_woher , proto_gruppe , "Sound Einstellung wurde in Datei gefunden: " + pr_ausgabe , proto_datei ,proto_klasse,"laden()" , false);
+   	   	   	      protokoll.erstellen( proto_woher , proto_gruppe , "Sound Einstellung wurde in Datei gefunden: " + pr_ausgabe , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
    	   	   	   }
    	   	   	   else {}
    	   	   	   
@@ -196,16 +383,16 @@ namespace MEQuery
    	   	   
    	   	   if(er == 6) /* Es müssen alle 6 Parameter gefunden werden in der Ini ansonsten Bricht das System ab */ 
    	   	   {    status = true;  /* einstellungs Daten wurden alle geladen True zurückgeben das system weiter arbeitet */
-   	   	   	    protokoll.erstellen( proto_woher , proto_gruppe , "Alle Einstellungen in Config Datei gefunden." , proto_datei ,proto_klasse,"laden()" , false); 
+   	   	   	    protokoll.erstellen( proto_woher , proto_gruppe , "Alle Einstellungen in Config Datei gefunden." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
    	   	   }
    	   	   else
-   	   	    protokoll.erstellen( proto_woher , proto_gruppe , "Config Datei wahr Fehlerhaft es wurden nur " + er + " Einstellungen gefunden. 6 Stück sind aber minimum." , proto_datei ,proto_klasse,"laden()" , true); 
+   	   	    protokoll.erstellen( proto_woher , proto_gruppe , "Config Datei wahr Fehlerhaft es wurden nur " + er + " Einstellungen gefunden. 6 Stück sind aber minimum." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , true  ); /* Protokoll erstellen */
    	   	   
    	   	 }
    	   	 catch (SocketException e)
          {
                string fehlermeldung = String.Format("SocketException: ", e.Message);
-               protokoll.erstellen( proto_woher , proto_gruppe , "SocketException wurde gewurfen Verbindung wurde getrennt. Fehler: " + fehlermeldung , proto_datei ,proto_klasse,"laden()" , true);
+               protokoll.erstellen( proto_woher , proto_gruppe , "SocketException wurde gewurfen Verbindung wurde getrennt. Fehler: " + fehlermeldung , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , true  ); /* Protokoll erstellen */
          }  
    	   	 
    	   	 return status;
@@ -215,11 +402,12 @@ namespace MEQuery
 	 
 	 public class Benutzer
 	 {
+	 	     private Debuger debuger = new Debuger();
+	 	     private Protokoll protokoll = new Protokoll();
 	 	     private string  proto_woher  = "NOC_Benutzer_Verwaltung";
-	   	   private string  proto_datei  = "/klassen/mequery.cs";
 	  	   private string  proto_klasse = "Benutzer";
 	  	   private string  proto_gruppe = "benutzer";
-	  	   Protokoll protokoll = new Protokoll();
+	  	   
 	 	     
 	 	     private bool prufung(string p_name ,string p_passw = null ,string was = null )
 	 	     {
@@ -237,7 +425,7 @@ namespace MEQuery
 	 	     
 	 	     public bool liste(string p_name ,string p_passw = null ,string was = null )
 	 	     {  
-	 	     	  protokoll.erstellen( proto_woher , proto_gruppe , "Benutzer Zugangs-Daten werden abgefragt." , proto_datei ,proto_klasse,"liste()" , false );  /* Protokoll Schreibe */
+	 	     	  protokoll.erstellen( proto_woher , proto_gruppe , "Benutzer Zugangs-Daten werden abgefragt." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
 	 	     	  return prufung(p_name ,p_passw, was);
 	 	     }
 	 	     
@@ -246,11 +434,12 @@ namespace MEQuery
 	 
 	 public class MYSQL
 	 {     
+	 	     private Debuger debuger = new Debuger();
+	 	     private Protokoll protokoll = new Protokoll();
 	 	     private string  proto_woher  = "NOC_Mysql_Zugang";
-	   	   private string  proto_datei  = "/klassen/mequery.cs";
 	  	   private string  proto_klasse = "MYSQL";
 	  	   private string  proto_gruppe = "mysqlZugang";
-	  	   Protokoll protokoll = new Protokoll();
+	  	   
 	 	   
 	 	     private  string benutzer_in()
 	 	     {   return "root";   }
@@ -263,15 +452,15 @@ namespace MEQuery
 	 	     
 	 	     
 	 	     public  string ben()
-	 	     {  protokoll.erstellen( proto_woher , proto_gruppe , "Benutzer für Mysql wurde abgefragt." , proto_datei ,proto_klasse,"ben()" , false );  /* Protokoll Schreibe */  
+	 	     {  protokoll.erstellen( proto_woher , proto_gruppe , "Benutzer für Mysql wurde abgefragt." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
 	 	     	  return benutzer_in();   }
 	 	     
 	 	     public  string pass()
-	 	     {   protokoll.erstellen( proto_woher , proto_gruppe , "Password für Mysql wurde abgefragt." , proto_datei ,proto_klasse,"pass()" , false );  /* Protokoll Schreibe */  
+	 	     {   protokoll.erstellen( proto_woher , proto_gruppe , "Password für Mysql wurde abgefragt." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
 	 	     	   return password_in();   }
 	 	     
 	 	     public  string ip()
-	 	     {   protokoll.erstellen( proto_woher , proto_gruppe , "IP Adresse für Mysql wurde abgefragt." , proto_datei ,proto_klasse,"ip()" , false );  /* Protokoll Schreibe */  
+	 	     {   protokoll.erstellen( proto_woher , proto_gruppe , "IP Adresse für Mysql wurde abgefragt." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
 	 	     	   return ipadresse_in();   }
 	 }
 	 
@@ -300,8 +489,9 @@ namespace MEQuery
    {
    	    public static string alt_datum;
    	    public static int durchlauf;
+   	    
+   	    private Debuger debuger = new Debuger();
    	    private string  proto_woher  = "NOC_Protokoll";
-	   	  private string  proto_datei  = "/klassen/mequery.cs";
 	      private string  proto_klasse = "Protokoll";
 	  	  private string  proto_gruppe = "Protokoll";
 	  	  private bool    statusRennen = true;
@@ -319,7 +509,7 @@ namespace MEQuery
    	    	    	  {
    	    	    	     if(liste.Count != 0)
    	    	    	     { try
-   	    	    	   	   { speichern( liste[0].woher,liste[0].gruppe ,liste[0].inhalt,liste[0].datei,liste[0].klasse,liste[0].funktion,liste[0].fehler );
+   	    	    	   	   { speichern( liste[0].woher,liste[0].gruppe ,liste[0].inhalt,liste[0].datei,liste[0].klasse,liste[0].funktion,liste[0].fehler,liste[0].path,liste[0].zeile );
                          Thread.Sleep(500); /* Eine Secunde Warten bis zum nächsten durchlauf */
                          liste.RemoveAt(0);
                          Thread.Sleep(500); /* Eine Secunde Warten bis zum nächsten durchlauf */
@@ -330,8 +520,7 @@ namespace MEQuery
    	    	    	  }
    	    	    	  catch (SocketException e)
                   {
-                        string fehlermeldung = String.Format("SocketException: {0}", e.Message);
-                        erstellen( proto_woher , proto_gruppe , "SocketException wurde gewurfen. Fehler: " + fehlermeldung , proto_datei ,proto_klasse,"rennen()" , true );
+                       erstellen( proto_woher , proto_gruppe , "SocketException wurde gewurfen. Fehler: " + e.Message , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , true  ); /* Protokoll erstellen */
                   }
                   
                   
@@ -355,15 +544,17 @@ namespace MEQuery
    	    	   public string  woher;
    	    	   public string  inhalt;
    	    	   public string  datei;
+   	    	   public string  path;
    	    	   public string  klasse;
    	    	   public string  funktion;
    	    	   public bool    fehler;
    	    	   public int     unixzeit;
    	    	   public string  gruppe;
+   	    	   public int     zeile;
    	    	   
    	    	   public Protokoll_List( ) { }   
    	    	   
-   	    	   public Protokoll_List(string woher,string gruppe ,string inhalt,string datei,string klasse,string  funktion,bool fehler,int unixzeit ) 
+   	    	   public Protokoll_List(string woher,string gruppe ,string inhalt,string datei,string klasse,string  funktion,bool fehler,int unixzeit ,string path , int zeile) 
    	    	   {
    	    	   	  this.woher  = woher;
    	    	   	  this.gruppe = gruppe;
@@ -373,6 +564,8 @@ namespace MEQuery
    	    	   	  this.funktion = funktion;
    	    	   	  this.fehler   = fehler;
    	    	   	  this.unixzeit = unixzeit;
+   	    	   	  this.zeile = zeile;
+   	    	   	  this.path  = path;
    	    	   	  
    	    	   }
    	    }
@@ -380,21 +573,22 @@ namespace MEQuery
    	    /* Protokoll Liste erstellen */
    	    public static List<Protokoll_List> liste = new List<Protokoll_List>();
    	     
-   	    public void erstellen(string woher,string gruppe,string inhalt,string datei,string klasse ,string  funktion ,bool fehler )
+   	    public void erstellen(string woher,string gruppe, string inhalt,  string klasse , string path , string datei ,string  funktion , int zeile , bool fehler )
    	    {   
+   	    	 
    	    	 try
    	    	 { 
    	    	   Datum datum = new Datum();
-   	     	   liste.Add(new Protokoll_List( woher , gruppe , inhalt ,datei ,klasse ,funktion ,fehler , datum.unix() ) );
+   	     	   liste.Add(new Protokoll_List( woher , gruppe , inhalt ,datei ,klasse ,funktion ,fehler , datum.unix() , path , zeile ) );
    	     	 }
    	     	 catch
    	     	 {
-   	     	    erstellen(woher,gruppe,inhalt,datei,klasse , funktion ,fehler );
+   	     	    erstellen(woher,gruppe,inhalt, klasse , path , datei  , funktion , zeile , fehler  );
    	     	 }
    	    }
    	    
    	    
-   	    private void speichern(string woher,string gruppe ,string inhalt,string dateiname,string klasse,string  funktion,bool fehler )
+   	    private void speichern(string woher,string gruppe ,string inhalt,string dateiname,string klasse,string  funktion,bool fehler ,string path, int zeile)
    	    {   /* Diese funktion speichert die gesamelten Daten in eine Datei auf dem system wo es gerade läuft beim beenden */
 
                try
@@ -406,8 +600,8 @@ namespace MEQuery
                	   string td_style_nw  = "<td style=\"background:#8fbc8f;color:#000000;font-weight:bold;text-align:left;font-size:1.0em;height:30px;\" nowrap >";
                	   string td_intern    = "<td style=\"color:#000000;text-align:left;font-size:1.0em;height:30px;\" >";
                    string td_intern_nw = "<td style=\"color:#000000;text-align:left;font-size:1.0em;height:30px;\" nowrap >";
-                   string spaltenName  = "<tr>" + td_style + "Datum</td>" + td_style + "Uhrzeit</td>" + td_style + "Fehler</td>" + td_style + "Woher</td>"+ td_style + "Gruppe</td>" + td_style + "Inhalt</td>" + td_style_nw + "Datei</td>" + td_style_nw + "Klasse</td>" + td_style_nw + "Funktion</td></tr>";
-                   string spaltenName_csv  = "Unixzeit;Datum;Uhrzeit;Fehler;Woher;Gruppe;Inhalt;Datei;Klasse;Funktion";
+                   string spaltenName  = "<tr>" + td_style + "Datum</td>" + td_style + "Uhrzeit</td>" + td_style + "Fehler</td>" + td_style + "Zeile</td>" + td_style + "Woher</td>"+ td_style + "Gruppe</td>" + td_style + "Inhalt</td>"  + td_style_nw + "Path</td>" + td_style_nw + "Datei</td>" + td_style_nw + "Klasse</td>" + td_style_nw + "Funktion</td></tr>";
+                   string spaltenName_csv  = "Unixzeit;Datum;Uhrzeit;Fehler;Zeile;Woher;Gruppe;Inhalt;Path;Datei;Klasse;Funktion";
                	   
                	  /* HTML Protokoll in Datei Speichern */
                	   if( File.Exists(@"noc_protokoll_server.html")  == false )
@@ -462,7 +656,7 @@ namespace MEQuery
                          kopf_inhalt[45] = "</head> ";
                          kopf_inhalt[46] = "<body bgcolor=\"#707a7d\"> ";
                          kopf_inhalt[47] = "<br /><center><table style=\"width:98%\"  border=\"3\" cellpadding=\"0\" cellspacing=\"0\"  bordercolorlight=\"#8C8E8C\" bordercolordark=\"#000000\">";
-                         kopf_inhalt[48] = "<tr><th height=\"25\" style=\"color:#FFFFFF;background-color:#bd0e39;font-size:1.2em;text-align:left;height:35px;\" colspan=\"9\">NOC Portal - Server Protokoll vom "+ datum.datum_zeit() + "</td></tr>";
+                         kopf_inhalt[48] = "<tr><th height=\"25\" style=\"color:#FFFFFF;background-color:#bd0e39;font-size:1.2em;text-align:left;height:35px;\" colspan=\"11\">NOC Portal - Server Protokoll vom "+ datum.datum_zeit() + "</td></tr>";
                          kopf_inhalt[49] = spaltenName;
                          kopf_inhalt[50] = "</table>";
                          kopf_inhalt[51] = "</center><br />";
@@ -478,7 +672,7 @@ namespace MEQuery
    	   	           	     
    	   	           	     string[] new_tabelle = new string[5];
    	   	           	     new_tabelle[0] = "<br /><center><table style=\"width:98%\"  border=\"3\" cellpadding=\"0\" cellspacing=\"0\"  bordercolorlight=\"#8C8E8C\" bordercolordark=\"#000000\">";
-                         new_tabelle[1] = "<tr><th height=\"25\" style=\"color:#FFFFFF;background-color:#bd0e39;font-size:1.2em;text-align:left;height:35px;\" colspan=\"9\">NOC Portal - Server Protokoll vom "+ datum.datum_zeit() + "</td></tr>";
+                         new_tabelle[1] = "<tr><th height=\"25\" style=\"color:#FFFFFF;background-color:#bd0e39;font-size:1.2em;text-align:left;height:35px;\" colspan=\"11\">NOC Portal - Server Protokoll vom "+ datum.datum_zeit() + "</td></tr>";
                          new_tabelle[2] = spaltenName;
                          new_tabelle[3] = "</table>";
                          new_tabelle[4] = "</center><br />";
@@ -558,9 +752,9 @@ namespace MEQuery
                    string[] ubergabe_csv = new string[1];
                   
                    /* HTML */
-                   ubergabe[0] = "<tr style=\" "+ farbe_ok_fehler + "; \" >" + td_intern + datum.unixDatum( unixzeit , "datum") + "</td>" + td_intern + datum.unixDatum( unixzeit , "uhrzeit") + "</td>" + td_intern + fehler_text + "</td>" + td_intern_nw + woher + "</td>" + td_intern_nw + gruppe + "</td>" + td_intern + inhalt + "</td>" + td_intern_nw + dateiname + "</td>" + td_intern_nw + klasse + "</td>" + td_intern_nw + funktion + "</td></tr>";
+                   ubergabe[0] = "<tr style=\" "+ farbe_ok_fehler + "; \" >" + td_intern + datum.unixDatum( unixzeit , "datum") + "</td>" + td_intern + datum.unixDatum( unixzeit , "uhrzeit") + "</td>" + td_intern + fehler_text + "</td>" + td_intern + zeile + "</td>" + td_intern_nw + woher + "</td>" + td_intern_nw + gruppe + "</td>" + td_intern + inhalt + "</td>" + td_intern_nw + path + "</td>" + td_intern_nw + dateiname + "</td>" + td_intern_nw + klasse + "</td>" + td_intern_nw + funktion + "</td></tr>";
                    /* CSV */
-                   ubergabe_csv[0] = unixzeit + ";" + datum.unixDatum( unixzeit , "datum") + ";" + datum.unixDatum( unixzeit , "uhrzeit") + ";" + fehler_text + ";" + woher + ";" + gruppe + ";" + inhalt + ";" + dateiname + ";" + klasse + ";" + funktion ;
+                   ubergabe_csv[0] = unixzeit + ";" + datum.unixDatum( unixzeit , "datum") + ";" + datum.unixDatum( unixzeit , "uhrzeit") + ";" + fehler_text + ";" + zeile + ";" + woher + ";" + gruppe + ";" + inhalt + ";" + path + ";" + dateiname + ";" + klasse + ";" + funktion ;
                   
                    if(Protokoll.durchlauf > 15){  ubergabe[1] = spaltenName;  Protokoll.durchlauf = 0; } else {}
                      
@@ -581,7 +775,7 @@ namespace MEQuery
    public class Datei
    {  /* Datei Behandlung */
          private Text text = new Text();
-          	
+         
    	     public bool einfugen(string anker,string wo,string suche,string pathDatei , string[] zeilenInhalt )
    	     {  /* Array String an Besimmter Stelle danach einfügen in Datei  */
    	     	
@@ -693,6 +887,12 @@ namespace MEQuery
    /* String KLasse um Inhalt zu bearbeiten */
    public class Text 
    {   
+   	   private Debuger debuger = new Debuger();
+   	   private Protokoll protokoll = new Protokoll();
+   	   private string  proto_woher  = "Text_Bearbeitung";
+	  	 private string  proto_klasse = "Text";
+	  	 private string  proto_gruppe = Environment.MachineName;
+	  	
    	   public  int wieOftZeile(string[] daten,string gesuchteZeile)
    	   {
    	   	    int ruckgabe = 0;
@@ -736,16 +936,25 @@ namespace MEQuery
        public string[] split( string zeichen , string inhalt , string optional = null)
        { /* string zerschneiden */
        	  
-       	     char[]  wasSplit = new char[1];
-   	         wasSplit[0] =  Convert.ToChar(zeichen);
-   	      
-   	         StringSplitOptions  option = new StringSplitOptions();
-   	         if(optional == "kk")
-   	           option = StringSplitOptions.RemoveEmptyEntries;
-   	         else
-   	           option = StringSplitOptions.None;  /* Standart Zerschneiden an diesem Punkt und ein Array daraus machen */
-   	      
-             return inhalt.Split( wasSplit , option );
+       	    char[]  wasSplit = new char[1];
+       	    StringSplitOptions  option = new StringSplitOptions();
+       	    
+       	   
+       	    try
+       	    { 
+       	        wasSplit[0] =  Convert.ToChar(zeichen);
+       	        if(optional == "andere")
+   	               option = StringSplitOptions.RemoveEmptyEntries;
+   	            else
+   	              option = StringSplitOptions.None;  /* Standart Zerschneiden an diesem Punkt und ein Array daraus machen */
+   	        
+   	        }
+   	        catch(FormatException e)
+            {  
+            	   protokoll.erstellen( proto_woher , proto_gruppe , "Falches Format! Info: " + e.Message , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , true  ); /* Protokoll erstellen */
+            }
+            
+            return inhalt.Split( wasSplit , option );
        }
    	   
    	   public string gross(string inhalt)
@@ -1141,13 +1350,13 @@ namespace MEQuery
  
    
    public class PortZuweisung
-   {    
+   {     
+   	     private Debuger debuger = new Debuger();
+   	     private Protokoll protokoll = new Protokoll();
    	     private string  proto_woher  = "NOC_Mysql_Zugang";
-	   	   private string  proto_datei  = "/klassen/mequery.cs";
-	  	   private string  proto_klasse = "PortZuweisung";
+	   	   private string  proto_klasse = "PortZuweisung";
 	  	   private string  proto_gruppe = "portklasse";
-	  	   Protokoll protokoll = new Protokoll();
-   	
+	  	   
    	     public class Port_List 
          {   
        	    /* Klasse ist für List   */
@@ -1188,7 +1397,7 @@ namespace MEQuery
    	     
    	     public void portlist()
    	     {
-   	     	  protokoll.erstellen( proto_woher , proto_gruppe , "PortListe wird erstellt." , proto_datei ,proto_klasse,"portlist()" , false );  /* Protokoll Schreibe */  
+   	     	  protokoll.erstellen( proto_woher , proto_gruppe , "PortListe wird erstellt." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
    	     	  erstellen();
    	     }
    	    
@@ -1198,10 +1407,12 @@ namespace MEQuery
    public class Host
    {   
    	   public   string  name;
+   	   
+   	   private Debuger debuger = new Debuger();
+   	   private  Protokoll protokoll = new Protokoll();
    	   private  string  proto_woher  = "Clary_Daten_List_Erstellung";
-	  	 private  string  proto_datei  = "/klassen/mequery.cs";
 	  	 private  string  proto_klasse = "Host";
-	  	 private  Protokoll protokoll = new Protokoll();
+	  	 
    	   
    	   public Host()
    	   {  /* Konstruktur für Host  /-> Name für Maschiene raussuchen und in Variable legen  */
@@ -1251,9 +1462,11 @@ namespace MEQuery
        }
    	   
    	   
+   	   /* Netzwerk Liste */
+   	   public static List<Neztwerk_List> netzwDaten;
    	   
    	   
-   	   public List<Neztwerk_List> netzwerk_daten()
+   	   public void netzwerk_daten_holen()
    	   { 
    	   	  
    	   	  /*  Anzahl der Zeilen: 
@@ -1284,7 +1497,7 @@ namespace MEQuery
    	      string ip_adresse       = string.Empty;  /* IP Adresse der Schnittstelle */
    	      string aktiv_ip         = string.Empty;  /* Aktive IP Adresse */ 
    	      
-   	      protokoll.erstellen( proto_woher , "Neztwerk_List" , "Neztwerk Daten werden bereitgestellt." , proto_datei ,proto_klasse,"netzwerk_daten()" , false );
+   	      protokoll.erstellen( proto_woher , "Neztwerk_List" , "Neztwerk Daten werden bereitgestellt." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
    	      try
    	      {
    	         NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
@@ -1300,6 +1513,9 @@ namespace MEQuery
                 
                 if (adapter.Supports(NetworkInterfaceComponent.IPv4))ip4_or_ip6 = "IPv4";
                 else if (adapter.Supports(NetworkInterfaceComponent.IPv6))ip4_or_ip6 = "IPv6"; else {}
+                
+                if( adapter.Supports(NetworkInterfaceComponent.IPv4) && adapter.Supports(NetworkInterfaceComponent.IPv6) )ip4_or_ip6 = "IPv4-IPv6"; else {}
+                
                  
                  IPInterfaceProperties fIPInterfaceProperties = adapter.GetIPProperties();
                 UnicastIPAddressInformationCollection  UnicastIPAddressInformationCollection = fIPInterfaceProperties.UnicastAddresses;
@@ -1308,6 +1524,7 @@ namespace MEQuery
                 	      /* IP Adresse ermitteln */
                         ip_adresse =  UnicastIPAddressInformation.Address.ToString(); // Ip Address
                         
+                        
                         /* Prüfen ob IP Aktiv ist (ob die IP (Internet Protocol) Adresse gültig in einer Datenbank (DNS, Domain Name System)  ) */
                         if(UnicastIPAddressInformation.IsDnsEligible == true || ip_adresse == "127.0.0.1")
                          aktiv_ip = "ja";  else  aktiv_ip = "nein";
@@ -1315,29 +1532,44 @@ namespace MEQuery
                         try
                         {  max_lebenszeit = UnicastIPAddressInformation.DhcpLeaseLifetime.ToString(); }  /* Maximale Lebensdauer ermitteln was vom DNS zugewiesen wurde in Secunden */  
                         catch(SocketException e)
-                        {   string fehlermeldung = String.Format("SocketException: {0}", e.Message);                        	  
-                        	  protokoll.erstellen( proto_woher , "Neztwerk_List" , "Maximale Lebensdauer Fehler: " + fehlermeldung , proto_datei ,proto_klasse,"netzwerk_daten()" , true );
-                        }
+                        {   protokoll.erstellen( proto_woher , "Neztwerk_List" , "Maximale Lebensdauer Fehler: " + e.Message , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , true  ); /* Protokoll erstellen */   }
+                        catch(NotImplementedException e)
+                        {   protokoll.erstellen( proto_woher , "Neztwerk_List" , "Maximale Lebensdauer Fehler: Angeforderte Methode oder Operation nicht implementiert! " + e.Message , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , true  ); /* Protokoll erstellen */  }
 
                         try  
                         { offen_lebenszeit = UnicastIPAddressInformation.AddressValidLifetime.ToString(); } /* Verbleibende lebenszeit der IP Adresse in Secunden */
                         catch(SocketException e)
-                        {   string fehlermeldung = String.Format("SocketException: {0}", e.Message);                        	  
-                        	  protokoll.erstellen( proto_woher , "Neztwerk_List" , "Verbleibende lebenszeit Fehler: " + fehlermeldung , proto_datei ,proto_klasse,"netzwerk_daten()" , true );
-                        }
+                        {   protokoll.erstellen( proto_woher , "Neztwerk_List" , "Verbleibende lebenszeit Fehler: " + e.Message , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , true  ); /* Protokoll erstellen */  }
+                        catch(NotImplementedException e)
+                        {   protokoll.erstellen( proto_woher , "Neztwerk_List" , "Maximale Lebensdauer Fehler: Angeforderte Methode oder Operation nicht implementiert! " + e.Message , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , true  ); /* Protokoll erstellen */  }
 
+                
+                        if(ip_adresse != "") /* Schutz */
+                        {  
+                           bool statusDa = false;
+                           foreach (Host.Neztwerk_List netz in netzw_daten)
+                           {
+                           	  if(netz.ip_adresse == ip_adresse)
+                           	  { statusDa = true; break; } else { }
+                           }
+                           string  janein = "";
+                           if(statusDa == false) /* IP Adresse war noch nicht da Neue eintragen */
+                           { if(aktiv_ip == "ja") janein =  "IP ist Aktiv."; else  janein =  "IP ist inaktiv!";
+                           	 protokoll.erstellen( proto_woher , "Neztwerk_List" , "IP Adresse " + ip_adresse + " auf " + name + " gefunden. "+ janein + ". Es ist eine: " + ip4_or_ip6 + ". Mit Max Lebenszeit: " + max_lebenszeit , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
+                           	 netzw_daten.Add(new Neztwerk_List( name , type , status , ip4_or_ip6 , physical_adresse , max_lebenszeit , offen_lebenszeit , ip_adresse , aktiv_ip  ) );  
+                           	 Thread.Sleep(250);  } else { }  
+                        }
+                        else{}	
+                 
                 }               
-             
-                netzw_daten.Add(new Neztwerk_List( name , type , status , ip4_or_ip6 , physical_adresse , max_lebenszeit , offen_lebenszeit , ip_adresse , aktiv_ip  ) ); 
+                
              }
    	    
    	      }
    	      catch(SocketException e)
-          {   string fehlermeldung = String.Format("SocketException: {0}", e.Message);                        	  
-              protokoll.erstellen( proto_woher , "Neztwerk_List" , "Fataler Fehler beim holen der Netzwerkdaten: " + fehlermeldung , proto_datei ,proto_klasse,"netzwerk_daten()" , true );
-          }
+          {  protokoll.erstellen( proto_woher , "Neztwerk_List" , "Fataler Fehler beim holen der Netzwerkdaten: " +  e.Message , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , true  ); /* Protokoll erstellen */   }
         
-   	      return netzw_daten;   	   
+   	      netzwDaten = netzw_daten;
        }
    	   
    	   
