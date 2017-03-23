@@ -45,6 +45,21 @@ Assembly.GetExecutingAssembly().GetName().Name;         //Projektname
 MethodBase.GetCurrentMethod().DeclaringType.Name;       //Klassenname
 MethodBase.GetCurrentMethod().Name;                      //Funktion
  
+StackFram aufbau:
+
+StackFrame(1, true); Einzelne Zeile ausgeben
+StackFrame(true); alles ausgeben
+
+bei MEQuery.Debuger.dateiName() in d:\noc_portal_backend\git_projekt\NOC\klassen\mequery.cs:Zeile 141. 
+bei MEQuery.Einstellung.laden() in d:\noc_portal_backend\git_projekt\NOC\klassen\mequery.cs:Zeile 264. 
+bei NOCPortal.NocBackend.Main() in d:\noc_portal_backend\git_projekt\NOC\noc_main.cs:Zeile 51.
+
+ bei MEQuery.Debuger.dateiName() in d:\noc_portal_backend\git_projekt\NOC\klassen\mequery.cs:Zeile 141. 
+ bei MEPort.PortListener.rennen() in d:\noc_portal_backend\git_projekt\NOC\port_steuerung\port_steuerung.cs:Zeile 239. 
+ bei System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state, Boolean preserveSyncCtx) 
+ bei System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state, Boolean preserveSyncCtx) 
+ bei System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state) bei System.Threading.ThreadHelper.ThreadStart() 
+
 
 prio thread
 

@@ -51,14 +51,12 @@ namespace NOCPortal
         	  bool status_einstellung  =  einstellung.laden();
         	  
         	  Protokoll protokoll = new Protokoll();
-        	  string  proto_woher  = "NOC_Backend_Main";
-	  	      string  proto_klasse = "NocBackend";
 	  	      string  proto_gruppe = "main";
 	  	      
 	  	      
         	  AsciiPic asciipic = new AsciiPic();
         	  
-        	  protokoll.erstellen( proto_woher , proto_gruppe , "Noc Portal Backend Version "+ version + " wird gestartet.  Auf Rechner: " + Environment.MachineName  , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
+        	  protokoll.erstellen( debuger.block() , proto_gruppe  , "Noc Portal Backend Version "+ version + " wird gestartet.  Auf Rechner: " + Environment.MachineName  , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
         	  Console.WriteLine( "----------------------------------------------------- \n"); 	
         	  Console.WriteLine( "-- Willkommen im NOC Portal Backend Version "+ version +  " -- \n"); 
         	  Console.WriteLine( "----------------------------------------------------- \n\n"); 	
@@ -73,7 +71,7 @@ namespace NOCPortal
         	  }
         	  else
         	  {
-        	  	      protokoll.erstellen( proto_woher , proto_gruppe , "Config Datei vom Server war fehlerhaft. Programm wurde abgebrochen." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , true  ); /* Protokoll erstellen */
+        	  	      protokoll.erstellen( debuger.block() , proto_gruppe , "Config Datei vom Server war fehlerhaft. Programm wurde abgebrochen." , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , true  ); /* Protokoll erstellen */
         	  	      Console.BackgroundColor  =  ConsoleColor.Magenta; /* Hintergrund Farbe zuweisen */
                     Console.ForegroundColor  =  ConsoleColor.Black; /* Text Frabe zuweisen */
                     Console.WriteLine("\n\n Fehler in der Config datei! Programm wurde abgebrochen. \n");
@@ -82,7 +80,7 @@ namespace NOCPortal
         	  
         	  Console.WriteLine( "\n\n  Bitte nicht Ausschalten sichere Daten! Danke. \n\n"); 	
         	  
-        	  protokoll.erstellen( proto_woher , proto_gruppe , "Noc Portal Backend Version "+ version + " wurde beendet.  Auf Rechner: " + Environment.MachineName  , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
+        	  protokoll.erstellen( debuger.block() , proto_gruppe , "Noc Portal Backend Version "+ version + " wurde beendet.  Auf Rechner: " + Environment.MachineName  , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
         	  Thread protokoll_speicherung     = new Thread( protokoll.rennen ); 
         	  protokoll_speicherung.Name       = "Ende_vom_Protokoll_Schreiben"; /* Thread Namen geben */
         	  protokoll_speicherung.Priority   = ThreadPriority.Highest; /* Höchste Priorität vergeben was Thread hat */
@@ -108,8 +106,6 @@ namespace NOCPortal
         {   
         	  Protokoll protokoll = new Protokoll(); 
         	  Debuger debuger = new Debuger();
-        	  string  proto_woher  = "NOC_Backend_Main";
-	  	      string  proto_klasse = "NocBackend";
 	  	      string  proto_gruppe = "main";
 	  	     
         	  /* Hier werden die gesamten Thread gstartet was benötigt werden im Backend */
@@ -141,7 +137,7 @@ namespace NOCPortal
         	   noc_thread    = new Thread[th_anzahl];  /* Threads erstellen */
         	   
         	   
-        	   protokoll.erstellen( proto_woher , proto_gruppe , "Thread werden vorbereitet." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
+        	   protokoll.erstellen( debuger.block() , proto_gruppe , "Thread werden vorbereitet." , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
         	   
         	   noc_thread[0]          = new Thread( noc_run.rennen); /* Thread Objekt erzeugen  aus Klasse - Standart Thread - */ 
         	   noc_thread[0].Name     = "Hauptfunktion_main_run"; /* Thread Namen geben */
@@ -171,7 +167,7 @@ namespace NOCPortal
        	           foreach (Host.Neztwerk_List netz in Host.netzwDaten)
                    { 
                    	 if(netz.aktiv_ip == "ja")
-                     {   protokoll.erstellen( proto_woher , proto_gruppe , "TCP Vorbereitung für " +  netz.ip_adresse + ":" + port_liste.port + " zum Lauschen." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
+                     {   protokoll.erstellen( debuger.block() , proto_gruppe , "TCP Vorbereitung für " +  netz.ip_adresse + ":" + port_liste.port + " zum Lauschen." , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
                      	   thread_name = "PortListener_" + netz.ip_adresse +":"+ port_liste.port;  /* Thread Namen zuweisen */
                  	       portlistener[port_i] = new PortListener();
                  	       portlistener[port_i].ipport(netz.ip_adresse , port_liste.port , port_liste.bezeichnung , port_liste.max_verbindung , thread_name  );
@@ -203,14 +199,14 @@ namespace NOCPortal
         	   }
         	 
         	   
-        	   protokoll.erstellen( proto_woher , proto_gruppe , "Thread werden jetzt alle gestartet. Anzahl: " + pos , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
+        	   protokoll.erstellen( debuger.block() , proto_gruppe , "Thread werden jetzt alle gestartet. Anzahl: " + pos , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
         	           	   
         	   for(int i =0; i < pos;i++)
         	   {
         	      noc_thread[i].Start();   /* Alle Thread starten */ 
         	   }
         	   
-        	   protokoll.erstellen( proto_woher , proto_gruppe , "Thread werden alle jetzt Überwacht bis diese Beendet werden. ( Join() )" , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
+        	   protokoll.erstellen( debuger.block() , proto_gruppe , "Thread werden alle jetzt Überwacht bis diese Beendet werden. ( Join() )" , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
         	   
         	   Thread.Sleep(2000); /* 2 Secunden Warden bis Überwachung erneut gestartet wird */
         	   
@@ -223,7 +219,7 @@ namespace NOCPortal
                     Console.ForegroundColor  =  ConsoleColor.Black; /* Text Frabe zuweisen */
                     Console.WriteLine("\n\n Thread wure unerwartet Beendet. Name: " + noc_thread[i].Name + "\n");
                     Console.ResetColor(); /* auf Standart Farbzuweisung gehen zurückgehen */
-                    protokoll.erstellen( proto_woher , proto_gruppe , "Thread wure unerwartet Beendet. Name: " + noc_thread[i].Name , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , true  ); /* Protokoll erstellen */
+                    protokoll.erstellen( debuger.block() , proto_gruppe , "Thread wure unerwartet Beendet. Name: " + noc_thread[i].Name , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , true  ); /* Protokoll erstellen */
         	      }
         	      else { }
         	   }
@@ -249,8 +245,7 @@ namespace NOCPortal
 	  	  
 	  	  private Protokoll protokoll = new Protokoll();
 	  	  private Debuger debuger = new Debuger();
-	  	  private string  proto_woher  = "NOC_Backend_Main";
-	  	  private string  proto_klasse = "NocRun";
+	  	  
 	  	  private string  proto_gruppe = "main";
 	  	  
 	  	  
@@ -259,7 +254,7 @@ namespace NOCPortal
 	  	  	  EventObjekt eventobjekt = new EventObjekt(); /* Eventobjekt erstellen */
 	  	  	  ConsoleKeyInfo taste    = new ConsoleKeyInfo(); /* Tastaturabfrage Objekt erstellen */
 	  	      
-	  	      protokoll.erstellen( proto_woher , proto_gruppe , "Haupt Thread wird gestartet." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
+	  	      protokoll.erstellen( debuger.block() , proto_gruppe , "Haupt Thread wird gestartet." , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
 	  	      while(status)
 	  	  	  {   
 	  	  	  	  /* Auswerung zurücksetzten und auf neue Eingabe lauschen von Tastatur */
@@ -268,7 +263,7 @@ namespace NOCPortal
 	  	  	  	  if( eventobjekt.tastatur(taste,"altgr+b") )
 	  	  	  	  { /* Programm beenden  Alles Stoppen */
 	  	  	  	  	  
-	  	  	  	  	  protokoll.erstellen( proto_woher , proto_gruppe , "Benutzer Stoppt das komplette Backend mit ( Abort() )." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
+	  	  	  	  	  protokoll.erstellen( debuger.block() , proto_gruppe , "Benutzer Stoppt das komplette Backend mit ( Abort() )." , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
 	  	  	  	  	  for(int i=1;i< NocBackend.noc_thread.Length;i++)
 	  	  	  	  	  {  
 	  	  	  	  	  	  try
@@ -284,7 +279,7 @@ namespace NOCPortal
               	                       }else {}
                                 }
                                 
-                                protokoll.erstellen( proto_woher , proto_gruppe , "Stoppe Thread: " + NocBackend.noc_thread[i].Name , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
+                                protokoll.erstellen( debuger.block() , proto_gruppe , "Stoppe Thread: " + NocBackend.noc_thread[i].Name , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
 	  	  	  	  	  	      	  NocBackend.noc_thread[i].Abort();
 	  	  	  	  	  	      	  NocBackend.noc_thread[i].Join(); /* Warten bis Thread beendet wurde */
 	  	  	  	  	  	      }
@@ -296,14 +291,14 @@ namespace NOCPortal
 	  	  	  	  	  	   
 	  	  	  	  	  	  
 	  	  	  	  	  }
-	  	  	  	  	  protokoll.erstellen( proto_woher , proto_gruppe , "Stoppe HauptThread." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
+	  	  	  	  	  protokoll.erstellen( debuger.block() , proto_gruppe , "Stoppe HauptThread." , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
 	  	  	  	  	  this.anhalten();      /* HauptThread  ( Main ) anhalten -- erst zum schluss ;-)  */ 
 	  	  	  	  	  
 	  	  	  	  }
 	  	  	  	  else if( eventobjekt.tastatur(taste,"altgr+c") ) /* MYSQL Datenimport Thread Beenden  */
 	  	  	  	  {
 	  	  	  	     try{ NocBackend.mysqldatenimport.anhalten(); } catch { }  	
-	  	  	  	     protokoll.erstellen( proto_woher , proto_gruppe , "Thread - Datenimport zu MYSQL wurde gestoppt." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
+	  	  	  	     protokoll.erstellen( debuger.block() , proto_gruppe , "Thread - Datenimport zu MYSQL wurde gestoppt." , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
 	  	  	  	  }
 	  	  	  	  else{}
 	  	  	  	 

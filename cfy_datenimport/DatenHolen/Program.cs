@@ -19,8 +19,6 @@ namespace MySQL
     /* protokoll  */
     private static Protokoll protokoll = new Protokoll();
     private Debuger debuger = new Debuger();
-    private  string proto_woher   = "Mysql-CFY-Datenimport";
-    private  string  proto_klasse = "MySQLDatenImport";
     private string proto_gruppe;
 	  
 	  
@@ -38,7 +36,7 @@ namespace MySQL
 				 
 				//MEQuery.Protokoll protokolll = new MEQuery.Protokoll ();
 
-				 protokoll.erstellen( proto_woher , proto_gruppe , "Neue daten sind angekommen vom Listener Status: " + MEClary.Clary.cfy_port_status , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
+				 protokoll.erstellen( debuger.block() , proto_gruppe , "Neue daten sind angekommen vom Listener Status: " + MEClary.Clary.cfy_port_status , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
 				
 
 				/*
@@ -69,7 +67,7 @@ namespace MySQL
 
 			*/     
 			     /* Protokoll erstellen */
-			     protokoll.erstellen( proto_woher , proto_gruppe , "Daten wurden erfolgreich in MYSQL integriert ( CFY) warte auf neue Daten." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
+			     protokoll.erstellen( debuger.block() , proto_gruppe , "Daten wurden erfolgreich in MYSQL integriert ( CFY) warte auf neue Daten." , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
 			     /* neue gruppen Nummer generieren aus unix zeitstempel */
 			     //proto_gruppe = "" + datum.unix();
 			}
@@ -89,13 +87,13 @@ namespace MySQL
 			 /* neue gruppen Nummer generieren aus unix zeitstempel */
 			 proto_gruppe = "" + datum.unix();
 			 /* Protokoll erstellen */
-			 protokoll.erstellen( proto_woher , proto_gruppe , "CFY MYSQL Datenimport Modul wurde gestartet." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
+			 protokoll.erstellen( debuger.block() , proto_gruppe , "CFY MYSQL Datenimport Modul wurde gestartet." , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
  			 while(status)
 			 {
 				  mainClaryDatenImport();
 			 }
 			 /* Protokoll erstellen */
-			 protokoll.erstellen( proto_woher , proto_gruppe , "CFY MYSQL Datenimport Modul wurde beendet." ,proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
+			 protokoll.erstellen( debuger.block() , proto_gruppe , "CFY MYSQL Datenimport Modul wurde beendet." ,debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
 		}
 		
 	  public void anhalten()

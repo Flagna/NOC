@@ -36,8 +36,7 @@ namespace MEClary
     	 /* Protokolle */
     	 private  Protokoll protokoll = new Protokoll();
     	 private Debuger debuger = new Debuger();
-    	 private  string  proto_woher  = "Clary_Daten_List_Erstellung";
-	  	 private  string  proto_klasse = "Clary";
+	  	
 	  	 
 	  	 /* Datensatz von CFY Rohdaten */
    	   public static List<Clary_List> cfy_rohdaten;
@@ -151,7 +150,7 @@ namespace MEClary
         	  List<Clary_List> clary_daten = new List<Clary_List>();
        	
        	    /*  Daten Verarbeiten welche vom Portlistener gekommen sind  - Start - */
-       	    protokoll.erstellen( proto_woher , Clary.cfy_port_gruppe , "Es wird begonnen die List zu befühlen mit den Daten vom Portlistener." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
+       	    protokoll.erstellen( debuger.block() , Clary.cfy_port_gruppe , "Es wird begonnen die List zu befühlen mit den Daten vom Portlistener." , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
        	    
        	    
        	    Console.WriteLine( "\n Daten Was CFY Klasse zum Befühllen erhalten hat: " + daten + " \n Bitte Taste Drücken. " );  
@@ -217,7 +216,7 @@ namespace MEClary
        	    
        	    
        	    cfy_rohdaten = clary_daten; /* Daten in Klassen List laden und zum verarbeiten bereitstellen */
-       	    protokoll.erstellen( proto_woher , Clary.cfy_port_gruppe , "List wurde erfolgreich erstellt mit daten und Status wurde auf Komplett gesetzt." , proto_klasse , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
+       	    protokoll.erstellen( debuger.block() , Clary.cfy_port_gruppe , "List wurde erfolgreich erstellt mit daten und Status wurde auf Komplett gesetzt." , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
        	    Clary.cfy_port_status = "mysql";  /* Clray List Status auf Komplett setezen und zur weiterverarbeitung Frei geben */ 
        } 
         
