@@ -484,9 +484,9 @@ namespace MEQuery
    	    	    	     if(liste.Count != 0)
    	    	    	     { try
    	    	    	   	   { speichern( liste[0].woher,liste[0].gruppe ,liste[0].inhalt,liste[0].datei,liste[0].klasse,liste[0].funktion,liste[0].fehler,liste[0].path,liste[0].zeile );
-                         Thread.Sleep(500); /* Eine Secunde Warten bis zum nächsten durchlauf */
+                         Thread.Sleep(200); /* Eine Secunde Warten bis zum nächsten durchlauf */
                          liste.RemoveAt(0);
-                         Thread.Sleep(500); /* Eine Secunde Warten bis zum nächsten durchlauf */
+                         Thread.Sleep(200); /* Eine Secunde Warten bis zum nächsten durchlauf */
                        }catch{ }
                        	
    	    	    	     }
@@ -547,17 +547,17 @@ namespace MEQuery
    	    /* Protokoll Liste erstellen */
    	    public static List<Protokoll_List> liste = new List<Protokoll_List>();
    	     
-   	    public void erstellen(string woher,string gruppe, string inhalt,  string klasse , string path , string datei ,string  funktion , int zeile , bool fehler )
+   	    public void erstellen(string woher,string gruppe, string inhalt,  string klasse , string path , string datei ,string  funktion , int zeile , bool fehler , int unixzeit = 0)
    	    {   
    	    	 
    	    	 try
    	    	 { 
-   	    	   Datum datum = new Datum();
-   	     	   liste.Add(new Protokoll_List( woher , gruppe , inhalt ,datei ,klasse ,funktion ,fehler , datum.unix() , path , zeile ) );
+   	    	 	 if(unixzeit == 0) { Datum datum = new Datum(); unixzeit = datum.unix(); } else { }
+   	     	   liste.Add(new Protokoll_List( woher , gruppe , inhalt ,datei ,klasse ,funktion ,fehler , unixzeit , path , zeile ) );
    	     	 }
    	     	 catch
    	     	 {
-   	     	    erstellen(woher,gruppe,inhalt, klasse , path , datei  , funktion , zeile , fehler  );
+   	     	    erstellen(woher,gruppe,inhalt, klasse , path , datei  , funktion , zeile , fehler , unixzeit );
    	     	 }
    	    }
    	    
@@ -905,28 +905,20 @@ namespace MEQuery
              return inhalt.Trim(wasTrim);
        }
        
-       public string[] split( string zeichen , string inhalt , string optional = null)
+       public string[] split( string trennZeichen , string inhalt , string optional = null)
        { /* string zerschneiden */
        	  
-       	    char[]  wasSplit = new char[1];
-       	    StringSplitOptions  option = new StringSplitOptions();
+       	    //protokoll.erstellen( debuger.block() , proto_gruppe , "String Trennen bei: " + trennZeichen , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , true  ); /* Protokoll erstellen */
        	    
+       	    string[] trennArray = new string[] { trennZeichen };
+       	    StringSplitOptions  option = new StringSplitOptions();
        	   
-       	    try
-       	    { 
-       	        wasSplit[0] =  Convert.ToChar(zeichen);
-       	        if(optional == "andere")
-   	               option = StringSplitOptions.RemoveEmptyEntries;
-   	            else
-   	              option = StringSplitOptions.None;  /* Standart Zerschneiden an diesem Punkt und ein Array daraus machen */
+       	    if(optional == "andere")
+   	           option = StringSplitOptions.RemoveEmptyEntries;
+   	        else
+   	           option = StringSplitOptions.None;  /* Standart Zerschneiden an diesem Punkt und ein Array daraus machen */
    	        
-   	        }
-   	        catch(FormatException e)
-            {  
-            	   protokoll.erstellen( debuger.block() , proto_gruppe , "Falches Format! Info: " + e.Message , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , true  ); /* Protokoll erstellen */
-            }
-            
-            return inhalt.Split( wasSplit , option );
+            return inhalt.Split( trennArray , option );
        }
    	   
    	   public string gross(string inhalt)
