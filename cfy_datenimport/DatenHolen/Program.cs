@@ -30,9 +30,23 @@ namespace MySQL
 			/* hier erst reingehen wenn Status komplett oder empfange geliefert wird von Klasse */
 			if(Clary.cfy_port_status == "mysql")//MEClary.Clary.cfy_port_status ==  "empfange") 
 			{ 
+				try
+				{
+				   string clary_ausgabe = "";
+       	   foreach (Clary.Clary_List cla in Clary.cfy_rohdaten)
+           {
+                   clary_ausgabe += " Ort: " + cla.ort+ " Gestattungsgeber: " + cla.gestatt_name + "\n";
+                   Console.WriteLine("\n ->" + clary_ausgabe);
+           }
 				
-				 Clary.cfy_port_status = "leer";
-         Console.WriteLine ( "-------- Erledigt CFY Daten wurden in DB Geschrieben ---- ");
+				}
+				catch(NullReferenceException e)
+				{
+					  protokoll.erstellen( debuger.block() , proto_gruppe , "Fehler bei der DatenSchleife. Info: "  + e.Message , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , true  ); /* Protokoll erstellen */
+				}
+				
+				Clary.cfy_port_status = "leer";
+        Console.WriteLine ( "-------- Erledigt CFY Daten wurden in DB Geschrieben ---- ");
 				 
 				//MEQuery.Protokoll protokolll = new MEQuery.Protokoll ();
 

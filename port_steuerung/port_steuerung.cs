@@ -428,9 +428,10 @@ namespace MEPort
                       	 }
                          else if( anmeldung == "ok") /* Anmeldung war OK Datenstrom empfangen und in MSStream legen als bitstrom */
                          { 
-                      	     if(this.port_bezeichnung == "cfy_rohdaten")
+                      	     if(this.port_bezeichnung == "cfy_rohdaten" && Clary.cfy_port_status != "empfange")
                       	     {   /* CFY status nur ändern wenn Mit Port für CFY_Rohdaten gesprochen wird */
                       	      	 Clary.cfy_port_status = "empfange"; /* Clary Status auf empfangn setzen und Sperren zur weiterverarbeitung */ 
+                      	      	 protokoll.erstellen( debuger.block() , this.proto_gruppe , "Clary Status wurde auf -> empfange <- gesetzt." ,  debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false ); /* Protokoll erstellen */
                       	     }
                       	     else { }
                       	   
@@ -473,13 +474,19 @@ namespace MEPort
                      	  puffer_string = proto_client[0]; /* Eigentliche Daten zum Weiterverarbeiten in Variable wieder legen ( Liegen immer vor Protokoll )  */
                      	  
                      	  string[] proto_client_zeilen = text.split( "|tr|" , proto_client[1] ); /* Protokolle Zeilen ermitteln */
-                     	  //bool fehler_client;
+                     	  bool fehler_client;
                      	  foreach(string  proto_daten in proto_client_zeilen)
                      	  { /* in dieser schleife werden die Protokolle übernohmen auf dem Server */
                      	     try
                      	     { string[] proto_inhalt = text.split( "|td|" , proto_daten );
-                     	  	   //if(proto_inhalt[6] == "ja")fehler_client = true; else fehler_client = false;
-                     	  	   //protokoll.erstellen( proto_inhalt[0] , proto_inhalt[1] , proto_inhalt[2] , proto_inhalt[3] ,proto_inhalt[4],proto_inhalt[5] , fehler_client , 0 );
+                     	     	
+                     	  	   if(proto_inhalt[6] == "ja")fehler_client = true; else fehler_client = false;
+                     	  	                     /* ( woher         , gruppe          , inhalt          , klasse          , path          , datei          , funktion        , zeile                            , fehler          , unixzeit ) */
+                     	  	   protokoll.erstellen( proto_inhalt[1] , proto_inhalt[2] , proto_inhalt[3] , proto_inhalt[4] ,proto_inhalt[5],proto_inhalt[6] , proto_inhalt[7] , Convert.ToInt32(proto_inhalt[8]) ,  fehler_client , Convert.ToInt32(proto_inhalt[0]) );
+                     	  	 }
+                     	  	 catch(FormatException e)
+                     	  	 {
+                     	  	    protokoll.erstellen( debuger.block() , this.proto_gruppe , "Client Protokoll Schreiben Fehler: " + e.Message ,  debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , true  ); /* Protokoll erstellen */
                      	  	 }
                      	  	 catch(IndexOutOfRangeException e)
                      	  	 {
@@ -490,7 +497,7 @@ namespace MEPort
                      	  
                      }
                      else { }
-                    
+                     
                     
 	  	  	  	       if(this.port_bezeichnung == "cfy_rohdaten")
                      {   /* CFY status nur ändern wenn Mit Port für CFY_Rohdaten gesprochen wird */

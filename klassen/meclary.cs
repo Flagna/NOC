@@ -113,111 +113,68 @@ namespace MEClary
        {
        	   /* Beispiel:
        	   
-       	       List<Clary.Clary_List> clary_daten = clary.rohdaten();
-       	  
        	       string clary_ausgabe = "";
-       	       foreach (Clary.Clary_List cla in clary_daten)
+       	       foreach (Clary.Clary_List cla in Clary.cfy_rohdaten)
                {
                    clary_ausgabe += " Ort: " + cla.ort+ " Gestattungsgeber: " + cla.gestatt_name + "\n";
+                   Console.WriteLine("\n ->" + clary_ausgabe);
                }
            
            */
-             
-            
-       	    
-       	    string signalquelle_id = string.Empty;
-    	      string cluster_id   = string.Empty;
-    	      string type      = string.Empty;
-    	      string kategorie = string.Empty;
-    	      int    region;
-    	      string plz      = string.Empty;
-    	      string ort      = string.Empty;  
-    	      string strasse  = string.Empty;
-    	      string hnr      = string.Empty;
-    	      string gestatt_name       = string.Empty;
-    	      string gestatt_vertragsn  = string.Empty;
-    	      int    objekt_id;
-    	      int    soll_we;
-    	      int    subscriber;
-    	      int    subscriber_int;
-    	      int    subscriber_tel;
-    	      string status          = string.Empty;
-    	      string cmts            = string.Empty;
-    	      string gps_langengrad  = string.Empty;
-    	      string gps_breitengrad = string.Empty;
-    	      string signallieferant = string.Empty;
-    	          	      
-        	  List<Clary_List> clary_daten = new List<Clary_List>();
-       	
-       	    /*  Daten Verarbeiten welche vom Portlistener gekommen sind  - Start - */
-       	    protokoll.erstellen( debuger.block() , Clary.cfy_port_gruppe , "Es wird begonnen die List zu befühlen mit den Daten vom Portlistener." , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
-       	    
-       	    
-       	    Console.WriteLine( "\n Daten Was CFY Klasse zum Befühllen erhalten hat: " + daten + " \n Bitte Taste Drücken. " );  
-       	    Console.ReadKey();
-       	    
-       	    
-       	    /*  Daten Verarbeiten welche vom Portlistener gekommen sind  - Ende - */
-        	   
-       	    
-       	    
-       	    /* Testdaten  Start */
+    	      Text text = new Text();
+    	      
+        	  /*  Daten Verarbeiten welche vom Portlistener gekommen sind  - Start - */
+       	    string[] rohdaten_zeilen = text.split( "|tr|" , daten ); /*  Zeilen ermitteln */
+       	    protokoll.erstellen( debuger.block() , Clary.cfy_port_gruppe , "Es wird begonnen die List zu befühlen mit "+ rohdaten_zeilen.Length +" Einträgen. Status steht weiter auf -> empfange <- " , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
+       	    foreach(string  rohdatenZ in rohdaten_zeilen)
+            {  /* in dieser schleife werden die CFY Rohdaten übernohmen und in List übernohmen */
+              
+              try
+              { 
+                string[] rohdaten = text.split( "|td|" , rohdatenZ );
+                /*  0 = signalquelle 
+                   1 = cluster
+                   2 = typ
+                   3 = kategorie
+                   4 = region
+                   5 = plz
+                   6 = ort
+                   7 = strasse
+                   8 = hnr
+                   9 = gestatt_name
+                   10 = gestatt_vertragsn
+                   11 = objekt_id
+                   12 = soll_we
+                   13 = subscriber
+                   14 = subscriber_int
+                   15 = subscriber_tel
+                   16 = status
+                   17 = cmts
+                   18 = gps_langengrad
+                   19 = gps_breitengrad
+                   20 = signallieferant  
+                   
+                 LIST =  (string signalquelle_id , string cluster_id , string type , string kategorie , int region , string plz ,
+    	                     string ort          , string strasse , string hnr  , string gestatt_name  , string gestatt_vertragsn ,
+    	                     int    objekt_id    , int    soll_we , int    subscriber, int    subscriber_int , int    subscriber_tel ,
+    	                     string status       , string cmts    , string gps_langengrad  , string gps_breitengrad ,  string signallieferant )   */
+    	                     
+    	                     
+                Clary.cfy_rohdaten.Add( new Clary_List( rohdaten[0]  , rohdaten[1] , rohdaten[2] , rohdaten[3] , Convert.ToInt32( rohdaten[4] ) , rohdaten[5] , rohdaten[6] , rohdaten[7] ,  rohdaten[8]  ,  rohdaten[9]  ,
+       	                                               rohdaten[10] , Convert.ToInt32( rohdaten[11] ), Convert.ToInt32( rohdaten[12] ) , Convert.ToInt32( rohdaten[13] ) ,  Convert.ToInt32( rohdaten[14] ) , Convert.ToInt32( rohdaten[15] ) ,
+    	                                                 rohdaten[16] , rohdaten[17] , rohdaten[18] ,  rohdaten[19] ,  rohdaten[20] ) );
        	     
-       	    signalquelle_id = "58268";  	      cluster_id   = "005865";
-    	      type      = "eigen";    	      kategorie = "sonstiges";
-    	      region   =  1;     	            plz      = "04435";
-    	      ort      = "Schkeuditz";        strasse  = "teststraße";
-    	      hnr      = "15";         	      gestatt_name       = "Wogetra";
-    	      gestatt_vertragsn  = "jj88899222ll";    objekt_id       = 584848484;
-    	      soll_we         = 10;      	      subscriber      = 5;
-    	      subscriber_int  = 2;    	        subscriber_tel  = 3;
-    	      status          = "online";      cmts            = "l1-he2";
-    	      gps_langengrad  = "8458484.965895489"; 	      gps_breitengrad = "1122121.3333333";
-    	      signallieferant = "Primacom";
-    	      
-       	    clary_daten.Add( new Clary_List(signalquelle_id , cluster_id , type , kategorie , region , plz ,  ort , strasse ,  hnr  ,  gestatt_name  ,
-       	                                     gestatt_vertragsn , objekt_id , soll_we ,  subscriber,  subscriber_int , subscriber_tel ,
-    	                                       status            , cmts      ,  gps_langengrad  ,  gps_breitengrad ,   signallieferant ) );
-    	                                       
-            signalquelle_id = "23236";  	      cluster_id   = "1125582";
-    	      type      = "eigen";    	      kategorie = "kopf";
-    	      region   =  6;     	            plz      = "23546";
-    	      ort      = "Berlin";            strasse  = "berlinstrase";
-    	      hnr      = "55";         	      gestatt_name       = "Berliner";
-    	      gestatt_vertragsn  = "KKK9922222";    objekt_id       = 1112255333;
-    	      soll_we         = 10;      	      subscriber      = 5;
-    	      subscriber_int  = 2;    	        subscriber_tel  = 3;
-    	      status          = "online";      cmts            = "be-he6";
-    	      gps_langengrad  = "8458484.965895489"; 	      gps_breitengrad = "1122121.3333333";
-    	      signallieferant = "Telecolumbus";
-    	      
-       	    clary_daten.Add( new Clary_List(signalquelle_id , cluster_id , type , kategorie , region , plz ,  ort , strasse ,  hnr  ,  gestatt_name  ,
-       	                                     gestatt_vertragsn , objekt_id , soll_we ,  subscriber,  subscriber_int , subscriber_tel ,
-    	                                       status            , cmts      ,  gps_langengrad  ,  gps_breitengrad ,   signallieferant ) );
-    	                                       
-            signalquelle_id = "1122233";  	    cluster_id   = "889977";
-    	      type      = "fremd";    	      kategorie = "hallo";
-    	      region   =  3;     	            plz      = "47866";
-    	      ort      = "Dresden";            strasse  = "dresdenstrase";
-    	      hnr      = "77h";         	      gestatt_name       = "Gestt Dresden GmbH";
-    	      gestatt_vertragsn  = "DE778skk";    objekt_id       = 556565656;
-    	      soll_we         = 15;      	      subscriber      = 15;
-    	      subscriber_int  = 12;    	        subscriber_tel  = 13;
-    	      status          = "online";      cmts            = "de-he2";
-    	      gps_langengrad  = "45484884.55555"; 	      gps_breitengrad = "148544845.5985959";
-    	      signallieferant = "Telekom";
-    	      
-       	    clary_daten.Add( new Clary_List(signalquelle_id , cluster_id , type , kategorie , region , plz ,  ort , strasse ,  hnr  ,  gestatt_name  ,
-       	                                     gestatt_vertragsn , objekt_id , soll_we ,  subscriber,  subscriber_int , subscriber_tel ,
-    	                                       status            , cmts      ,  gps_langengrad  ,  gps_breitengrad ,   signallieferant ) );
-       	    
-       	    /* Testdaten  Ende */
-       	    
-       	    
-       	    
-       	    cfy_rohdaten = clary_daten; /* Daten in Klassen List laden und zum verarbeiten bereitstellen */
-       	    protokoll.erstellen( debuger.block() , Clary.cfy_port_gruppe , "List wurde erfolgreich erstellt mit daten und Status wurde auf Komplett gesetzt." , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
-       	    Clary.cfy_port_status = "mysql";  /* Clray List Status auf Komplett setezen und zur weiterverarbeitung Frei geben */ 
+       	      }
+   	    	    catch (Exception e)
+              {
+                       protokoll.erstellen( debuger.block() ,  Clary.cfy_port_gruppe , "Exception wurde gewurfen. Fehler: " + e.Message , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , true  );  /* Protokoll erstellen */
+              }
+                     
+            }
+            
+       	    protokoll.erstellen( debuger.block() , Clary.cfy_port_gruppe , "List wurde erfolgreich erstellt und Status wird auf -> mysql <- gesetzt." , debuger.klasse() , debuger.path() , debuger.dateiName() , debuger.funktion() , debuger.zeile() , false  ); /* Protokoll erstellen */
+       	   
+       	    Clary.cfy_port_status = "mysql";  /* Daten wurden Komplett Übernohmen Status setezen und zur weiterverarbeitung Frei geben */ 
        } 
         
     }
