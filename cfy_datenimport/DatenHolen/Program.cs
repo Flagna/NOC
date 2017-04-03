@@ -18,6 +18,7 @@ namespace MySQL
     private static string proto_woher = "Mysql-CFY-Datenimport";
 	  private static string proto_datei = "Program.cs";
     private static string proto_gruppe;
+		private static bool geladen = false;
 	  
 
 		/* Die Hauptfunktion / Main  vom backend NOC Portal */
@@ -25,52 +26,63 @@ namespace MySQL
 		{
 
 			/* hier erst reingehen wenn Status komplett oder empfange geliefert wird von Klasse */
-			if(true )//MEClary.Clary.cfy_port_status ==  "empfange") 
+			if(MEClary.Clary.cfy_port_status ==  "empfange") 
 			{   
-				//MEQuery.Protokoll protokolll = new MEQuery.Protokoll ();
 
-				   //protokoll.erstellen( proto_woher , proto_gruppe , "Neue daten sind angekommen vom Listener Status: " + MEClary.Clary.cfy_port_status , proto_datei ,"MySQLDatenImport","mainClaryDatenImport()" , false );
-				//protokoll.erstellen()
-
-				
-				try {
-					//Neue Daten laden...
-					Clary newData = new Clary ();
-					newData.rohdaten ("");
-				} catch (Exception e) {
-					//protokoll.erstellen("Rohdaten holen", );
-
-					
-				}
-				try {
-					//Datenbankdaten laden
-					LoadMySQLData load = new LoadMySQLData ();
-				} catch (Exception e) {
-					Console.WriteLine (e);
-				}
-				try {
-					//Neue mit alten Daten vergleichen
-					Compare compare = new Compare ();
-				} catch (Exception e) {
-					Console.WriteLine (e);
-				}
-			 
-			
-			     /* Status ändern und Listener wieder frei geben das dieser neue Daten empfangen kann */
-
-			     
-			     /* Protokoll erstellen */
-			     //protokoll.erstellen( proto_woher , proto_gruppe , "Daten wurden erfolgreich in MYSQL integriert ( CFY) warte auf neue Daten." , proto_datei ,"MySQLDatenImport","mainClaryDatenImport()" , false );
-			     /* neue gruppen Nummer generieren aus unix zeitstempel */
-			     //proto_gruppe = "" + datum.unix();
 			}
 			else if(MEClary.Clary.cfy_port_status ==  "komplett") 
 			{
-				//Vergleichen und einfügen
+				if (geladen){
+				MEClary.Clary.cfy_port_status = "mysql";
+					NeueDatenLaden ();
+					DatenVergleichen ();
+					MEClary.Clary.cfy_port_status = "leer";
+				} else {
+					DatenLaden ();
+				}
 			}
 
 		} 
-		
+
+		private void DatenLaden()
+		{
+			if (!geladen) {
+				Protokoll protokoll = new Protokoll ();
+
+				try {
+					protokoll.erstellen ("MySQL Program.cs (MySql-Main)", MEClary.Clary.cfy_port_gruppe, "MySQL Daten werden geladen:","Program.cs", "MySQLDatenImport", "mainClaryDatenImport()", false);
+					LoadMySQLData load = new LoadMySQLData ();
+					protokoll.erstellen ("MySQL Program.cs (MySql-Main)", MEClary.Clary.cfy_port_gruppe, "MySQL Daten fertig geladen:","Program.cs", "MySQLDatenImport", "mainClaryDatenImport()", false);
+					geladen = true;
+				} catch (Exception e) {
+					protokoll.erstellen ("MySQL Program.cs (MySql-Main)", MEClary.Clary.cfy_port_gruppe, "Datenladefehler: /n " + e, "Program.cs","MySQLDatenImport", "mainClaryDatenImport()", false);
+				}
+			}
+		}
+
+		private void NeueDatenLaden()
+		{
+			try {
+				//Neue Daten laden...
+				Clary newData = new Clary ();
+				newData.rohdaten ("");
+			} catch (Exception e) {
+				//protokoll.erstellen("Rohdaten holen", );
+
+
+			}
+		}
+
+		private void DatenVergleichen()
+		{
+			try {
+				//Neue mit alten Daten vergleichen
+				Compare compare = new Compare ();
+			} catch (Exception e) {
+				Console.WriteLine (e);
+			}
+		}
+
 		public void rennen()
 		{  
 			 
