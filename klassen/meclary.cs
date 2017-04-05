@@ -1,13 +1,54 @@
+/*
+   *************************************************************************************************************
+   /      MEClary - Modul -                                                                                    /
+   /                                                                                                           /
+   /                                                                                                           /
+   /      Cod by Meiko Eichler                                                                                 /
+   /      Copyright by Meiko Eichler                                                                           /
+   /      Handy: 0163 7378481                                                                                  /
+   /      Email: Meiko@Somba.de                                                                                /
+   /                                                                                                           /
+   /      Datei erstellt am 01.03.2017                                                                         /
+   /                                                                                                           /
+   /      Ordner: /klassen/                                                                                    /
+   /      Datei Name: meclary.cs                                                                               /
+   /                                                                                                           /
+   /      Beschreibung: Hier werden die gesammelten Daten vom Portlistner in ein List Array gelegt.            /
+   /                    und bereitgestellt zum weiterverarbeiten.                                              /
+   /                    Die Klasse leifert ein status wo sich das List gerade befindet.                         /
+   /                    - "Clary" Klasse verarbeiet Datenimport vom Listener und stellt in einem List Daten    /
+   /                      Bereit zum weiterverarbeiten                                                         /
+   /                                                                                                           /
+   *************************************************************************************************************  
+*/
+
+
 using System;
 using System.Net;
 using System.Collections.Generic;
+using MEQuery;
 
 namespace MEClary
 {
     
     public class Clary
     {
-    	
+    	 private  string  proto_woher  = "Clary_Daten_List_Erstellung";
+	  	 private  string  proto_datei  = "/klassen/meclary.cs";
+	  	 private  string  proto_klasse = "Clary";
+	  	 private  Protokoll protokoll = new Protokoll();
+	  	 
+	  	 /* Datensatz von CFY Rohdaten */
+   	   public static List<Clary_List> cfy_rohdaten;
+   	   
+   	   /* Status Variable wo sich der TCPListener gerade befindet */
+   	   /* empfange  = "Daten werden gerade von TCP Listener in List gefühlt Bitte Warten */
+   	   /* komplett  = "Daten wurden kommtlet geladen und sind zum weiter verarbeiten Bereit */
+   	   /* leer      = "So wird es geboren und erhält den status nach einer bearbeitung */
+   	   /* mysql     = "Daten werden gerade an mysql weitergeleitet */
+   	   public static string cfy_port_status = "leer";
+   	   public static string cfy_port_gruppe = "cfy"; /* Gruppen Zuweisung */
+	  	    
        public class Clary_List
        {
     	   public string signalquelle_id;
@@ -66,18 +107,9 @@ namespace MEClary
     	
        }
     
-       /* Datensatz von CFY Rohdaten */
-   	   public static List<Clary_List> cfy_rohdaten;
+       
    	   
-   	   /* Status Variable wo sich der TCPListener gerade befindet */
-   	   /* empfange  = "Daten werden gerade von TCP Listener in List gef�hlt Bitte Warten */
-   	   /* komplett  = "Daten wurden kommtlet geladen und sind zum weiter verarbeiten Bereit */
-   	   /* leer      = "So wird es geboren und erh�lt den status nach einer bearbeitung */
-   	   /* mysql     = "Daten werden gerade an mysql weitergeleitet */
-   	   public static string cfy_port_status = "leer";
-   	   
-   	   
-       public void rohdaten()
+       public void rohdaten(string daten)
        {
        	   /* Beispiel:
        	   
@@ -90,8 +122,9 @@ namespace MEClary
                }
            
            */
- 
-       	  
+             
+            
+       	    
        	    string signalquelle_id = string.Empty;
     	      string cluster_id   = string.Empty;
     	      string type      = string.Empty;
@@ -113,25 +146,27 @@ namespace MEClary
     	      string gps_langengrad  = string.Empty;
     	      string gps_breitengrad = string.Empty;
     	      string signallieferant = string.Empty;
-    	      
-    	      
+    	          	      
         	  List<Clary_List> clary_daten = new List<Clary_List>();
        	
-       	    /*  Datenstrom vom Port holen   - Start - */
+       	    /*  Daten Verarbeiten welche vom Portlistener gekommen sind  - Start - */
+       	    protokoll.erstellen( proto_woher , Clary.cfy_port_gruppe , "Es wird begonnen die List zu befühlen mit den Daten vom Portlistener." , proto_datei ,proto_klasse,"rohdaten()" , false );
        	    
        	    
+       	    Console.WriteLine( "\n Daten Was CFY Klasse zum Befühllen erhalten hat: " + daten + " \n Bitte Taste Drücken. " );  
+       	    Console.ReadKey();
        	    
        	    
+       	    /*  Daten Verarbeiten welche vom Portlistener gekommen sind  - Ende - */
+        	   
        	    
-       	    /*  Datenstrom vom Port holen   - Ende - */
-        	    
        	    
        	    /* Testdaten  Start */
        	     
        	    signalquelle_id = "58268";  	      cluster_id   = "005865";
     	      type      = "eigen";    	      kategorie = "sonstiges";
     	      region   =  1;     	            plz      = "04435";
-    	      ort      = "Schkeuditz";        strasse  = "teststra�e";
+    	      ort      = "Schkeuditz";        strasse  = "teststraße";
     	      hnr      = "15";         	      gestatt_name       = "Wogetra";
     	      gestatt_vertragsn  = "jj88899222ll";    objekt_id       = 584848484;
     	      soll_we         = 10;      	      subscriber      = 5;
@@ -180,7 +215,9 @@ namespace MEClary
        	    
        	    
        	    
-       	    cfy_rohdaten = clary_daten;
+       	    cfy_rohdaten = clary_daten; /* Daten in Klassen List laden und zum verarbeiten bereitstellen */
+       	    protokoll.erstellen( proto_woher , Clary.cfy_port_gruppe , "List wurde erfolgreich erstellt mit daten und Status wurde auf Komplett gesetzt." , proto_datei ,proto_klasse,"rohdaten()" , false );
+       	    Clary.cfy_port_status = "komplett";  /* Clray List Status auf Komplett setezen und zur weiterverarbeitung Frei geben */ 
        } 
         
     }

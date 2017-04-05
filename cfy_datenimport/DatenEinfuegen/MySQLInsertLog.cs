@@ -5,7 +5,11 @@ using MySql.Data;
 using MySql.Data.MySqlClient;
 using System.Diagnostics;
 using System.Collections.Generic;
+<<<<<<< HEAD
 using MEQery;
+=======
+using MEQuery;
+>>>>>>> master
 
 namespace MySQL
 {
@@ -19,7 +23,11 @@ namespace MySQL
 		public void InsertCreateTimeIntoDaten(string objekt_id)
 		{
 			int unix_zeitpunkt = 0;
+<<<<<<< HEAD
 			MEQery.Datum time = new MEQery.Datum ();
+=======
+			MEQuery.Datum time = new MEQuery.Datum ();
+>>>>>>> master
 			unix_zeitpunkt = time.unix ();
 
 			string query = "UPDATE cfy_daten SET unix_erstellt = '" + unix_zeitpunkt + "' where objekt_id like '" + objekt_id + "';";
@@ -42,7 +50,11 @@ namespace MySQL
 		public void InsertUpdateTimeIntoDaten(string objekt_id)
 		{
 			int unix_zeitpunkt = 0;
+<<<<<<< HEAD
 			MEQery.Datum time = new MEQery.Datum ();
+=======
+			MEQuery.Datum time = new MEQuery.Datum ();
+>>>>>>> master
 			unix_zeitpunkt = time.unix ();
 
 			string query = "UPDATE cfy_daten SET unix_update = '" + unix_zeitpunkt + "' where objekt_id like '" + objekt_id + "';";
@@ -66,7 +78,11 @@ namespace MySQL
 		public void InsertIntoErstellt(string tabelle, string tabelle_id, string objekt_id)
 		{
 			int unix_zeitpunkt = 0;
+<<<<<<< HEAD
 			MEQery.Datum time = new MEQery.Datum ();
+=======
+			MEQuery.Datum time = new MEQuery.Datum ();
+>>>>>>> master
 			unix_zeitpunkt = time.unix ();
 
 			List<string> columnNames = GetColumnNames ("cfy_erstellt");
@@ -100,7 +116,11 @@ namespace MySQL
 		public void InsertIntoUpdate(string tabelle, string tabelle_id, string objekt_id)
 		{
 			int unix_zeitpunkt = 0;
+<<<<<<< HEAD
 			MEQery.Datum time = new MEQery.Datum ();
+=======
+			MEQuery.Datum time = new MEQuery.Datum ();
+>>>>>>> master
 			unix_zeitpunkt = time.unix ();
 
 			List<string> columnNames = GetColumnNames ("cfy_update");
@@ -134,7 +154,11 @@ namespace MySQL
 		public void InsertIntoGeloescht(string tabelle, string tabelle_id, string objekt_id)
 		{
 			int unix_zeitpunkt = 0;
+<<<<<<< HEAD
 			MEQery.Datum time = new MEQery.Datum ();
+=======
+			MEQuery.Datum time = new MEQuery.Datum ();
+>>>>>>> master
 			unix_zeitpunkt = time.unix ();
 
 			List<string> columnNames = GetColumnNames ("cfy_geloescht");
@@ -168,7 +192,11 @@ namespace MySQL
 		public void InsertIntoInfo(string tabelle, string tabelle_id, string objekt_id, string beschreibung)
 		{
 			int unix_zeitpunkt = 0;
+<<<<<<< HEAD
 			MEQery.Datum time = new MEQery.Datum ();
+=======
+			MEQuery.Datum time = new MEQuery.Datum ();
+>>>>>>> master
 			unix_zeitpunkt = time.unix ();
 
 			List<string> columnNames = GetColumnNames ("cfy_info");
@@ -204,7 +232,11 @@ namespace MySQL
 		public void InsertIntoFehler(string tabelle, string tabelle_id, string objekt_id, string beschreibung)
 		{
 			int unix_zeitpunkt = 0;
+<<<<<<< HEAD
 			MEQery.Datum time = new MEQery.Datum ();
+=======
+			MEQuery.Datum time = new MEQuery.Datum ();
+>>>>>>> master
 			unix_zeitpunkt = time.unix ();
 
 			List<string> columnNames = GetColumnNames ("cfy_fehler");

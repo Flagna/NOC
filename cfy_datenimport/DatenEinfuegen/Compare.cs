@@ -507,7 +507,11 @@ namespace MySQL
 		private void StartCompareDataTable()
 		{
 			MySQLGetData get = new MySQLGetData ();
+<<<<<<< HEAD
 			bool status = false;
+=======
+			//bool status = false;
+>>>>>>> master
 			//Daten neu Laden. Weil die IDs neu gesetzt werden müssen(In den einzelnen Tabellen)
 			//LoadMySQLData load = new LoadMySQLData ();
 			//Daten geladen...
